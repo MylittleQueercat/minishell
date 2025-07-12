@@ -10,7 +10,7 @@ LIBFT = $(LIBFT_DIR)/libft.a
 SRCS_DIR = ./srcs/
 OBJS_DIR = ./.objs/
 
-SRCS = $(addprefix $(SRCS_DIR), main.c, exec.c)
+SRCS = $(addprefix $(SRCS_DIR), main.c exec.c path.c utils.c)
 OBJS = $(SRCS:$(SRCS_DIR)%.c=${OBJS_DIR}%.o)
 
 LDFLAGS = -L$(LIBFT_DIR) -lft

@@ -24,8 +24,9 @@
 # include "libft.h"
 # include "get_next_line.h"
 
-# DEFINE CMD_BUILTIN 0
-# DEFINE CMD_PIPE 1
+# define CMD_BUILTIN 0
+# define CMD_EXTERNAL 1
+# define CMD_PIPE 2
 
 typedef struct s_cmd
 {
@@ -37,5 +38,15 @@ typedef struct s_cmd
 	int				output_fd;  // File descriptor for output redirection
 	int				type;
 }	t_cmd;
+
+typedef struct s_env
+{
+	char			**envp;
+	char			*path;
+}	t_env;
+
+int	exec_cmd(t_cmd *cmd, t_env *env);
+char	*get_path(t_env *env, char *cmd);
+void	free_array(char **arr);
 
 #endif /* MINISHELL_H */

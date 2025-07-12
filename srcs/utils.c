@@ -1,30 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/12 14:51:28 by aprigent          #+#    #+#             */
-/*   Updated: 2025/07/12 18:04:33 by aprigent         ###   ########.fr       */
+/*   Created: 2025/07/12 16:47:07 by aprigent          #+#    #+#             */
+/*   Updated: 2025/07/12 17:02:32 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int main(int argc, char **argv, char **envp)
+void	free_array(char **arr)
 {
-	t_cmd	cmd;
-	t_env	env;
+	int i;
 
-	(void)argc; // Unused parameter
-	cmd.cmd = 
-	cmd.args = argv + 1;
-	cmd.type = CMD_EXTERNAL; // Assuming this is an external command
-	env.envp = envp;
-	env.path = get_path(&env, cmd.cmd);
-	exec_cmd(&cmd, &env);
-	free(env.path); // Free the path after execution
-	return (0);
+
+	if (arr == NULL)
+		return ;
+	i = 0;
+	while (arr[i])
+	{
+		free(arr[i]);
+		i++;
+	}
+	free(arr);
 }
-
