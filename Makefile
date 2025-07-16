@@ -4,13 +4,14 @@ CC = cc
 
 CFLAGS = -Wall -Werror -Wextra -I$(LIBFT_DIR)/includes -I./includes -MMD -MP
 
+
 LIBFT_DIR = ./libft
 LIBFT = $(LIBFT_DIR)/libft.a
 
 SRCS_DIR = ./srcs/
 OBJS_DIR = ./.objs/
 
-SRCS = $(addprefix $(SRCS_DIR), main.c exec.c path.c utils.c)
+SRCS = $(addprefix $(SRCS_DIR), main.c exec.c path.c utils.c env.c loop.c split.c)
 OBJS = $(SRCS:$(SRCS_DIR)%.c=${OBJS_DIR}%.o)
 
 LDFLAGS = -L$(LIBFT_DIR) -lft
@@ -21,11 +22,11 @@ all: $(NAME)
 
 $(NAME): $(OBJS)
 	@make -C $(LIBFT_DIR)
-	$(CC) $(CFLAGS) -o $@ $(OBJS) $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $@ $(OBJS) $(LDFLAGS) -lreadline -lncurses
 
 ${OBJS_DIR}%.o: ${SRCS_DIR}%.c
 	@mkdir -p $(OBJS_DIR)
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@ -lreadline -lncurses
 
 clean:
 	@make -C $(LIBFT_DIR) clean

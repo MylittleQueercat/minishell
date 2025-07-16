@@ -10,6 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "minishell.h"
+
 int	count_words(const char *str)
 {
 	int	count;
@@ -64,7 +66,7 @@ char	**condition(const char *str, char **result, t_split *value)
 	return (result);
 }
 
-char	**split_pipex(const char *str)
+char	**split_input(const char *str)
 {
 	char	**result;
 	t_split	value;

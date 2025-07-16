@@ -6,7 +6,7 @@
 /*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 14:51:28 by aprigent          #+#    #+#             */
-/*   Updated: 2025/07/12 18:04:33 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/07/16 20:29:40 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,27 @@
 
 int main(int argc, char **argv, char **envp)
 {
-	t_cmd	cmd;
-	t_env	env;
+	t_env	*env;
 
-	(void)argc; // Unused parameter
-	cmd.cmd = 
-	cmd.args = argv + 1;
-	cmd.type = CMD_EXTERNAL; // Assuming this is an external command
-	env.envp = envp;
-	env.path = get_path(&env, cmd.cmd);
-	exec_cmd(&cmd, &env);
-	free(env.path); // Free the path after execution
+	(void)argv;
+	if (argc != 1)
+	{
+		ft_putstr_fd("Usage: ./minishell\n", 2);
+		return (1);
+	}
+	if (!envp || !*envp)
+	{
+		ft_putstr_fd("Error: No environment variables provided.\n", 2);
+		return (1);
+	}
+	env = init_env(envp);
+	if (!env->envp)
+	{
+		ft_putstr_fd("Error: Failed to initialize environment.\n", 2);
+		return (1);
+	}
+	loop(env);
+	free_env(env);
 	return (0);
 }
 
