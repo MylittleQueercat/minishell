@@ -60,13 +60,26 @@ typedef struct s_split
 t_env	*init_env(char **envp);
 void	free_env(t_env *env);
 
-int		exec_cmd(t_cmd *cmd, t_env *env);
+int		exec_builtin(t_cmd *cmd, t_env *env);
+int		exec_external(t_cmd *cmd, t_env *env);
+int		exec_pipe(t_cmd *cmd, t_env *env);
 char	*get_cmd_path(char *path, char *cmd);
 
 void	free_array(char **arr);
+int		is_builtin_cmd(const char *cmd);
+char	*build_prompt(const char *pwd);
 char	**split_input(const char *str);
 
 void	loop(t_env *env);
+
+int		is_builtin(const char *cmd);
+int		exec_builtin(t_cmd *cmd, t_env *env);
+
+int		ft_env(t_cmd *cmd, t_env *env);
+int		ft_echo(t_cmd *cmd);
+int		ft_pwd(t_cmd *cmd);
+int		ft_cd(t_cmd *cmd, t_env *env);
+int		ft_export(t_cmd *cmd, t_env *env);
 #endif /* MINISHELL_H */
 
 

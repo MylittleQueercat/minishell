@@ -10,9 +10,11 @@ LIBFT = $(LIBFT_DIR)/libft.a
 
 SRCS_DIR = ./srcs/
 OBJS_DIR = ./.objs/
+BUILTIN_DIR = ./srcs/builtins/
 
-SRCS = $(addprefix $(SRCS_DIR), main.c exec.c path.c utils.c env.c loop.c split.c)
-OBJS = $(SRCS:$(SRCS_DIR)%.c=${OBJS_DIR}%.o)
+SRCS = main.c exec.c path.c utils.c init_env.c loop.c split.c
+BUILTIN_SRCS = echo.c env.c pwd.c cd.c export.c
+OBJS = $(SRCS:%.c=${OBJS_DIR}%.o) $(BUILTIN_SRCS:%.c=${OBJS_DIR}%.o)
 
 LDFLAGS = -L$(LIBFT_DIR) -lft
 
@@ -24,7 +26,11 @@ $(NAME): $(OBJS)
 	@make -C $(LIBFT_DIR)
 	$(CC) $(CFLAGS) -o $@ $(OBJS) $(LDFLAGS) -lreadline -lncurses
 
-${OBJS_DIR}%.o: ${SRCS_DIR}%.c
+${OBJS_DIR}%.o: $(SRCS_DIR)%.c
+	@mkdir -p $(OBJS_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@ -lreadline -lncurses
+
+${OBJS_DIR}%.o: $(BUILTIN_DIR)%.c
 	@mkdir -p $(OBJS_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@ -lreadline -lncurses
 

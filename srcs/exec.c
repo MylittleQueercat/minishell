@@ -6,7 +6,7 @@
 /*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 15:26:30 by aprigent          #+#    #+#             */
-/*   Updated: 2025/07/16 20:23:10 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/07/17 15:48:49 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,22 @@
 /* * exec.c
  * This file contains the functions responsible for executing commands in the shell.
  * It handles external commands, and pipelines. (pipelines not very clean yet)
- * Does not handle built-in commands yet, but will be implemented in the future.
+ * Does not handle all built-in commands yet, but will be implemented in the future.
  */
 
 int	exec_builtin(t_cmd *cmd, t_env *env)
 {
-	// Placeholder for executing a builtin command
-	// This function should handle built-in commands like cd, echo, etc.
-	// For now, we just return a success code.
-	(void)cmd;
-	(void)env;
+	if (ft_strncmp(cmd->cmd, "echo", 4) == 0)
+		return (ft_echo(cmd));
+	else if (ft_strncmp(cmd->cmd, "env", 3) == 0)
+		return (ft_env(cmd, env));
+	else if (ft_strncmp(cmd->cmd, "pwd", 3) == 0)
+		return (ft_pwd(cmd));
+	else if (ft_strncmp(cmd->cmd, "cd", 2) == 0)
+		return (ft_cd(cmd, env));
+	else if (ft_strncmp(cmd->cmd, "export", 6) == 0)
+		return (ft_export(cmd, env));
+	printf("Command not found: %s\n", cmd->cmd);
 	return (1);
 }
 
@@ -65,16 +71,4 @@ int	exec_pipe(t_cmd *cmd, t_env *env)
 	(void)cmd;
 	(void)env;
 	return (1);
-}
-
-int	exec_cmd(t_cmd *cmd, t_env *env)
-{
-	if (cmd->type == CMD_BUILTIN)
-		return (exec_builtin(cmd, env));
-	else if (cmd->type == CMD_EXTERNAL)
-		return (exec_external(cmd, env));
-	else if (cmd->type == CMD_PIPE)
-		return (exec_pipe(cmd, env));
-	else
-		return (0);
 }

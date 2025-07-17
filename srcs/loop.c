@@ -6,7 +6,7 @@
 /*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 19:58:32 by aprigent          #+#    #+#             */
-/*   Updated: 2025/07/16 20:29:25 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/07/17 14:11:33 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,19 @@
 
 void	loop(t_env *env)
 {
+	char	*prompt;
 	char	*input;
 	t_cmd	cmd;
 
 	while (1)
 	{
-		input = readline("minishell> ");
+		prompt = build_prompt(env->pwd);
+		if (!prompt)
+		{
+			ft_putstr_fd("Error: Failed to create prompt.\n", 2);
+			break ;
+		}
+		input = readline(prompt);
 		if (!input)
 		{ // If readline returns NULL, it means EOF (Ctrl+D)
 			printf("\n");
@@ -40,9 +47,12 @@ void	loop(t_env *env)
 		char **args = split_input(input);
 		cmd.cmd = *args;
 		cmd.args = args;
-		cmd.type = CMD_EXTERNAL; // For now, we assume it's an external command
-		exec_cmd(&cmd, env);
+		if (is_builtin_cmd(cmd.cmd))
+			exec_builtin(&cmd, env);
+		else
+			exec_external(&cmd, env);
 		free_array(args);
 		free(input);
+		free(prompt);
 	}
 }
