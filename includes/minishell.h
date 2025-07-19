@@ -75,11 +75,14 @@ void	loop(t_env *env);
 int		is_builtin(const char *cmd);
 int		exec_builtin(t_cmd *cmd, t_env *env);
 
+void	print_export(t_env *env);
+
 int		ft_env(t_cmd *cmd, t_env *env);
 int		ft_echo(t_cmd *cmd);
 int		ft_pwd(t_cmd *cmd);
 int		ft_cd(t_cmd *cmd, t_env *env);
 int		ft_export(t_cmd *cmd, t_env *env);
+int		ft_unset(t_cmd *cmd, t_env *env);
 #endif /* MINISHELL_H */
 
 

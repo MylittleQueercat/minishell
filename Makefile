@@ -13,7 +13,7 @@ OBJS_DIR = ./.objs/
 BUILTIN_DIR = ./srcs/builtins/
 
 SRCS = main.c exec.c path.c utils.c init_env.c loop.c split.c
-BUILTIN_SRCS = echo.c env.c pwd.c cd.c export.c
+BUILTIN_SRCS = echo.c env.c pwd.c cd.c export.c unset.c export_utils.c
 OBJS = $(SRCS:%.c=${OBJS_DIR}%.o) $(BUILTIN_SRCS:%.c=${OBJS_DIR}%.o)
 
 LDFLAGS = -L$(LIBFT_DIR) -lft

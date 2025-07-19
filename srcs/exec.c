@@ -6,7 +6,7 @@
 /*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 15:26:30 by aprigent          #+#    #+#             */
-/*   Updated: 2025/07/17 15:48:49 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/07/18 12:07:00 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ int	exec_builtin(t_cmd *cmd, t_env *env)
 		return (ft_cd(cmd, env));
 	else if (ft_strncmp(cmd->cmd, "export", 6) == 0)
 		return (ft_export(cmd, env));
+	else if (ft_strncmp(cmd->cmd, "unset", 5) == 0)
+		return (ft_unset(cmd, env));
 	printf("Command not found: %s\n", cmd->cmd);
 	return (1);
 }
