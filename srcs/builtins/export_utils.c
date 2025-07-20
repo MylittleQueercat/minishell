@@ -38,6 +38,29 @@ void	sort_env(char **envp)
 	}
 }
 
+
+void	print_exp(char **env_cpy, int i)
+{
+	char	*equal_sign;
+	char	*var_name;
+	char	*var_value;
+
+	while (env_cpy[++i])
+	{
+		equal_sign = ft_strchr(env_cpy[i], '=');
+		var_name = ft_substr(env_cpy[i], 0, equal_sign - env_cpy[i]);
+		var_value = ft_strdup(equal_sign + 1);
+		if (!var_value || !var_name)
+		{
+			free(var_name);
+			free(var_value);
+			ft_putstr_fd("Error: Failed to allocate memory for environment variable.\n", 2);
+			return ;
+		}
+		printf("declare -x %s=\"%s\"\n", var_name, var_value);
+	}
+}
+
 void	print_export(t_env *env)
 {
 	char	**env_cpy;
@@ -51,14 +74,7 @@ void	print_export(t_env *env)
 	while (--i >= 0)
 		env_cpy[i] = ft_strdup(env->envp[i]);
 	sort_env(env_cpy);
-	i = -1;
-	while (env_cpy[++i])
-	{
-		if (ft_strchr(env_cpy[i], '='))
-			printf("declare -x %s\n", env_cpy[i]);
-		else
-			printf("declare -x %s=\"\"\n", env_cpy[i]);
-	}
+	print_exp(env_cpy, -1);
 	while (i >= 0)
 		free(env_cpy[i--]);
 	free(env_cpy);

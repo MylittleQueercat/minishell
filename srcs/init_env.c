@@ -23,7 +23,7 @@ void	get_env(t_env *env, char **envp)
 	i = 0;
 	while (envp[i])
 		i++;
-	env->envp = malloc(sizeof(char *) * (i + 1));
+	env->envp = (char **)malloc(sizeof(char *) * (i + 1));
 	if (!env->envp)
 	{
 		perror("Failed to allocate memory for environment variables");

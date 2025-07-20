@@ -44,7 +44,8 @@ typedef struct s_cmd
 
 typedef struct s_env
 {
-	char			**envp;		 // Environment variables
+	char			**envp;		// Original environment variables
+	char			**export;	 // Exported environment variables
 	char			*path;		 // PATH environment variable
 	char			*pwd;       // Current working directory
 }	t_env;
