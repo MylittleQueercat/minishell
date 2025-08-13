@@ -6,7 +6,7 @@
 /*   By: hguo <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 16:41:08 by hguo              #+#    #+#             */
-/*   Updated: 2025/08/12 19:08:00 by hguo             ###   ########.fr       */
+/*   Updated: 2025/08/13 17:20:22 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,5 +49,19 @@ typedef struct s_node
 	struct s_node	*left;
 	struct s_node	*right;
 }	t_node;
+
+typedef enum e_parse_err_type
+{
+	E_MEMORY = 1,
+	E_SYNTAX,
+}	t_parse_err_type;
+// We set memory error as 1, for 0 represent 'no error'.
+
+typedef struct s_parse_err
+{
+	t_parse_err_type	type;
+	char				*str;
+}	t_parse_err;
+
 
 #endif

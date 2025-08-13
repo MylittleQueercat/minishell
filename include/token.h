@@ -6,7 +6,7 @@
 /*   By: hguo <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 16:01:16 by hguo              #+#    #+#             */
-/*   Updated: 2025/08/12 18:37:09 by hguo             ###   ########.fr       */
+/*   Updated: 2025/08/13 16:37:58 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,10 @@ void	clear_token_list(t_token **list);
 
 // token_util.c
 void	skip_space(char **line);
+int		is_sep(char *str);
+void	skip_space(char **str);
+int		skip_quote(char *str, size_t *i);
+void	print_quote_err(char c);
 
 // token.c
 t_token	*tokenizer(void);

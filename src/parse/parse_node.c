@@ -1,31 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   parse_node.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hguo <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/12 16:36:54 by hguo              #+#    #+#             */
-/*   Updated: 2025/08/13 17:24:33 by hguo             ###   ########.fr       */
+/*   Created: 2025/08/13 18:39:54 by hguo              #+#    #+#             */
+/*   Updated: 2025/08/13 18:43:30 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef	MINISHELL_H
-# define MINISHELL_H
+#include "minishell.h"
 
-# include "token.h"
-# include "libft.h"
-# include "parse.h"
-
-typedef struct s_minishell
+t_node_type	get_node_type(t_token_type type)
 {
-	char		*line;
-	t_token		*tokens;
-	t_token		*current;
-	t_node		*tree;
-	t_parse_err	parse_err;
-}	t_minishell;
+	if (type == T_AND)
+		return (N_AND);
+	if (type == T_OR)
+		return (N_OR);
+	return (N_PIPE);
+}
 
-extern t_minishell	g_minishell;
+t_node	*create_new_node(t_node_type type)
+{
+	t_node	*new_node;
 
-#endif
+	new_node = (t_node *)ft_calloc(1, sizeof(t_node));
+	if (!new_node)
+		return (NULL);
+	new_node->type = type;
+	return (new_node);
+}

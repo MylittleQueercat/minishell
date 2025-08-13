@@ -1,31 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   parse_err.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hguo <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/12 16:36:54 by hguo              #+#    #+#             */
-/*   Updated: 2025/08/13 17:24:33 by hguo             ###   ########.fr       */
+/*   Created: 2025/08/13 18:06:55 by hguo              #+#    #+#             */
+/*   Updated: 2025/08/13 18:07:52 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef	MINISHELL_H
-# define MINISHELL_H
+#include "minishell.h"
 
-# include "token.h"
-# include "libft.h"
-# include "parse.h"
-
-typedef struct s_minishell
+void	set_parse_err(t_parse_err_type type)
 {
-	char		*line;
-	t_token		*tokens;
-	t_token		*current;
-	t_node		*tree;
-	t_parse_err	parse_err;
-}	t_minishell;
-
-extern t_minishell	g_minishell;
-
-#endif
+	g_minishell.parse_err.type = type;
+}
