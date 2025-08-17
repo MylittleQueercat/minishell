@@ -6,7 +6,7 @@
 /*   By: hguo <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 18:42:05 by hguo              #+#    #+#             */
-/*   Updated: 2025/08/13 18:39:37 by hguo             ###   ########.fr       */
+/*   Updated: 2025/08/17 13:20:23 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,17 +25,17 @@ t_node	*parse_cmd_unit(void)
 		return (set_parse_err(E_SYNTAX), NULL);
 	else if (g_minishell.current->type == T_PAREN_OP)
 	{
-		get_next_token();
+		move_to_next_token();
 		node = parse_cmd(0);
 		if (!node)
 			return (set_parse_err(E_MEMORY), NULL);
 		if (!g_minishell.curent || g_minishell.current->type != T_PAREN_CL)
 			return (set_parse_err(E_STNTAX), node);
-		get_next_token();
+		move_to_next_token();
 		return (node);
 	}
 	else
-		return (...
+		return (read_simple_cmd());
 }
 
 /* 

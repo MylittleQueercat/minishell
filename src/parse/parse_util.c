@@ -6,13 +6,13 @@
 /*   By: hguo <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/13 18:06:09 by hguo              #+#    #+#             */
-/*   Updated: 2025/08/13 18:34:26 by hguo             ###   ########.fr       */
+/*   Updated: 2025/08/17 13:21:01 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	get_next_token(void)
+void	move_to_next_token(void)
 {
 	g_minishell.current = g_minishell.current->next;
 }
