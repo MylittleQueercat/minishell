@@ -6,7 +6,7 @@
 /*   By: hguo <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 18:42:05 by hguo              #+#    #+#             */
-/*   Updated: 2025/08/17 13:20:23 by hguo             ###   ########.fr       */
+/*   Updated: 2025/08/21 16:05:56 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,13 +62,28 @@ t_node	*parse_cmd(int min_prio)
 	t_node			*left;
 	t_node			*right;
 	int				next_prio;
-	t_token_type	operator;
+	t_token_type	op;
 
 	if (g_minishell.parse_err.type || !g_minishell.current)
 		return (NULL);
 	left = parse_cmd_unit();
 	if (!left)
 		return (NULL);
+	while (is_bi_operator() && curr_priority() >= min_prio)
+	{
+		op = g_minishell.current->type;
+		move_to_next_token();
+		if (!g_minishell.current)
+			return (set_parse_err(E_SYNTAX), left);
+		next_prio = get_priority(op) + 1;
+		right = parse_cmd(next_priority);
+		if (!right)
+			return (left);
+		left = combine_cmd(op, left, right);
+		if (!left)
+			return (clear_ast(&left), clear_ast(&right), NULL);
+	}
+	return (left); 
 }
 
 t_node	*parse(void)
