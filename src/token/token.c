@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hguo <marvin@42.fr>                        +#+  +:+       +#+        */
+/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 16:25:12 by hguo              #+#    #+#             */
-/*   Updated: 2025/08/12 16:51:45 by hguo             ###   ########.fr       */
+/*   Updated: 2025/08/26 19:04:54 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,14 @@
 
 // Convert a line of user input → into a token linked list -> return
 
-t_token	*tokenizer(void)
+t_token	*tokenizer(t_minishell *sh)
 {
-	char	*line;
 	t_token	*token_list;
 
-	line = g_minishell.line;
-	token_list = token_handler(line);
-	free(line);
-	g_minishell.line = NULL;
+	if (!sh->line)
+		return (NULL);
+	token_list = token_handler(sh);
+	free(sh->line);
+	sh->line = NULL;
 	return (token_list);
 }

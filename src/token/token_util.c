@@ -3,19 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   token_util.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hguo <marvin@42.fr>                        +#+  +:+       +#+        */
+/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 18:20:00 by hguo              #+#    #+#             */
-/*   Updated: 2025/08/13 16:35:22 by hguo             ###   ########.fr       */
+/*   Updated: 2025/08/26 20:25:39 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell"
+#include "minishell.h"
 
-void	skip_space(char **line)
+int	is_quote(char c)
 {
-	while (**line && ft_isspace(**line))
-		(*line)++;
+	if (c == '\'' || c == '"')
+		return (1);
+	return (0);
 }
 
 int	is_sep(char *str)
@@ -26,21 +27,28 @@ int	is_sep(char *str)
 	return (0);
 }
 
+int	ft_isspace(char c)
+{
+	if (c == ' ')
+		return (1);
+	return (0);
+}
+
 void	skip_space(char **str)
 {
 	while (**str && isspace(**str))
 		(*str)++;
 }
 
-int	skip_quote(char *str, size_t *i)
+int	skip_quote(char *line, size_t *i)
 {
 	char	quote;
 
-	quote = str[*i];
+	quote = line[*i];
 	if (ft_strchr(line + *i + 1, quote))
 	{
 		(*i)++;
-		while (str[*i] != quote)
+		while (line[*i] != quote)
 			(*i)++;
 		(*i)++;
 		return (1);
@@ -48,12 +56,12 @@ int	skip_quote(char *str, size_t *i)
 	return (0);
 }
 
-void	print_quote_err(char c)
+void	print_quote_err(t_minishell *sh, char c)
 {
-	ft_putstr_fd("minishell: unexpected EOF while looking for matching '");
+	ft_putstr_fd("minishell: unexpected EOF while looking for matching '", 2);
 	ft_putchar_fd(c, 2);
 	ft_putstr_fd("'\n", 2);
 	ft_putstr_fd("minishell: syntax error: unexpected end of file\n", 2);
-	g_minishell.exit_s = 258;
+	sh->exit_s = 258;
 }
 // when it fail in syntax, the return code is 258

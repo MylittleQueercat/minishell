@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hguo <marvin@42.fr>                        +#+  +:+       +#+        */
+/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 18:42:05 by hguo              #+#    #+#             */
-/*   Updated: 2025/08/21 16:05:56 by hguo             ###   ########.fr       */
+/*   Updated: 2025/08/26 21:12:19 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,84 +15,93 @@
 /* In this file, we convert the token string into a command syntax tree. */
 
 /* Parse the smallest units (use recursion) */
-t_node	*parse_cmd_unit(void)
+t_node	*parse_cmd_unit(t_minishell *sh, t_token **it)
 {
 	t_node	*node;
 
-	if (g_minishell.parse_err.type)
+	if (sh->parse_err.type)
 		return (NULL);
-	if (is_bi_operator() || g_minishell.current->type == T_PAREN_CL)
-		return (set_parse_err(E_SYNTAX), NULL);
-	else if (g_minishell.current->type == T_PAREN_OP)
+	if (is_bi_operator(*it) || (*it && (*it)->type == T_PAREN_CL))
+		return (set_parse_err(sh, E_SYNTAX), NULL);
+	else if (*it && (*it)->type == T_PAREN_OP)
 	{
-		move_to_next_token();
-		node = parse_cmd(0);
+		*it = (*it)->next;
+		node = parse_cmd(sh, it, 0);
 		if (!node)
-			return (set_parse_err(E_MEMORY), NULL);
-		if (!g_minishell.curent || g_minishell.current->type != T_PAREN_CL)
-			return (set_parse_err(E_STNTAX), node);
-		move_to_next_token();
+			return (set_parse_err(sh, E_MEMORY), NULL);
+		if (!*it || (*it)->type != T_PAREN_CL)
+			return (set_parse_err(sh, E_SYNTAX), node);
+		*it = (*it)->next;
 		return (node);
 	}
 	else
-		return (read_simple_cmd());
+		return (read_simple_cmd(sh, it));
 }
 
 /* 
    Link the left and right subtrees, so the executor can run the commands in 
    logical order.
 */
-t_node	*combine_cmd(t_token_type operator, t_node *left, t_node *right)
+t_node	*comb_cmd(t_minishell *sh, t_token_type op, t_node *lf, t_node *rg)
 {
 	t_node	*node;
 
-	if (g_minishell.parse_err.type)
+	if (sh->parse_err.type)
 		return (NULL);
-	node = create_new_node(get_node_type(operator));
+	node = create_new_node(get_node_type(op));
 	if (!node)
-		return (set_parse_err(E_MEMORY), NULL);
-	node->left = left;
-	node->right = right;
+	{
+		set_parse_err(sh, E_MEMORY);
+		return (NULL);
+	}
+	node->left = lf;
+	node->right = rg;
 	return (node);
 }
 
 /* Combine units into larger structures according to operator priority */
-t_node	*parse_cmd(int min_prio)
+t_node	*parse_cmd(t_minishell *sh, t_token **it, int min_prio)
 {
 	t_node			*left;
 	t_node			*right;
 	int				next_prio;
 	t_token_type	op;
 
-	if (g_minishell.parse_err.type || !g_minishell.current)
+	if (sh->parse_err.type || !*it)
 		return (NULL);
-	left = parse_cmd_unit();
+	left = parse_cmd_unit(sh, it);
 	if (!left)
 		return (NULL);
-	while (is_bi_operator() && curr_priority() >= min_prio)
+	while (*it, is_bi_operator(*it) && curr_priority(*it) >= min_prio)
 	{
-		op = g_minishell.current->type;
-		move_to_next_token();
-		if (!g_minishell.current)
+		op = (*it)->type;
+		*it = (*it)->next;
+		if (!*it)
 			return (set_parse_err(E_SYNTAX), left);
 		next_prio = get_priority(op) + 1;
-		right = parse_cmd(next_priority);
+		right = parse_cmd(sh, it, next_prio);
 		if (!right)
 			return (left);
-		left = combine_cmd(op, left, right);
+		left = comb_cmd(sh, op, left, right);
 		if (!left)
 			return (clear_ast(&left), clear_ast(&right), NULL);
 	}
 	return (left); 
 }
 
-t_node	*parse(void)
+t_node	*parse(t_minishell *sh)
 {
 	t_node	*cmd_tree;
+	t_token	*it;
 
-	g_minishell.current = g_minishell.tokens;
-	cmd_tree = parse_cmd(0);
-	if (g_minishell.current)
+	it = sh->tokens;
+	if (!it)
+		return (NULL);
+	sh->current = sh->tokens;
+	sh->parse_err.type = 0;
+	sh->parse_err.msg = NULL;
+	cmd_tree = parse_cmd(sh, &it, 0);
+	if (it && !sh->parse_err.type)
 		return (set_parse_err(E_SYNTAX), cmd_tree);
 	return (cmd_tree);
 }

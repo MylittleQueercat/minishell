@@ -3,17 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   token.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hguo <marvin@42.fr>                        +#+  +:+       +#+        */
+/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 16:01:16 by hguo              #+#    #+#             */
-/*   Updated: 2025/08/13 16:37:58 by hguo             ###   ########.fr       */
+/*   Updated: 2025/08/26 20:24:32 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef TOKEN_H
 # define TOKEN_H
 
+# include <stddef.h>
+
 # define PROMPT "minishell👾 "
+
+typedef struct s_minishell t_minishell;
 
 typedef enum e_token_type
 {
@@ -40,11 +44,11 @@ typedef struct s_token
 
 // token_add_to_end.c
 int		add_sep_to_end(t_token_type type, char **line, t_token **token_list);
-int		add_word_to_end(char **line, t_token **token_list);
+int	add_word_to_end(t_minishell *sh, char **line, t_token **token_list);
 
 // token_handler.c
 int		handler_sep(char **line, t_token **token_list);
-t_token *token_handler(char *line);
+t_token *token_handler(t_minishell *sh);
 
 // token_list.c
 t_token	*create_new_token(char *value, t_token_type type);
@@ -52,13 +56,14 @@ void	token_list_add_back(t_token **list, t_token *new_token);
 void	clear_token_list(t_token **list);
 
 // token_util.c
-void	skip_space(char **line);
+int		is_quote(char c);
 int		is_sep(char *str);
+int		ft_isspace(char c);
 void	skip_space(char **str);
-int		skip_quote(char *str, size_t *i);
-void	print_quote_err(char c);
+int		skip_quote(char *line, size_t *i);
+void	print_quote_err(t_minishell *sh, char c);
 
 // token.c
-t_token	*tokenizer(void);
+t_token	*tokenizer(t_minishell *sh);
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_add_to_end.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hguo <marvin@42.fr>                        +#+  +:+       +#+        */
+/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 17:34:02 by hguo              #+#    #+#             */
-/*   Updated: 2025/08/13 16:04:58 by hguo             ###   ########.fr       */
+/*   Updated: 2025/08/26 20:25:27 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	add_sep_to_end(t_token_type type, char **line, t_token **token_list)
 	return (1);	
 }
 
-int	add_word_to_end(char **line, t_token **token_list)
+int	add_word_to_end(t_minishell *sh, char **line, t_token **token_list)
 {
 	char	*curr_place;
 	char	*value;
@@ -47,7 +47,7 @@ int	add_word_to_end(char **line, t_token **token_list)
 		if (is_quote(curr_place[i]))
 		{
 			if (!skip_quote(curr_place, &i))
-				return (print_quote_err(curr_place[i]), 0);
+				return (print_quote_err(sh, curr_place[i]), 0);
 		}
 		else
 			i++;
@@ -58,6 +58,6 @@ int	add_word_to_end(char **line, t_token **token_list)
 	token = create_new_token(value, T_WORD);
 	if (!token)
 		return (free(value), 0);
-	*line += 1;
+	*line += i;
 	return (token_list_add_back(token_list, token), 1);
-}	
+}

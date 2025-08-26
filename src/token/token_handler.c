@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_handler.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hguo <marvin@42.fr>                        +#+  +:+       +#+        */
+/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 16:36:07 by hguo              #+#    #+#             */
-/*   Updated: 2025/08/12 17:33:30 by hguo             ###   ########.fr       */
+/*   Updated: 2025/08/26 19:38:41 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,25 +43,28 @@ int	handler_sep(char **line, t_token **token_list)
 		return (add_sep_to_end(T_PIPE, line, token_list) && 1);
 }
 
-t_token	*token_handler(char *line)
+t_token	*token_handler(t_minishell *sh)
 {
 	int		invalid;
 	t_token	*token_list;
+	char	*p;
 
 	invalid = 0;
-	token_list = NULL；
-	while (*line)
+	token_list = NULL;
+	p = sh->line;
+	while (*p)
 	{
 		if (invalid)
-			return (token_list_clear(&token_list), NULL);
-		if (ft_isspace(*line))
-			ft_skip_space(&line);
-		else if (!ft_strncmp(line, "<", 1) || !ft_strncmp(line, ">", 1)
-			|| !ft_strncmp(line, "|", 1) || !ft_strncmp(line, "&&", 2)
-			|| !ft_strncmp(line, "(", 1) || !ft_strncmp(line, ")", 1))
-			invalid = (!handler_sep(&line, &token_list) && 1);
+			return (clear_token_list(&token_list), NULL);
+		if (ft_isspace(*p))
+			skip_space(&p);
+		else if (!ft_strncmp(p, "&&", 2) || !ft_strncmp(p, ">", 1)
+			|| !ft_strncmp(p, "|", 1) || !ft_strncmp(p, "<", 1)
+			|| !ft_strncmp(p, "(", 1) || !ft_strncmp(p, ")", 1))
+			invalid = (!handler_sep(&p, &token_list) && 1);
 		else
-			invalid = (add_word_to_end(&line, &token_list) && 1);
+			invalid = (!add_word_to_end(sh, &p, &token_list) && 1);
 	}
 	return (token_list);
 }
+

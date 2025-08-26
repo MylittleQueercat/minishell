@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_list.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hguo <marvin@42.fr>                        +#+  +:+       +#+        */
+/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 17:59:28 by hguo              #+#    #+#             */
-/*   Updated: 2025/08/12 18:19:37 by hguo             ###   ########.fr       */
+/*   Updated: 2025/08/26 19:34:13 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	token_list_add_back(t_token **list, t_token *new_token)
 		*list = new_token;
 		return ;
 	}
-	current = list;
+	current = *list;
 	while (current && current->next)
 		current = current->next;
 	current->next = new_token;
