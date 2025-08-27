@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hguo <marvin@42.fr>                        +#+  +:+       +#+        */
+/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 16:00:57 by hguo              #+#    #+#             */
-/*   Updated: 2025/08/21 20:21:20 by hguo             ###   ########.fr       */
+/*   Updated: 2025/08/27 21:00:29 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ char	*ft_strjoin_free(char *s1, char *s2)
 	return (free(s1), free(s2), joined);
 }
 
-static char	*cmd_pre_expand(char *str)
+static char	*cmd_pre_expand(t_minishell *sh, char *str)
 {
 	char	*arr;
 	size_t	i;
@@ -52,9 +52,9 @@ static char	*cmd_pre_expand(char *str)
 		if (str[i] == '\'')
 			arr = ft_strjoin_free(arr, handle_squotes(str, &i));
 		else if (str[i] == '"')
-			arr = ft_strjoin_free(arr, handle_dquotes(str, &i));
+			arr = ft_strjoin_free(arr, handle_dquotes(sh, str, &i));
 		else if (str[i] == '$')
-			arr = ft_strjoin_free(arr, handle_dollar(str, &i));
+			arr = ft_strjoin_free(arr, handle_dollar(sh, str, &i));
 		else
 			arr = ft_strjoin_free(arr, handle_normal(str, &i));
 	}
@@ -71,13 +71,13 @@ static char	*cmd_pre_expand(char *str)
 		executor are only the string we actually wants
 */
 
-char	**expander(char *str)
+char	**expander(t_minishell *sh, char *str)
 {
 	char	**expanded;
 	char	**globbed;
 	size_t	i;
 
-	str = cmd_pre_expand(str);
+	str = cmd_pre_expand(sh, str);
 	if (!str)
 		return (NULL);
 	str = clean_empty(str);

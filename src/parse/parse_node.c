@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_node.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hguo <marvin@42.fr>                        +#+  +:+       +#+        */
+/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/13 18:39:54 by hguo              #+#    #+#             */
-/*   Updated: 2025/08/17 14:16:31 by hguo             ###   ########.fr       */
+/*   Updated: 2025/08/27 20:49:16 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ t_io_type	get_io_type(t_token_type type)
 	return (IO_ADD_END);
 }
 
-t_io_node	*create_new_io_node(t_token_type type, char *value)
+t_io_node	*create_new_io_node(t_token_type type, char *raw_value)
 {
 	t_io_node	*new_node;
 
@@ -51,8 +51,8 @@ t_io_node	*create_new_io_node(t_token_type type, char *value)
 	if (!new_node)
 		return (NULL);
 	new_node->type = get_io_type(type);
-	new_node->value = ft_ft_strdup(value);
-	if (!new_node->value)
+	new_node->raw_value = ft_strdup(raw_value);
+	if (!new_node->raw_value)
 		return (free(new_node), NULL);
 	return (new_node);
 }

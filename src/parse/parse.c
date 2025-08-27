@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 18:42:05 by hguo              #+#    #+#             */
-/*   Updated: 2025/08/26 21:12:19 by hguo             ###   ########.fr       */
+/*   Updated: 2025/08/27 18:38:41 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ t_node	*parse_cmd_unit(t_minishell *sh, t_token **it)
 
 	if (sh->parse_err.type)
 		return (NULL);
-	if (is_bi_operator(*it) || (*it && (*it)->type == T_PAREN_CL))
+	if (*it && (is_bi_operator(*it) || (*it && (*it)->type == T_PAREN_CL)))
 		return (set_parse_err(sh, E_SYNTAX), NULL);
 	else if (*it && (*it)->type == T_PAREN_OP)
 	{
@@ -72,12 +72,12 @@ t_node	*parse_cmd(t_minishell *sh, t_token **it, int min_prio)
 	left = parse_cmd_unit(sh, it);
 	if (!left)
 		return (NULL);
-	while (*it, is_bi_operator(*it) && curr_priority(*it) >= min_prio)
+	while (*it && is_bi_operator(*it) && curr_priority(*it) >= min_prio)
 	{
 		op = (*it)->type;
 		*it = (*it)->next;
 		if (!*it)
-			return (set_parse_err(E_SYNTAX), left);
+			return (set_parse_err(sh, E_SYNTAX), left);
 		next_prio = get_priority(op) + 1;
 		right = parse_cmd(sh, it, next_prio);
 		if (!right)
@@ -97,11 +97,10 @@ t_node	*parse(t_minishell *sh)
 	it = sh->tokens;
 	if (!it)
 		return (NULL);
-	sh->current = sh->tokens;
 	sh->parse_err.type = 0;
 	sh->parse_err.msg = NULL;
 	cmd_tree = parse_cmd(sh, &it, 0);
 	if (it && !sh->parse_err.type)
-		return (set_parse_err(E_SYNTAX), cmd_tree);
+		return (set_parse_err(sh, E_SYNTAX), cmd_tree);
 	return (cmd_tree);
 }

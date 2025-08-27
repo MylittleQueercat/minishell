@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   parse_err.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hguo <marvin@42.fr>                        +#+  +:+       +#+        */
+/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/13 18:06:55 by hguo              #+#    #+#             */
-/*   Updated: 2025/08/13 18:07:52 by hguo             ###   ########.fr       */
+/*   Updated: 2025/08/27 20:09:18 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	set_parse_err(t_parse_err_type type)
+void	set_parse_err(t_minishell *sh, t_parse_err_type type)
 {
-	g_minishell.parse_err.type = type;
+	sh->parse_err.type = type;
 }

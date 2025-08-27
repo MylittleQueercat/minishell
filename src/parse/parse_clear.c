@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_clear.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hguo <marvin@42.fr>                        +#+  +:+       +#+        */
+/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 16:06:14 by hguo              #+#    #+#             */
-/*   Updated: 2025/08/21 16:41:11 by hguo             ###   ########.fr       */
+/*   Updated: 2025/08/27 20:17:29 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,12 +29,13 @@ void	clear_io_list(t_io_node **lst)
 	t_io_node	*curr_node;
 	t_io_node	*next;
 
-	curr_node = *lst;
-	if (!curr_node)
+	if (!lst || !*lst)
 		return ;
+	curr_node = *lst;
 	while (curr_node)
 	{
-		free(curr_node->value);
+		next = curr_node->next;
+		free(curr_node->raw_value);
 		free_str_arr2(curr_node->exec_value);
 		next = curr_node->next;
 		free(curr_node);
@@ -48,7 +49,7 @@ void	clear_cmd_node(t_node *node)
 	if (!node)
 		return ;
 	clear_io_list(&(node->io_list));
-	free(node->raw->args);
+	free(node->raw_args);
 	free_str_arr2(node->exec_args);
 }
 
@@ -56,21 +57,17 @@ void	clear_ast_node(t_node *node)
 {
 	if (!node)
 		return ;
+	clear_ast_node(node->left);
+	clear_ast_node(node->right);
 	if (node->type == N_CMD)
 		clear_cmd_node(node);
-	else
-	{
-		if (node->left)
-			clear_ast_node(node->left);
-		if (node->right)
-			clear_ast_node(node->right);
-	}
 	free(node);
 }
 
 void	clear_ast(t_node **ast)
 {
+	if (!ast || !*ast)
+		return ;
 	clear_ast_node(*ast);
 	*ast = NULL;
-	clear_token_list(&g_minishell.token);
 }			

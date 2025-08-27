@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse_simple_cmd.c                                 :+:      :+:    :+:   */
+/*   _cmd.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hguo <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,26 +10,28 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell"
+#include "minishell.h"
 
-int	parse_to_list(t_io_node **io_list)
+int	parse_to_list(t_minishell *sh, t_token **it, t_io_node **io_list)
 {
 	t_token_type	io_type;
 	t_io_node		*tmp_io_node;
 
-	if (g_minishell.parse_err.type)
+	if (sh->parse_err.type)
 		return (0);
-	while (g_minishell.current && is_redir(g_minishell.current->type))
+	while (*it && is_redir((*it)->type))
 	{
-		io_type = g_minishell.current->type;
-		move_to_next_token();
-		if (!g_minishell.current)
-			return (set_parse_arr(E_SYNTAX), 0);
-		if (!g_minishell.cureent->type != T_WORD)
-			return (set_parse_err(E_SYNTAX), 0);
-		tmp_io_node = create_new_io_node(io_type, g_minishell.current->value);
+		io_type = (*it)->type;
+		*it = (*it)->next;
+		if (!*it)
+			return (set_parse_err(sh, E_SYNTAX), 0);
+		if ((*it)->type != T_WORD)
+			return (set_parse_err(sh, E_SYNTAX), 0);
+		tmp_io_node = create_new_io_node(io_type, (*it)->value);
+		if (!tmp_io_node)
+			return (set_parse_err(sh, E_MEMORY), 0);
 		add_io_node_to_end(io_list, tmp_io_node);
-		move_to_next_token();
+		*it = (*it)->next;
 	}
 	return (1);
 }
@@ -63,50 +65,54 @@ char	*ft_strjoin_with(char const *s1, char const *s2, char c)
 	return (result);
 }
 
-int	parse_args(char **args)
+int	parse_args(t_token **it, char **raw_args)
 {
-	char	*tmp;
+	char	*old;
+	char	*joined;
 
-	if (g_minishell.parse_err.type)
-		return (0);
-	if (!*args)
+	if (!*raw_args)
 	{
-		*args = ft_strdup("");
-		return (0);
+		*raw_args = ft_strdup("");
+		if (!*raw_args)
+			return (0);
 	}
-	while (g_minishell.current &&g_minishell.current->type == T_WORD)
+	while (*it && (*it)->type == T_WORD)
 	{
-		tmp = *args;
-		*args = ft_strjoin_with(*args, g_minishell.current->value, ' ');
-		if (!*args)
-			return (free(tmp), 0);
-		free(tmp);
-		move_to_next_token();
+		old = *raw_args;
+		if (old[0] != '\0')
+			joined = ft_strjoin_with(old, (*it)->value, ' ');
+		else
+			joined = ft_strdup((*it)->value);
+		if (!joined)
+			return (0);
+		*raw_args = joined;
+		if (old != NULL)
+			free(old);
+		*it = (*it)->next;
 	}
 	return (1);
 } 
 
-t_node	*parse_simple_cmd(void)
+t_node	*read_simple_cmd(t_minishell *sh, t_token **it)
 {
 	t_node *node;
 
-	if (g_minishell.parse_err.type)
+	if (sh->parse_err.type)
 		return (NULL);
 	node = create_new_node(N_CMD);
 	if (!node)
-		return (set_parse_err(E_MEMORY), NULL);
-	while (g_minishell.current && (g_minishell.current->type == T_WORD
-			|| is_redir(g_minishell.current->type)))
+		return (set_parse_err(sh, E_MEMORY), NULL);
+	while (*it && ((*it)->type == T_WORD || is_redir((*it)->type)))
 	{
-		if (g_minishell.current->type == T_WORD)
+		if ((*it)->type == T_WORD)
 		{
-			if (!parse_args(&(node->args)))
-				return (clear_cmd_node(node), set_parse_err(E_MEMORY), NULL);
+			if (!parse_args(it, &(node->raw_args)))
+				return (clear_cmd_node(node), set_parse_err(sh, E_MEMORY), NULL);
 		}
-		else if (is_redir(g_minishell.current->type))
+		else
 		{
-			if (!parse_to_list(&(node->io_list)))
-				return (free(node->args), free(node), NULL);
+			if (!parse_to_list(sh, it, &node->io_list))
+				return (clear_cmd_node(node), NULL);
 		}
 	}
 	return (node);

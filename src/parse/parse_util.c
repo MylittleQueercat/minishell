@@ -3,30 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   parse_util.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hguo <marvin@42.fr>                        +#+  +:+       +#+        */
+/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/13 18:06:09 by hguo              #+#    #+#             */
-/*   Updated: 2025/08/17 13:21:01 by hguo             ###   ########.fr       */
+/*   Updated: 2025/08/27 20:43:19 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	move_to_next_token(void)
+int	is_bi_operator(t_token *tok)
 {
-	g_minishell.current = g_minishell.current->next;
-}
-
-int	is_bi_operator(void)
-{
-	t_token_type	type;
-
-	if (!g_minishell.current)
+	if (!tok)
 		return (0);
-	type = g_minishell.current->type;
-	if (type == T_PIPE || type == T_AND || type == T_OR)
-		return (1);
-	return (0);
+	return (tok->type == T_PIPE || tok->type == T_AND || tok->type == T_OR);
 }
 
 int	get_priority(t_token_type type)
@@ -36,9 +26,12 @@ int	get_priority(t_token_type type)
 	return (1);
 }
 
-int	curr_priority(void)
+int	curr_priority(t_token *tok)
 {
-	return (get_priority(g_minishell.current->type));
+	if (tok)
+		return (get_priority(tok->type));
+	else
+		return (-1);
 }
 
 int	is_redir(t_token_type type)

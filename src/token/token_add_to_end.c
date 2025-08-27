@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 17:34:02 by hguo              #+#    #+#             */
-/*   Updated: 2025/08/26 20:25:27 by hguo             ###   ########.fr       */
+/*   Updated: 2025/08/27 20:48:25 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int	add_word_to_end(t_minishell *sh, char **line, t_token **token_list)
 	{
 		if (is_quote(curr_place[i]))
 		{
-			if (!skip_quote(curr_place, &i))
+			if (!skip_quote(*line, &i))
 				return (print_quote_err(sh, curr_place[i]), 0);
 		}
 		else
