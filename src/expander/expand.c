@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 16:00:57 by hguo              #+#    #+#             */
-/*   Updated: 2025/08/27 21:00:29 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/02 17:39:01 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,9 @@ char	*ft_strjoin_free(char *s1, char *s2)
 	if (!joined)
 		return (NULL);
 	i = 0;
+	j = 0;
 	while (s1[i])
-		joined[i++] = s1[i++];
+		joined[i++] = s1[j++];
 	j = 0;
 	while (s2[j])
 		joined[i++] = s2[j++];

@@ -3,14 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   expand_heredoc.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hguo <marvin@42.fr>                        +#+  +:+       +#+        */
+/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 14:48:16 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/02 14:48:24 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/02 17:58:58 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.c"
+#include "minishell.h"
+
+static void ft_del(void *ptr)
+{
+	free(ptr);
+	ptr = NULL;
+}
 
 void	*go_trash(void *ptr, bool clean)
 {
@@ -21,9 +27,14 @@ void	*go_trash(void *ptr, bool clean)
 		ft_lstadd_back(&list, ft_lstnew(ptr));
 		return (ptr);
 	}
+	else
+	{
+		ft_lstclear(&list, ft_del);
+		return (NULL);
+	}
 }
 
-static	int	expand_heredoc_printer(t_minishell sh, char *str, size_t i; int fd)
+static	int	expand_heredoc_printer(t_minishell sh, char *str, size_t i, int fd)
 {
 	size_t	start;
 	char	*tmp;
@@ -36,7 +47,7 @@ static	int	expand_heredoc_printer(t_minishell sh, char *str, size_t i; int fd)
 	if (i != start)
 	{
 		tmp = go_trash(ft_substr(str, start, i), false);
-		tmp = get_envlst_val(tmp);
+		tmp = get_env_val(&sh, tmp);
 		if (tmp)
 			ft_putstr_fd(tmp, fd);
 	}

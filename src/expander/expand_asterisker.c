@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_asterisker.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hguo <marvin@42.fr>                        +#+  +:+       +#+        */
+/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 14:47:31 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/02 14:48:11 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/02 17:37:26 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,13 @@
 static	void	handle_mask_quotes(char **mask, char *quotes)
 {
 	if (**mask == '"' || **mask == '\'')
-		*quotes = *(*mask)++;
-	else
 	{
-		if (*quotes == **mask)
+		if (*quotes == 0)
+		{
+			*quotes = **mask;
+			(*mask)++;
+		}
+		else if (*quotes == **mask)
 		{
 			*quotes = 0;
 			(*mask)++;
@@ -39,17 +42,18 @@ static	bool	handle_stars(char **mask, char **last_wildcard,
 }
 
 static	bool	try_match(char **mask, char **last_wildcard, 
-	char **last_match, char *str)
+	char **last_match, char **str)
 {
-	if (**mask == **str)
+	if (**mask == **str && **mask != '\0' && **str != '\0')
 	{
 		(*mask)++;
 		(*str)++;
 		return (true);
 	}
-	else if (*last_wildcard)
+	if (*last_wildcard)
 	{
-		*str = ++(last_match);
+		*last_match = *last_match + 1;
+		*str = *last_match;
 		*mask = *last_wildcard;
 		return (true);
 	}
@@ -75,8 +79,7 @@ bool	check_star(char *mask, char *str)
 		else if (!try_match(&mask, &last_wildcard, &last_match, &str))
 			return (false);
 	}
-	if (*mask == '*')
-		while (*mask == '*')
-			mask++;
-	return (!*mask);
+	while (*mask == '*')
+		mask++;
+	return (*mask == '\0');
 }

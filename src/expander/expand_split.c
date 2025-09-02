@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   expand_split.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hguo <marvin@42.fr>                        +#+  +:+       +#+        */
+/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 19:20:27 by hguo              #+#    #+#             */
-/*   Updated: 2025/08/21 20:02:50 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/02 17:41:38 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	skip_word(char const *str, size_t *i)
+static void	skip_word(char const *s, size_t *i)
 {
 	char	quotes;
 
@@ -69,7 +69,7 @@ static void	fill_word(char const *str, char **res, size_t *i, size_t j)
 			res[j][k++] = quotes;
 			while (str[(*i)] != quotes)
 				res[j][k++] = str[(*i)++];
-			res[j][k++] = str[(*)++];
+			res[j][k++] = str[(*i)++];
 		}
 	}
 }
@@ -94,7 +94,7 @@ static char	**filler(char const *str, char **res)
 	return (res);
 }
 
-char	*expand_split(char const *str)
+char	**expand_split(char const *str)
 {
 	size_t	i;
 	size_t	count;
@@ -116,6 +116,6 @@ char	*expand_split(char const *str)
 	to_free = res;
 	res = allocate_mem(str, res);
 	if (!res || !count)
-		return (free_str_arr2(to_free), NULL);
+		return (free_char_arr2(to_free), NULL);
 	return (filler(str, res));
 }

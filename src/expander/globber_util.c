@@ -3,28 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   globber_util.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hguo <marvin@42.fr>                        +#+  +:+       +#+        */
+/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 16:43:01 by hguo              #+#    #+#             */
-/*   Updated: 2025/08/26 17:01:19 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/02 17:43:23 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-int	is_with_asterisk(char *str)
-{
-	size_t	i;
-
-	i = 0;
-	while (str[i])
-	{
-		if (str[i] == '*')
-			return (1);
-		i++;
-	}
-	return (0);
-}
 
 size_t	get_str_arr_len(char **str_arr)
 {
@@ -47,7 +33,7 @@ size_t	match_count(char *pattern)
 	entry = readdir(dir);
 	while (entry)
 	{
-		if (match_star(pattern, entry->d_name))
+		if (check_star(pattern, entry->d_name))
 			count++;
 		entry = readdir(dir);
 	}
@@ -63,7 +49,7 @@ void	free_char_arr3(char	***to_free)
 		return ;
 	i = 0;
 	while (to_free[i])
-		free_char2(to_free[i++]);
+		free_char_arr2(to_free[i++]);
 	free(to_free);
 }
 

@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 18:29:39 by hguo              #+#    #+#             */
-/*   Updated: 2025/08/27 20:59:50 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/02 17:51:09 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,31 +18,10 @@ char	*handle_squotes(char *str, size_t *i)
 
 	begin = *i;
 	(*i)++;
-	while (begin[*i] != '\'')
+	while (str[*i] != '\'')
 		(*i)++;
 	(*i)++;
 	return (ft_substr(str, begin, *i - begin));
-}
-
-int	is_valid_var_char(char c)
-{
-	if (ft_isdigit(c) || ft_isalpha(c) || c == '_')
-		return (1);
-	return (0);
-}
-
-char	*get_env_val(t_minishell *sh, char *var)
-{
-	t_env	*envlst;
-
-	envlst = sh->envlst;
-	while (envlst)
-	{
-		if (!ft_strcmp(var, envlst->name))
-			return (envlst->value);
-		envlst = envlst->next;
-	}
-	return (NULL);
 }
 
 char	*handle_dollar(t_minishell *sh, char *str, size_t *i)
@@ -68,7 +47,7 @@ char	*handle_dollar(t_minishell *sh, char *str, size_t *i)
 	while (is_valid_var_char(str[*i]))
 		(*i)++;
 	var = ft_substr(str, begin, *i - begin);
-	env_val = get_env_val(var);
+	env_val = get_env_val(sh, var);
 	if (!env_val)
 		return (free(var), ft_strdup(""));
 	return (free(var), ft_strdup(env_val));
@@ -90,7 +69,7 @@ char	*handle_dquotes(t_minishell *sh, char *str, size_t *i)
 
 	arr = ft_strdup("\"");
 	(*i)++;
-	while (str[*i] != '"');
+	while (str[*i] != '"')
 	{
 		if (str[*i] == '$')
 			arr = ft_strjoin_free(arr, handle_dollar(sh, str, i));
@@ -106,7 +85,7 @@ char	*handle_normal(char *str, size_t *i)
 	size_t	begin;
 
 	begin = *i;
-	while (str[*i] && str[*i] != ''\' && str[*i] != '"' && str[*i] != '$')
+	while (str[*i] && str[*i] != '\'' && str[*i] != '"' && str[*i] != '$')
 		(*i)++;
 	return (ft_substr(str, begin, *i - begin));
 }

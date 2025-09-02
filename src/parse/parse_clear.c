@@ -6,13 +6,13 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 16:06:14 by hguo              #+#    #+#             */
-/*   Updated: 2025/08/27 20:17:29 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/02 17:02:56 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	free_str_arr2(char **arr)
+void	free_char_arr2(char **arr)
 {
 	size_t	i;
 
@@ -36,7 +36,7 @@ void	clear_io_list(t_io_node **lst)
 	{
 		next = curr_node->next;
 		free(curr_node->raw_value);
-		free_str_arr2(curr_node->exec_value);
+		free_char_arr2(curr_node->exec_value);
 		next = curr_node->next;
 		free(curr_node);
 		curr_node = next;
@@ -50,7 +50,7 @@ void	clear_cmd_node(t_node *node)
 		return ;
 	clear_io_list(&(node->io_list));
 	free(node->raw_args);
-	free_str_arr2(node->exec_args);
+	free_char_arr2(node->exec_args);
 }
 
 void	clear_ast_node(t_node *node)

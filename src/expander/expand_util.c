@@ -3,14 +3,35 @@
 /*                                                        :::      ::::::::   */
 /*   expand_util.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hguo <marvin@42.fr>                        +#+  +:+       +#+        */
+/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 19:17:02 by hguo              #+#    #+#             */
-/*   Updated: 2025/08/21 19:23:53 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/02 17:04:04 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int	is_valid_var_char(char c)
+{
+	if (ft_isdigit(c) || ft_isalpha(c) || c == '_')
+		return (1);
+	return (0);
+}
+
+char	*get_env_val(t_minishell *sh, char *var)
+{
+	t_env	*envlst;
+
+	envlst = sh->envlst;
+	while (envlst)
+	{
+		if (!ft_strncmp(var, envlst->name, ft_strlen(var) + 1))
+			return (envlst->value);
+		envlst = envlst->next;
+	}
+	return (NULL);
+}
 
 char	*clean_empty(char *str)
 {

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   throw_quotes.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hguo <marvin@42.fr>                        +#+  +:+       +#+        */
+/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 20:05:45 by hguo              #+#    #+#             */
-/*   Updated: 2025/08/26 17:18:18 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/02 17:21:12 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static size_t	strlen_no_quotes(char *str)
 {
 	size_t	i;
 	size_t	len;
-	char	*quotes;
+	char	quotes;
 
 	i = 0;
 	len = 0;

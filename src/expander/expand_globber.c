@@ -3,14 +3,28 @@
 /*                                                        :::      ::::::::   */
 /*   expand_globber.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hguo <marvin@42.fr>                        +#+  +:+       +#+        */
+/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 20:05:24 by hguo              #+#    #+#             */
-/*   Updated: 2025/08/26 16:42:19 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/02 17:31:12 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int	is_with_asterisk(char *str)
+{
+	size_t	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == '*')
+			return (1);
+		i++;
+	}
+	return (0);
+}
 
 int	match_vis(char *pattern, char *str)
 {
@@ -46,7 +60,7 @@ static char	**globber_help(char *str)
 		result = (char **)ft_calloc(count + 1, sizeof(char *));
 		count = 0;
 		while (set_direntry(&entry, dir) && entry)
-			if (match_star(str, entry->d_name) && match_vis(str, entry->d_name))
+			if (check_star(str, entry->d_name) && match_vis(str, entry->d_name))
 				result[count++] = ft_strdup(entry->d_name);
 		closedir(dir);
 	}

@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 16:41:08 by hguo              #+#    #+#             */
-/*   Updated: 2025/08/27 20:46:09 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/02 17:17:55 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ typedef struct s_parse_err
 }	t_parse_err;
 
 // parse_clear.c
-void		free_str_arr2(char **arr);
+void		free_char_arr2(char **arr);
 void		clear_io_list(t_io_node **lst);
 void		clear_cmd_node(t_node *node);
 void		clear_ast_node(t_node *node);
@@ -79,6 +79,7 @@ void		add_io_node_to_end(t_io_node **list, t_io_node *new);
 
 // parse_err.c
 void		set_parse_err(t_minishell *sh, t_parse_err_type type);
+void		handle_parse_err(t_minishell *sh);
 
 // parse_util.c
 int			is_bi_operator(t_token *tok);
