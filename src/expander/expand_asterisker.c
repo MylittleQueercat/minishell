@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   expand_asterisker.c                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hguo <marvin@42.fr>                        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/02 14:47:31 by hguo              #+#    #+#             */
+/*   Updated: 2025/09/02 14:48:11 by hguo             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static	void	handle_mask_quotes(char **mask, char *quotes)
@@ -14,7 +26,8 @@ static	void	handle_mask_quotes(char **mask, char *quotes)
 	}
 }
 
-static	bool	handle_stars(char **mask, char **last_wildcard, char **last_match, char *str)
+static	bool	handle_stars(char **mask, char **last_wildcard, 
+	char **last_match, char *str)
 {
 	while (**mask == '*')
 		(*mask)++;
@@ -25,7 +38,8 @@ static	bool	handle_stars(char **mask, char **last_wildcard, char **last_match, c
 	return (false);
 }
 
-static	bool	try_match(char **mask, char **last_wildcard, char **last_match, char *str)
+static	bool	try_match(char **mask, char **last_wildcard, 
+	char **last_match, char *str)
 {
 	if (**mask == **str)
 	{
@@ -61,8 +75,8 @@ bool	check_star(char *mask, char *str)
 		else if (!try_match(&mask, &last_wildcard, &last_match, &str))
 			return (false);
 	}
-	if (*pattern == '*')
-		while (*pattern == '*')
-			pattern++;
-	return (!*pattern);
+	if (*mask == '*')
+		while (*mask == '*')
+			mask++;
+	return (!*mask);
 }
