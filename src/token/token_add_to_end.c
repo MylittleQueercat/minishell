@@ -6,7 +6,7 @@
 /*   By: leticiabi <leticiabi@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 17:34:02 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/04 17:10:56 by leticiabi        ###   ########.fr       */
+/*   Updated: 2025/09/04 17:46:51 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	add_sep_to_end(t_token_type type, char **line, t_token **token_list)
 	if (type == T_RD_HEREDOC || type == T_RD_ADD_END || type == T_AND
 		|| type == T_OR)
 		(*line)++;
-	return (1);	
+	return (1);
 }
 
 int	is_quote(char c)

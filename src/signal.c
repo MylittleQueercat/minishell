@@ -6,18 +6,17 @@
 /*   By: leticiabi <leticiabi@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 14:52:55 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/04 16:27:20 by leticiabi        ###   ########.fr       */
+/*   Updated: 2025/09/04 17:43:22 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_sigint_state g_sigstate = { false, false };
+t_sigint_state	g_sigstate = {false, false};
 
 static	void	sig_handler(int num)
 {
 	(void)num;
-
 	if (g_sigstate.sigint_child)
 	{
 		ft_putstr_fd("\n", 1);
@@ -41,7 +40,7 @@ void	sig_quit_handler(int num)
 
 void	init_signals(t_minishell *sh)
 {
-	struct	termios	term;
+	struct termios	term;
 
 	term = sh->original_term;
 	term.c_lflag &= ~ECHOCTL;
@@ -51,17 +50,3 @@ void	init_signals(t_minishell *sh)
 	signal(SIGINT, sig_handler);
 	signal(SIGQUIT, SIG_IGN);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

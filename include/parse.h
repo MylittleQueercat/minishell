@@ -6,7 +6,7 @@
 /*   By: leticiabi <leticiabi@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 16:41:08 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/04 16:15:27 by leticiabi        ###   ########.fr       */
+/*   Updated: 2025/09/04 17:38:39 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ typedef enum e_node_type
 }	t_node_type;
 // Everything that 'is not a pipe or a logical operator’ will be N_CMD.
 
-typedef	enum e_io_type
+typedef enum e_io_type
 {
 	IO_IN,
 	IO_OUT,

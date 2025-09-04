@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 20:05:24 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/02 17:31:12 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/04 17:54:16 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	is_with_asterisk(char *str)
 
 int	match_vis(char *pattern, char *str)
 {
-	if ((pattern[0] == '.' && str[0] == '.') 
+	if ((pattern[0] == '.' && str[0] == '.')
 		|| (pattern[0] != '.' && str[0] != '.'))
 		return (1);
 	return (0);

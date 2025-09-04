@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   _cmd.c                                 :+:      :+:    :+:   */
+/*   parse_simple_cmd.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hguo <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/17 13:24:03 by hguo              #+#    #+#             */
-/*   Updated: 2025/08/17 14:09:20 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/04 17:50:23 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,11 +91,11 @@ int	parse_args(t_token **it, char **raw_args)
 		*it = (*it)->next;
 	}
 	return (1);
-} 
+}
 
 t_node	*read_simple_cmd(t_minishell *sh, t_token **it)
 {
-	t_node *node;
+	t_node	*node;
 
 	if (sh->parse_err.type)
 		return (NULL);
@@ -107,7 +107,8 @@ t_node	*read_simple_cmd(t_minishell *sh, t_token **it)
 		if ((*it)->type == T_WORD)
 		{
 			if (!parse_args(it, &(node->raw_args)))
-				return (clear_cmd_node(node), set_parse_err(sh, E_MEMORY), NULL);
+				return (clear_cmd_node(node),
+					set_parse_err(sh, E_MEMORY), NULL);
 		}
 		else
 		{

@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 17:59:28 by hguo              #+#    #+#             */
-/*   Updated: 2025/08/26 19:34:13 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/04 17:47:54 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 t_token	*create_new_token(char *value, t_token_type	type)
 {
-	t_token *new_token;
+	t_token	*new_token;
 
 	new_token = (t_token *)ft_calloc(1, sizeof(t_token));
 	if (!new_token)
@@ -26,7 +26,7 @@ t_token	*create_new_token(char *value, t_token_type	type)
 
 void	token_list_add_back(t_token **list, t_token *new_token)
 {
-	t_token *current;
+	t_token	*current;
 
 	if (!*list)
 	{

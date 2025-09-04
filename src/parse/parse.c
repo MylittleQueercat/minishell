@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 18:42:05 by hguo              #+#    #+#             */
-/*   Updated: 2025/08/27 18:38:41 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/04 17:48:46 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ t_node	*parse_cmd(t_minishell *sh, t_token **it, int min_prio)
 		if (!left)
 			return (clear_ast(&left), clear_ast(&right), NULL);
 	}
-	return (left); 
+	return (left);
 }
 
 t_node	*parse(t_minishell *sh)

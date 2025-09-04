@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 16:00:57 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/02 17:39:01 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/04 17:52:25 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ char	**expander(t_minishell *sh, char *str)
 	if (!globbed)
 		return (NULL);
 	i = 0;
-	while(globbed[i])
+	while (globbed[i])
 	{
 		globbed[i] = throw_quotes(globbed[i]);
 		i++;

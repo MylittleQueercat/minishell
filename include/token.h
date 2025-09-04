@@ -6,7 +6,7 @@
 /*   By: leticiabi <leticiabi@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 16:01:16 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/04 17:24:20 by leticiabi        ###   ########.fr       */
+/*   Updated: 2025/09/04 17:41:01 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 
 # define PROMPT "minishell👾 "
 
-typedef struct s_minishell t_minishell;
+typedef struct s_minishell	t_minishell;
 
 typedef enum e_token_type
 {
@@ -45,11 +45,11 @@ typedef struct s_token
 // token_add_to_end.c
 int		add_sep_to_end(t_token_type type, char **line, t_token **token_list);
 int		is_quote(char c);
-int	add_word_to_end(t_minishell *sh, char **line, t_token **token_list);
+int		add_word_to_end(t_minishell *sh, char **line, t_token **token_list);
 
 // token_handler.c
 int		handler_sep(char **line, t_token **token_list);
-t_token *token_handler(t_minishell *sh);
+t_token	*token_handler(t_minishell *sh);
 
 // token_list.c
 t_token	*create_new_token(char *value, t_token_type type);

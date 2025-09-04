@@ -6,7 +6,7 @@
 /*   By: leticiabi <leticiabi@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 14:48:16 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/04 17:25:28 by leticiabi        ###   ########.fr       */
+/*   Updated: 2025/09/04 17:55:25 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 #include "minishell.h"
 
-static void ft_del(void *ptr)
+static void	ft_del(void *ptr)
 {
 	free(ptr);
 	ptr = NULL;
@@ -64,7 +64,7 @@ void	expand_heredoc(t_minishell sh, char *str, int fd)
 	while (str[i])
 	{
 		if (str[i] == '$')
-			i += expand_heredoc_printer(sh, str, i ,fd);
+			i += expand_heredoc_printer(sh, str, i, fd);
 		else
 			i += (ft_putchar_fd(str[i], fd), 1);
 	}

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   clean.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hguo <marvin@42.fr>                        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/04 17:41:29 by hguo              #+#    #+#             */
+/*   Updated: 2025/09/04 17:41:51 by hguo             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static void	clear_envlst(t_minishell *sh)
@@ -11,8 +23,8 @@ static void	clear_envlst(t_minishell *sh)
 		envlst_tofree = envlst;
 		envlst = envlst->next;
 		free(envlst_tofree->name);
-        free(envlst_tofree->value);
-        free(envlst_tofree);
+		free(envlst_tofree->value);
+		free(envlst_tofree);
 	}
 	sh->envlst = NULL;
 }

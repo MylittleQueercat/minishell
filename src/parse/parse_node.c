@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/13 18:39:54 by hguo              #+#    #+#             */
-/*   Updated: 2025/08/27 20:49:16 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/04 17:49:18 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,4 +71,3 @@ void	add_io_node_to_end(t_io_node **list, t_io_node *new)
 		current = current->next;
 	current->next = new;
 }
-

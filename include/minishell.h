@@ -6,11 +6,11 @@
 /*   By: leticiabi <leticiabi@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 16:36:54 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/04 16:23:08 by leticiabi        ###   ########.fr       */
+/*   Updated: 2025/09/04 17:38:09 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef	MINISHELL_H
+#ifndef MINISHELL_H
 # define MINISHELL_H
 
 # include "token.h"
@@ -28,7 +28,7 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 
-typedef struct	s_env
+typedef struct s_env
 {
 	char			*name;
 	char			*value;
@@ -37,16 +37,16 @@ typedef struct	s_env
 
 typedef struct s_minishell
 {
-	char		*line;
-	t_token		*tokens;
-	t_token		*current;
-	t_node		*tree;
-	t_parse_err	parse_err;
-	t_env		*envlst;
-	int			exit_s;
-	int			fd_stdin;
-	int			fd_stdout;
-	struct termios original_term;
+	char			*line;
+	t_token			*tokens;
+	t_token			*current;
+	t_node			*tree;
+	t_parse_err		parse_err;
+	t_env			*envlst;
+	int				exit_s;
+	int				fd_stdin;
+	int				fd_stdout;
+	struct termios	original_term;
 }	t_minishell;
 
 /* Expander */
@@ -94,6 +94,5 @@ char	**expander(t_minishell *sh, char *str);
 
 /* clean */
 void	clean_message(t_minishell *sh);
-
 
 #endif

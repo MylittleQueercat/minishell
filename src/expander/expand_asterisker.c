@@ -6,7 +6,7 @@
 /*   By: leticiabi <leticiabi@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 14:47:31 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/04 17:25:14 by leticiabi        ###   ########.fr       */
+/*   Updated: 2025/09/04 17:53:15 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static	void	handle_mask_quotes(char **mask, char *quotes)
 	}
 }
 
-static	bool	handle_stars(char **mask, char **last_wildcard, 
+static bool	handle_stars(char **mask, char **last_wildcard,
 	char **last_match, char *str)
 {
 	while (**mask == '*')
@@ -43,7 +43,7 @@ static	bool	handle_stars(char **mask, char **last_wildcard,
 	return (false);
 }
 
-static	bool	try_match(char **mask, char **last_wildcard, 
+static	bool	try_match(char **mask, char **last_wildcard,
 	char **last_match, char **str)
 {
 	if (**mask == **str && **mask != '\0' && **str != '\0')

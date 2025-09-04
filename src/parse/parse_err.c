@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/13 18:06:55 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/02 17:29:42 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/04 17:49:08 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,4 +66,3 @@ void	handle_parse_err(t_minishell *sh)
 	clear_ast(&sh->tree);
 	ft_bzero(&sh->parse_err, sizeof(sh->parse_err));
 }
-
