@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_add_to_end.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: leticiabi <leticiabi@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 17:34:02 by hguo              #+#    #+#             */
-/*   Updated: 2025/08/27 20:48:25 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/04 17:10:56 by leticiabi        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,13 @@ int	add_sep_to_end(t_token_type type, char **line, t_token **token_list)
 		|| type == T_OR)
 		(*line)++;
 	return (1);	
+}
+
+int	is_quote(char c)
+{
+	if (c == '\'' || c == '"')
+		return (1);
+	return (0);
 }
 
 int	add_word_to_end(t_minishell *sh, char **line, t_token **token_list)

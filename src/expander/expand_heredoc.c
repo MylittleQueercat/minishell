@@ -3,12 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   expand_heredoc.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: leticiabi <leticiabi@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 14:48:16 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/02 17:58:58 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/04 17:25:28 by leticiabi        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+// Bonus Part
 
 #include "minishell.h"
 

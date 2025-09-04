@@ -3,21 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   token_util.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: leticiabi <leticiabi@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 18:20:00 by hguo              #+#    #+#             */
-/*   Updated: 2025/08/26 20:25:39 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/04 17:11:04 by leticiabi        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-int	is_quote(char c)
-{
-	if (c == '\'' || c == '"')
-		return (1);
-	return (0);
-}
 
 int	is_sep(char *str)
 {

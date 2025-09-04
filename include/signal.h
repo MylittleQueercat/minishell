@@ -6,15 +6,13 @@
 /*   By: leticiabi <leticiabi@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 15:31:01 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/04 16:24:30 by leticiabi        ###   ########.fr       */
+/*   Updated: 2025/09/04 17:23:29 by leticiabi        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SIGNAL_H
 # define SIGNAL_H
 
-# include <stdbool.h>
-# include <termios.h>
 # include "minishell.h"
 
 typedef struct s_minishell	t_minishell;

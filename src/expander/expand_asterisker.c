@@ -3,14 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   expand_asterisker.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: leticiabi <leticiabi@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 14:47:31 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/02 17:37:26 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/04 17:25:14 by leticiabi        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+// Bonus part : *
 
 static	void	handle_mask_quotes(char **mask, char *quotes)
 {
