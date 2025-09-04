@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leticiabi <leticiabi@student.42.fr>        +#+  +:+       +#+        */
+/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 16:01:16 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/04 17:41:01 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/04 18:20:24 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define TOKEN_H
 
 # include "minishell.h"
+# include <stddef.h>
 
 # define PROMPT "minishell👾 "
 
