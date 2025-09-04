@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hguo <marvin@42.fr>                        +#+  +:+       +#+        */
+/*   By: leticiabi <leticiabi@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 14:52:55 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/02 16:27:10 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/04 16:27:20 by leticiabi        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 t_sigint_state g_sigstate = { false, false };
 
-static	void	sig_handle(int num)
+static	void	sig_handler(int num)
 {
 	(void)num;
 
@@ -39,7 +39,7 @@ void	sig_quit_handler(int num)
 	ft_putstr_fd("Quit: 3\n", 1);
 }
 
-void	init_signals(void)
+void	init_signals(t_minishell *sh)
 {
 	struct	termios	term;
 
@@ -49,7 +49,7 @@ void	init_signals(void)
 	g_sigstate.heredoc_sigint = false;
 	g_sigstate.sigint_child = false;
 	signal(SIGINT, sig_handler);
-	signal(SIGOUT, sig_IGN);
+	signal(SIGQUIT, SIG_IGN);
 }
 
 

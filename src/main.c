@@ -3,13 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: leticiabi <leticiabi@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 19:19:45 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/02 17:33:28 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/04 16:25:13 by leticiabi        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+/*
 // tests/main_expander_test.c
 #include "minishell.h"
 #include <readline/readline.h>
@@ -17,7 +18,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-/* ---------- 打印辅助：展示展开后的结果 ---------- */
 static void print_strv(const char *label, char **v) {
     printf("  %s:", label);
     if (!v) { printf(" (null)\n"); return; }
@@ -49,7 +49,6 @@ static void print_ast_after_expand(const t_node *n, int d) {
     if (n->right) print_ast_after_expand(n->right, d+1);
 }
 
-/* ---------- 一轮：读→词法→语法→展开→打印→清理 ---------- */
 static void one_round(t_minishell *sh) {
     sh->line = readline("expander$ ");
     if (!sh->line) { puts("exit"); clean_message(sh); exit(sh->exit_s); }
@@ -65,28 +64,20 @@ static void one_round(t_minishell *sh) {
         free(sh->line); sh->line=NULL; sh->parse_err.type=0; return;
     }
 
-    /* ====== 关键：调用你的 expander ====== */
-    /* 任选一种（按你项目实际来），把没用的行注释掉即可： */
-    // int ok = ft_expand(sh, sh->tree);                  // 方案 A：整棵树
-    // int ok = expand_tree(sh, sh->tree);                // 方案 B：整棵树（另名）
-    int ok = 1; /* 如果你只有逐节点接口，可在递归里调用 expand_cmd(sh,node) 等 */
-
     if (!ok) {
         fprintf(stderr, "expander: memory error?\n");
         clear_ast(&sh->tree); clear_token_list(&sh->tokens);
         free(sh->line); sh->line=NULL; return;
     }
 
-    /* 展开后打印观察 */
+
     print_ast_after_expand(sh->tree, 0);
 
-    /* 清理一轮 */
     clear_ast(&sh->tree);
     clear_token_list(&sh->tokens);
     free(sh->line); sh->line = NULL;
 }
 
-/* ---------- 入口：初始化最小环境，然后循环 ---------- */
 int main(int ac, char **av, char **envp) {
     (void)ac; (void)av; (void)envp;
     t_minishell sh; ft_bzero(&sh, sizeof(sh));
@@ -95,10 +86,10 @@ int main(int ac, char **av, char **envp) {
     while (1) one_round(&sh);
     return 0;
 }
+*/
 
+#include "minishell.h"
 
-// #include "minishell.h"
-/*
 static void init_minishell(t_minishell *sh, char **env)
 {
 	ft_bzero(sh, sizeof(*sh));
@@ -112,16 +103,16 @@ static void init_minishell(t_minishell *sh, char **env)
 static void go_execution(t_minishell *sh)
 {
 	signal(SIGQUIT, sig_quit_handler);
-	init_tree(sh->ast);
+	init_tree(sh->tree);
 	if (g_sigstate.heredoc_sigint)
 	{
-		clear_ast(&sh->ast);
+		clear_ast(&sh->tree);
 		g_sigstate.heredoc_sigint = false;
 		return ;
 	}
 	tcsetattr(STDIN_FILENO, TCSANOW, &sh->original_term);
 	sh->exit_s = executor(sh);
-	clear_ast(&sh->ast);
+	clear_ast(&sh->tree);
 }
 
 static void run_iteration(t_minishell *sh)
@@ -129,17 +120,17 @@ static void run_iteration(t_minishell *sh)
 	init_signals(sh);
 	sh->line = readline(PROMPT);
 	if (!sh->line)
-		eof_exit(t_minishell *sh);
+		eof_exit(sh);
 	if (sh->line[0])
 		add_history(sh->line);
 	sh->tokens = tokenize(sh);
 	if (!sh->tokens)
 		return (free(sh->line), (void)(sh->line = NULL));
-	sh->ast = parse(sh);
+	sh->tree = parse(sh);
 	if (sh->parse_err.type)
 	{
 		handle_parse_err(sh);
-		clear_ast(&sh->ast);
+		clear_ast(&sh->tree);
 		clear_token_list(&sh->tokens);
 		return (free(sh->line), (void)(sh->line = NULL), 
 		(void)(sh->parse_err.type = 0));
@@ -164,7 +155,7 @@ int	main(int ac, char **av, char **env)
 	clean_message(&sh);
 	return (sh.exit_s);
 }
-*/
+
 /*
 // test of token.c
 int main(void) 

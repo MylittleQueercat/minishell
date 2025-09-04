@@ -6,7 +6,7 @@
 /*   By: leticiabi <leticiabi@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 15:31:01 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/04 16:15:41 by leticiabi        ###   ########.fr       */
+/*   Updated: 2025/09/04 16:24:30 by leticiabi        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 
 typedef struct s_minishell	t_minishell;
 
-typedef struct s_signal_state
+typedef struct s_sigint_state
 {
 	bool	sigint_child;
 	bool	heredoc_sigint;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: leticiabi <leticiabi@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 16:36:54 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/02 17:54:14 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/04 16:23:08 by leticiabi        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "token.h"
 # include "libft.h"
 # include "parse.h"
+# include "signal.h"
 # include <stdio.h>
 # include <stdlib.h>
 # include <stddef.h>
@@ -43,6 +44,8 @@ typedef struct s_minishell
 	t_parse_err	parse_err;
 	t_env		*envlst;
 	int			exit_s;
+	int			fd_stdin;
+	int			fd_stdout;
 	struct termios original_term;
 }	t_minishell;
 
