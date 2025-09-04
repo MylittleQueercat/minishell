@@ -3,15 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   parse.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: leticiabi <leticiabi@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 16:41:08 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/02 17:17:55 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/04 16:15:27 by leticiabi        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PARSE_H
 # define PARSE_H
+
+typedef struct s_minishell	t_minishell;
+typedef struct s_token		t_token;
+typedef enum e_token_type	t_token_type;
 
 typedef enum e_node_type
 {
