@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 16:43:01 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/04 17:51:55 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/05 15:19:43 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,8 @@ char	**join_str_arr(char ***str_arr)
 
 	count = count_str_arr(str_arr);
 	joined = (char **)ft_calloc(count + 1, sizeof(char *));
+	if (!joined)
+		return (NULL);
 	i = 0;
 	count = 0;
 	while (str_arr[i])

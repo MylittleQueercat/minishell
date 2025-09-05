@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 16:00:57 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/04 18:37:35 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/05 15:39:32 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,11 +72,10 @@ static char	*cmd_pre_expand(t_minishell *sh, char *str)
 		executor are only the string we actually wants
 */
 
-char	**expander(t_minishell *sh, char *str)
+static char	**pre_glob(t_minishell *sh, char *str)
 {
 	char	**expanded;
 	char	**globbed;
-	size_t	i;
 
 	str = cmd_pre_expand(sh, str);
 	if (!str)
@@ -89,6 +88,30 @@ char	**expander(t_minishell *sh, char *str)
 	if (!expanded)
 		return (NULL);
 	globbed = expand_globber(expanded);
+	return (globbed);
+}
+
+void	free_globbed(char **v)
+{
+	size_t	i;
+	
+	if (!v)
+		return ;
+	i = 0;
+	while (v[i])
+	{
+		free(v[i]);
+		i++;
+	}
+	free(v);
+}
+
+char	**expander(t_minishell *sh, char *str)
+{
+	char	**globbed;
+	size_t	i;
+
+	globbed = pre_glob(sh, str);
 	if (!globbed)
 		return (NULL);
 	i = 0;
@@ -96,6 +119,8 @@ char	**expander(t_minishell *sh, char *str)
 	{
 		globbed[i] = throw_quotes(globbed[i]);
 		i++;
+		if (!globbed[i])
+		return (free_globbed(globbed), NULL);
 	}
 	return (globbed);
 }

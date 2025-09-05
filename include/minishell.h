@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leticiabi <leticiabi@student.42.fr>        +#+  +:+       +#+        */
+/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 16:36:54 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/04 17:38:09 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/05 15:49:16 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,8 @@
 # include "token.h"
 # include "libft.h"
 # include "parse.h"
-# include "signal.h"
+# include "mini_signal.h"
+# include <signal.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <stddef.h>
@@ -90,6 +91,7 @@ void	expand_heredoc(t_minishell sh, char *str, int fd);
 
 // expand.c
 char	*ft_strjoin_free(char *s1, char *s2);
+void	free_globbed(char **v);
 char	**expander(t_minishell *sh, char *str);
 
 /* clean */

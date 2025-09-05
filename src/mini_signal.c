@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   signal.c                                           :+:      :+:    :+:   */
+/*   mini_signal.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leticiabi <leticiabi@student.42.fr>        +#+  +:+       +#+        */
+/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 14:52:55 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/04 17:43:22 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/05 16:06:59 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 t_sigint_state	g_sigstate = {false, false};
 
-static	void	sig_handler(int num)
+void	sig_handler(int num)
 {
 	(void)num;
 	if (g_sigstate.sigint_child)
@@ -42,6 +42,7 @@ void	init_signals(t_minishell *sh)
 {
 	struct termios	term;
 
+	tcgetattr(STDIN_FILENO, &sh->original_term);
 	term = sh->original_term;
 	term.c_lflag &= ~ECHOCTL;
 	tcsetattr(STDIN_FILENO, TCSANOW, &term);

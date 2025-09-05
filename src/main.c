@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 19:19:45 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/04 18:52:41 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/05 16:03:30 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,10 +89,21 @@ int	main(int ac, char **av, char **env)
 */
 
 
-/*
 #include "minishell.h"
 
-// 简单清理
+/*
+static void	sigint_handler(int signo)
+{
+	(void)signo;
+	rl_replace_line("", 0);
+	rl_on_new_line();
+	write(STDOUT_FILENO, "\n", 1);
+	rl_redisplay();
+}
+	*/
+
+# include <signal.h>
+
 int main(int argc, char **argv, char **envp)
 {
     t_minishell sh;
@@ -100,9 +111,10 @@ int main(int argc, char **argv, char **envp)
     (void)argc;
     (void)argv;
 	(void)envp;
-    ft_bzero(&sh, sizeof(t_minishell));
+	ft_bzero(&sh, sizeof(t_minishell));
+	rl_catch_signals = 0;
+	init_signals(&sh);
 
-    // 初始化环境链表（你需要自己写的函数，比如 init_envlst）
   //  init_envlst(&sh, envp);
 
     while (1)
@@ -129,31 +141,32 @@ int main(int argc, char **argv, char **envp)
             sh.line = NULL;
             continue;
         }
+		free(sh.line);
+			sh.line = NULL;
 
         // expander
-        // 遍历 AST，对 command 节点做 expand
-        // （你需要实现 expand_node/expand_cmd 等函数）
 		sh.line = readline("expander_tests> ");
 		if (!sh.tree)
+		{
+			clear_token_list(&sh.tokens);
+			clear_ast(&sh.tree);
 			break;
+		}
         if (sh.tree)
         {
             expander(&sh, sh.tree->raw_args);
-            // 打印测试结果：例如显示 command 的 exec_args
             if (sh.tree->type == N_CMD && sh.tree->exec_args)
             {
                 for (int i = 0; sh.tree->exec_args[i]; i++)
                     printf("arg[%d] = %s\n", i, sh.tree->exec_args[i]);
             }
         }
-
-        // 清理，准备下一轮
         clear_token_list(&sh.tokens);
         clear_ast(&sh.tree);
         free(sh.line);
         sh.line = NULL;
     }
+	
     clean_message(&sh);
     return 0;
 }
-*/
