@@ -1,26 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   arena_calloc.c                                     :+:      :+:    :+:   */
+/*   token.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/30 16:58:37 by aprigent          #+#    #+#             */
-/*   Updated: 2025/06/30 18:34:14 by aprigent         ###   ########.fr       */
+/*   Created: 2025/08/12 16:25:12 by hguo              #+#    #+#             */
+/*   Updated: 2025/08/26 19:04:54 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "arena.h"
+#include "minishell.h"
 
-void	*arena_calloc(t_arena *arena, size_t count, size_t size)
+// Convert a line of user input → into a token linked list -> return
+
+t_token	*tokenizer(t_minishell *sh)
 {
-	void	*ptr;
+	t_token	*token_list;
 
-	if (count == 0 || size == 0)
+	if (!sh->line)
 		return (NULL);
-	ptr = arena_alloc(arena, count * size);
-	if (!ptr)
-		return (NULL);
-	ft_bzero(ptr, count * size);
-	return (ptr);
+	token_list = token_handler(sh);
+	free(sh->line);
+	sh->line = NULL;
+	return (token_list);
 }
