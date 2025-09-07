@@ -1,39 +1,52 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/12 14:51:28 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/07 01:09:50 by aprigent         ###   ########.fr       */
+/*   Created: 2025/09/07 00:41:21 by aprigent          #+#    #+#             */
+/*   Updated: 2025/09/07 00:41:55 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	main(int argc, char **argv, char **envp)
+void	free_array(char **arr)
 {
-	t_env	*env;
+	int i;
 
-	(void)argv;
-	if (argc != 1)
+
+	if (arr == NULL)
+		return ;
+	i = 0;
+	while (arr[i])
 	{
-		ft_putstr_fd("Usage: ./minishell\n", 2);
-		return (1);
+		free(arr[i]);
+		i++;
 	}
-	if (!envp || !*envp)
-	{
-		ft_putstr_fd("Error: No environment variables provided.\n", 2);
-		return (1);
-	}
-	env = init_env(envp);
+	free(arr);
+}
+
+void	free_env(t_env *env)
+{
+	t_envl	*current;
+	t_envl	*next;
+
 	if (!env)
+		return ;
+	current = env->envl;
+	while (current)
 	{
-		ft_putstr_fd("Error: Failed to initialize environment.\n", 2);
-		return (1);
+		next = current->next;
+		free(current->name);
+		free(current->value);
+		free(current);
+		current = next;
 	}
-	loop(env);
-	free_env(env);
-	return (0);
+	free_array(env->export);
+	free(env->path);
+	free(env->pwd);
+	free(env->oldpwd);
+	free(env);
 }

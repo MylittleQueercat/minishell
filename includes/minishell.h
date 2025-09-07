@@ -6,13 +6,21 @@
 /*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 14:48:19 by aprigent          #+#    #+#             */
-/*   Updated: 2025/07/12 14:51:11 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/07 01:55:17 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# include "token.h"
+# include "parse.h"
+# include "mini_signal.h"
+# include <signal.h>
+# include <stddef.h>
+# include <stdbool.h>
+# include <termios.h>
+# include <dirent.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
@@ -30,6 +38,37 @@
 # define CMD_EXTERNAL 1
 # define CMD_PIPE 2
 
+typedef struct s_envl
+{
+	char			*name;
+	char			*value;
+	struct s_envl	*next;
+}	t_envl;
+
+typedef struct s_env
+{
+	t_envl	*envl;
+	char	**envp;
+	char	**export;
+	char	*path;
+	char	*pwd;
+	char	*oldpwd;
+}	t_env;
+
+typedef struct s_minishell
+{
+	char			*line;
+	t_token			*tokens;
+	t_token			*current;
+	t_node			*tree;
+	t_parse_err		parse_err;
+	t_env			*env;
+	int				exit_s;
+	int				fd_stdin;
+	int				fd_stdout;
+	struct termios	original_term;
+}	t_minishell;
+
 typedef struct s_cmd
 {
 	char			*cmd;       // Command to execute
@@ -42,22 +81,7 @@ typedef struct s_cmd
 	int				type;
 }	t_cmd;
 
-typedef struct s_env
-{
-	char			**envp;		// Original environment variables
-	char			**export;	 // Exported environment variables
-	char			*path;		 // PATH environment variable
-	char			*pwd;       // Current working directory
-}	t_env;
-
-typedef struct s_split
-{
-	int		i;			// Current index in the input string
-	int		j;			// Current index in the result array
-	int		k;			// Start index of the current word
-	int		in_quotes;	// Flag to indicate if we are inside quotes
-}	t_split;
-
+// execution
 t_env	*init_env(char **envp);
 void	free_env(t_env *env);
 
@@ -69,7 +93,10 @@ char	*get_cmd_path(char *path, char *cmd);
 void	free_array(char **arr);
 int		is_builtin_cmd(const char *cmd);
 char	*build_prompt(const char *pwd);
-char	**split_input(const char *str);
+t_envl	*get_last_envl(t_envl *envl);
+char	*strjoin_free_s1(char *s1, char *s2);
+
+void	perror_exit(const char *msg, void (*fn)(t_env *), t_env *arg);
 
 void	loop(t_env *env);
 
@@ -84,6 +111,55 @@ int		ft_pwd(t_cmd *cmd);
 int		ft_cd(t_cmd *cmd, t_env *env);
 int		ft_export(t_cmd *cmd, t_env *env);
 int		ft_unset(t_cmd *cmd, t_env *env);
+
+// parsing
+//
+//
+/* Expander */
+// expand_util.c
+char	*clean_empty(char *str);
+char	*get_env_val(t_minishell *sh, char *var);
+int		is_valid_var_char(char c);
+
+// expand_split.c
+char	**expand_split(char const *str);
+
+// expand_pre_handle.c
+char	*handle_squotes(char *str, size_t *i);
+char	*get_env_val(t_minishell *sh, char *var);
+char	*handle_dollar(t_minishell *sh, char *str, size_t *i);
+char	*handle_dquotes(t_minishell *sh, char *str, size_t *i);
+char	*handle_normal(char *str, size_t *i);
+
+// globber_util.c
+int		is_with_asterisk(char *str);
+size_t	get_str_arr_len(char **str_arr);
+size_t	match_count(char *pattern);
+void	free_char_arr3(char	***to_free);
+char	**join_str_arr(char ***str_arr);
+
+// expand_globber.c
+int		is_with_asterisk(char *str);
+int		match_vis(char *pattern, char *str);
+int		set_direntry(struct dirent **entry, DIR *dir);
+char	**expand_globber(char **expanded);
+
+// throw_quotes.c
+char	*throw_quotes(char *str);
+
+// expand_aterisker.c
+bool	check_star(char *mask, char *str);
+
+// expand_heredoc.c
+void	*go_trash(void *ptr, bool clean);
+void	expand_heredoc(t_minishell sh, char *str, int fd);
+
+// expand.c
+char	*ft_strjoin_free(char *s1, char *s2);
+void	free_globbed(char **v);
+char	**expander(t_minishell *sh, char *str);
+
+/* clean */
+void	clean_message(t_minishell *sh);
+
 #endif /* MINISHELL_H */
-
-

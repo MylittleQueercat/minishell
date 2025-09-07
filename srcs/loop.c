@@ -6,7 +6,7 @@
 /*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 19:58:32 by aprigent          #+#    #+#             */
-/*   Updated: 2025/07/17 14:11:33 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/07 01:55:53 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ void	loop(t_env *env)
 {
 	char	*prompt;
 	char	*input;
-	t_cmd	cmd;
 
 	while (1)
 	{
@@ -42,16 +41,6 @@ void	loop(t_env *env)
 			free(input);
 			continue ;
 		}
-		// For now, i just split the input and execute it directly
-		// In the future, this will be replaced by a proper command parsing
-		char **args = split_input(input);
-		cmd.cmd = *args;
-		cmd.args = args;
-		if (is_builtin_cmd(cmd.cmd))
-			exec_builtin(&cmd, env);
-		else
-			exec_external(&cmd, env);
-		free_array(args);
 		free(input);
 		free(prompt);
 	}
