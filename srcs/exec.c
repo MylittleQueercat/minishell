@@ -6,7 +6,7 @@
 /*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 15:26:30 by aprigent          #+#    #+#             */
-/*   Updated: 2025/07/18 12:07:00 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/02 19:09:53 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,7 @@
 
 /* * exec.c
  * This file contains the functions responsible for executing commands in the shell.
- * It handles external commands, and pipelines. (pipelines not very clean yet)
- * Does not handle all built-in commands yet, but will be implemented in the future.
+ * It handles external commands, and pipelines.
  */
 
 int	exec_builtin(t_cmd *cmd, t_env *env)
@@ -32,6 +31,8 @@ int	exec_builtin(t_cmd *cmd, t_env *env)
 		return (ft_export(cmd, env));
 	else if (ft_strncmp(cmd->cmd, "unset", 5) == 0)
 		return (ft_unset(cmd, env));
+	else if (ft_strncmp(cmd->cmd, "exit", 4) == 0)
+		return (ft_exit(cmd, env));
 	printf("Command not found: %s\n", cmd->cmd);
 	return (1);
 }
@@ -49,7 +50,7 @@ int	exec_external(t_cmd *cmd, t_env *env)
 	}
 	if (pid == 0)
 	{
-		cmd->path = get_cmd_path(env->path, cmd->cmd);
+		cmd->path = get_cmd_path(env->path, cmd);
 		if (!cmd->path)
 		{
 			printf("Command not found: %s\n", cmd->cmd);
@@ -60,17 +61,29 @@ int	exec_external(t_cmd *cmd, t_env *env)
 		exit(EXIT_FAILURE);
 	}
 	waitpid(pid, &status, 0);
-	if (WIFEXITED(status))
-		return WEXITSTATUS(status);
+	if (pid > 0)
+		return (status >> 8); // Return the exit status of the child process
 	return (1);
 }
 
 int	exec_pipe(t_cmd *cmd, t_env *env)
 {
-	// Placeholder for executing a pipeline of commands
-	// This function should handle multiple commands connected by pipes.
-	// For now, we just return a success code.
-	(void)cmd;
-	(void)env;
+	int		pid;
+
+	pid = fork();
+	if (pid < 0)
+	{
+		perror("fork");
+		return (0);
+	}
+	if (pid == 0)
+	{
+		cmd->path = get_cmd_path(env->path, cmd);
+		if (!cmd->path)
+		{
+			printf("Command not found: %s\n", cmd->cmd);
+			exit(EXIT_FAILURE);
+		}
+	}
 	return (1);
 }

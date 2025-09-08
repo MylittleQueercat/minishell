@@ -78,27 +78,15 @@ t_env *init_env(char **envp)
 	t_env	*env;
 
 	env = malloc(sizeof(t_env));
+	ft_bzero(env, sizeof(t_env));
 	if (!env)
-	{
-		perror("Failed to allocate memory for environment structure");
-		exit(EXIT_FAILURE);
-	}
+		exit_perror(env, "Failed to allocate memory for environment");
 	get_env(env, envp);
 	if (!env->envp)
-	{
-		free(env);
-		perror("Failed to initialize environment");
-		exit(EXIT_FAILURE);
-	}
-	env->path = NULL;
-	env->pwd = NULL;
+		exit_perror(env, "Failed to initialize environment variables");
 	set_env(env);
-	if (!env->path || !env->pwd)
-	{
-		free_env(env);
-		perror("Failed to set environment variables");
-		exit(EXIT_FAILURE);
-	}
+	if (!env->path || !env->pwd || !env->oldpwd)
+		exit_perror(env, "Failed to set essential environment variables");
 	return (env);
 }
 
@@ -122,5 +110,7 @@ void	free_env(t_env *env)
 		free(env->path);
 	if (env->pwd)
 		free(env->pwd);
+	if (env->oldpwd)
+		free(env->oldpwd);
 	free(env);
 }

@@ -54,7 +54,7 @@ void	print_exp(char **env_cpy, int i)
 		{
 			free(var_name);
 			free(var_value);
-			ft_putstr_fd("Error: Failed to allocate memory for environment variable.\n", 2);
+			ft_putstr_fd("Error: Failed to allocate memory for env var.\n", 2);
 			return ;
 		}
 		printf("declare -x %s=\"%s\"\n", var_name, var_value);
