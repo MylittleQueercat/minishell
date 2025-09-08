@@ -6,7 +6,7 @@
 /*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 13:02:48 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/07 02:06:21 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/07 19:00:34 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	get_env(t_env *env, char **envp, int i)
 		new->name = (char *)malloc(sizeof(char) * (equal_pos + 1));
 		if (!new->name)
 			perror_exit("Allocation error for env name", free_env, env);
-		ft_strlcpy(new->name, envp[i], equal_pos);
+		ft_strlcpy(new->name, envp[i], equal_pos + 1);
 		new->value = ft_strdup(envp[i] + equal_pos + 1);
 		if (!new->value)
 			perror_exit("Allocation error for env value", free_env, env);

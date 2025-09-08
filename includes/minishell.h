@@ -58,6 +58,7 @@ typedef struct s_env
 typedef struct s_minishell
 {
 	char			*line;
+	char			*prompt;
 	t_token			*tokens;
 	t_token			*current;
 	t_node			*tree;
@@ -76,29 +77,38 @@ typedef struct s_cmd
 	char			*path;      // Path to the command
 	char			*input_file; // Input redirection file
 	char			*output_file; // Output redirection file
-	int				input_fd;   // File descriptor for input redirection
-	int				output_fd;  // File descriptor for output redirection
+	int				*pipes;     // Pipe file descriptors
 	int				type;
 }	t_cmd;
 
 // execution
+
+void	init_minishell(t_minishell *sh, char **envp);
+
 t_env	*init_env(char **envp);
+
+void	free_minishell(t_minishell *sh);
 void	free_env(t_env *env);
+void	free_array(char **arr);
+void	free_pipes(int **pipes, int n);
+
+void	run_exec(t_minishell *sh);
+void	run_iteration(t_minishell *sh);
 
 int		exec_builtin(t_cmd *cmd, t_env *env);
-int		exec_external(t_cmd *cmd, t_env *env);
-int		exec_pipe(t_cmd *cmd, t_env *env);
+int		exec_cmd(t_cmd *cmd, t_env *env);
+int		exec_pipe(t_node *tree, t_env *env);
+void	execute_pipeline(t_minishell *sh, t_node *node);
+
 char	*get_cmd_path(char *path, char *cmd);
 
-void	free_array(char **arr);
-int		is_builtin_cmd(const char *cmd);
-char	*build_prompt(const char *pwd);
+void	build_prompt(t_minishell *sh);
 t_envl	*get_last_envl(t_envl *envl);
 char	*strjoin_free_s1(char *s1, char *s2);
 
 void	perror_exit(const char *msg, void (*fn)(t_env *), t_env *arg);
 
-void	loop(t_env *env);
+void	loop(t_minishell *sh);
 
 int		is_builtin(const char *cmd);
 int		exec_builtin(t_cmd *cmd, t_env *env);
@@ -111,6 +121,8 @@ int		ft_pwd(t_cmd *cmd);
 int		ft_cd(t_cmd *cmd, t_env *env);
 int		ft_export(t_cmd *cmd, t_env *env);
 int		ft_unset(t_cmd *cmd, t_env *env);
+
+void	print_ast(t_node *node);
 
 // parsing
 //
@@ -157,7 +169,7 @@ void	expand_heredoc(t_minishell sh, char *str, int fd);
 // expand.c
 char	*ft_strjoin_free(char *s1, char *s2);
 void	free_globbed(char **v);
-char	**expander(t_minishell *sh, char *str);
+void	expander(t_minishell *sh);
 
 /* clean */
 void	clean_message(t_minishell *sh);

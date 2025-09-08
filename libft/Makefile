@@ -42,7 +42,7 @@ DEPS = $(OBJS:.o=.d)
 
 CC = cc
 
-CFLAGS = -Wall -Werror -Wextra -I./includes -MMD -MP
+CFLAGS = -Wall -Werror -Wextra -I./includes -MMD -MP -g3
 
 all: $(NAME)
 

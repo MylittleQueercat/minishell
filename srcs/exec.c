@@ -6,7 +6,7 @@
 /*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 15:26:30 by aprigent          #+#    #+#             */
-/*   Updated: 2025/07/18 12:07:00 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/08 00:47:14 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ int	exec_builtin(t_cmd *cmd, t_env *env)
 	return (1);
 }
 
-int	exec_external(t_cmd *cmd, t_env *env)
+int	exec_cmd(t_cmd *cmd, t_env *env)
 {
 	int	status;
 	int	pid;
@@ -49,6 +49,12 @@ int	exec_external(t_cmd *cmd, t_env *env)
 	}
 	if (pid == 0)
 	{
+		printf("Executing command: %s\n", cmd->cmd);
+		/*if (cmd->pipes)
+		{
+			dup2(cmd->pipes[0], STDIN_FILENO);
+			dup2(cmd->pipes[1], STDOUT_FILENO);
+		}*/
 		cmd->path = get_cmd_path(env->path, cmd->cmd);
 		if (!cmd->path)
 		{
@@ -60,17 +66,61 @@ int	exec_external(t_cmd *cmd, t_env *env)
 		exit(EXIT_FAILURE);
 	}
 	waitpid(pid, &status, 0);
-	if (WIFEXITED(status))
-		return WEXITSTATUS(status);
+	if (status == 256)
+		return (127);
+	else if (WIFEXITED(status))
+		return (WEXITSTATUS(status));
+	else
+		return (1);
 	return (1);
 }
 
-int	exec_pipe(t_cmd *cmd, t_env *env)
+int	exec_pipe_cmd(t_node *tree, t_env *env)
 {
-	// Placeholder for executing a pipeline of commands
-	// This function should handle multiple commands connected by pipes.
-	// For now, we just return a success code.
-	(void)cmd;
 	(void)env;
-	return (1);
+	(void)tree;
+	return (0);
+}
+
+void	print_ast(t_node *node)
+{
+	if (!node)
+		return ;
+	printf("Node Type: %d\n", node->type);
+	if (node->exec_args)
+	{
+		printf("Exec Args: ");
+		for (int i = 0; node->exec_args[i]; i++)
+			printf("%s ", node->exec_args[i]);
+		printf("\n");
+	}
+	print_ast(node->left);
+	print_ast(node->right);
+}
+
+void	run_exec(t_minishell *sh)
+{
+	print_ast(sh->tree);
+	sh->tree->cmd = malloc(sizeof(t_cmd));
+	ft_bzero(sh->tree->cmd, sizeof(t_cmd));
+	if (!sh->tree->cmd)
+		return (printf("Error allocating memory for command\n"), (void)0);
+	if (sh->tree->type == N_PIPE)
+		execute_pipeline(sh, sh->tree);
+	else if (sh->tree->type == N_CMD && sh->tree->exec_args)
+	{
+		sh->tree->cmd->cmd = sh->tree->exec_args[0];
+		sh->tree->cmd->args = sh->tree->exec_args;
+		if (is_builtin(sh->tree->cmd->cmd))
+			sh->exit_s = exec_builtin(sh->tree->cmd, sh->env);
+		else
+			sh->exit_s = exec_cmd(sh->tree->cmd, sh->env);
+	}
+	else
+	{
+		if (sh->tree->type == N_CMD)
+			printf("No command to execute.\n");
+		else
+			printf("Unsupported node type for execution.\n");
+	}
 }

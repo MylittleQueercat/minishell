@@ -38,8 +38,8 @@ t_node	*parse_cmd_unit(t_minishell *sh, t_token **it)
 		return (read_simple_cmd(sh, it));
 }
 
-/* 
-   Link the left and right subtrees, so the executor can run the commands in 
+/*
+   Link the left and right subtrees, so the executor can run the commands in
    logical order.
 */
 t_node	*comb_cmd(t_minishell *sh, t_token_type op, t_node *lf, t_node *rg)

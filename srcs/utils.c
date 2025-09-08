@@ -6,13 +6,13 @@
 /*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 16:47:07 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/07 02:05:05 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/07 18:57:17 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	is_builtin_cmd(const char *cmd)
+int	is_builtin(const char *cmd)
 {
 	if (ft_strncmp(cmd, "echo", 4) == 0 || ft_strncmp(cmd, "env", 3) == 0 ||
 		ft_strncmp(cmd, "pwd", 3) == 0 || ft_strncmp(cmd, "exit", 4) == 0 ||
@@ -22,17 +22,18 @@ int	is_builtin_cmd(const char *cmd)
 	return (0);
 }
 
-char	*build_prompt(const char *pwd)
+void	build_prompt(t_minishell *sh)
 {
-	char	*prompt_str;
+	char	*new_prompt;
 
-	if (!pwd)
-		pwd = "~";
-	prompt_str = ft_strjoin("\033[1;32mminishell:\033[0m ", pwd);
-	if (!prompt_str)
-		return (NULL);
-	prompt_str = ft_strjoin(prompt_str, " $ ");
-	return (prompt_str);
+	if (!sh->env->pwd)
+		sh->env->pwd = ft_strdup("~");
+	new_prompt = ft_strjoin("\033[1;32mminishell:\033[0m ", sh->env->pwd);
+	if (!new_prompt)
+		return ;
+	free(sh->prompt);
+	sh->prompt = ft_strjoin(new_prompt, " $ ");
+	free(new_prompt);
 }
 
 t_envl	*get_last_envl(t_envl *envl)

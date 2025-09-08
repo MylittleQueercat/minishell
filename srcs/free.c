@@ -6,7 +6,7 @@
 /*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/07 00:41:21 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/07 00:41:55 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/08 00:39:58 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,9 +44,37 @@ void	free_env(t_env *env)
 		free(current);
 		current = next;
 	}
+	free_array(env->envp);
 	free_array(env->export);
 	free(env->path);
 	free(env->pwd);
 	free(env->oldpwd);
 	free(env);
+}
+
+void	free_minishell(t_minishell *sh)
+{
+	if (!sh)
+		return ;
+	free_env(sh->env);
+	if (sh->fd_stdin != -1)
+		close(sh->fd_stdin);
+	if (sh->fd_stdout != -1)
+		close(sh->fd_stdout);
+	tcsetattr(STDIN_FILENO, TCSANOW, &sh->original_term);
+	free(sh->prompt);
+	rl_clear_history();
+	free(sh);
+}
+
+void	free_pipes(int **pipes, int n)
+{
+	int	i;
+
+	if (!pipes)
+		return ;
+	i = 0;
+	while (i < n - 1)
+		free(pipes[i++]);
+	free(pipes);
 }

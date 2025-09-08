@@ -16,6 +16,7 @@
 typedef struct s_minishell	t_minishell;
 typedef struct s_token		t_token;
 typedef enum e_token_type	t_token_type;
+typedef struct s_cmd		t_cmd;
 
 typedef enum e_node_type
 {
@@ -52,6 +53,7 @@ typedef struct s_node
 	char			**exec_args;
 	struct s_node	*left;
 	struct s_node	*right;
+	t_cmd			*cmd;
 }	t_node;
 
 typedef enum e_parse_err_type

@@ -49,6 +49,8 @@ static char	**allocate_mem(char const *str, char **res)
 				return (NULL);
 			j++;
 		}
+		while (str[i] && str[i] == ' ')
+			i++;
 	}
 	return (res);
 }

@@ -1,32 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strjoin.c                                       :+:      :+:    :+:   */
+/*   init_minishell.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/26 17:54:02 by aprigent          #+#    #+#             */
-/*   Updated: 2025/04/27 12:42:50 by aprigent         ###   ########.fr       */
+/*   Created: 2025/09/07 18:09:12 by aprigent          #+#    #+#             */
+/*   Updated: 2025/09/07 18:40:07 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-char	*ft_strjoin(const char *s1, const char *s2)
+void	init_minishell(t_minishell *sh, char **env)
 {
-	char	*str;
-	size_t	len1;
-	size_t	len2;
-
-	len1 = ft_strlen(s1);
-	len2 = ft_strlen(s2);
-	str = malloc(len1 + len2 + 1);
-	if (!str)
-		return (NULL);
-	str[len1 + len2] = '\0';
-	while (len2--)
-		str[len1 + len2] = s2[len2];
-	while (len1--)
-		str[len1] = s1[len1];
-	return (str);
+	ft_bzero(sh, sizeof(*sh));
+	sh->env = init_env(env);
+	sh->fd_stdin = dup(STDIN_FILENO);
+	sh->fd_stdout = dup (STDOUT_FILENO);
+	tcgetattr(STDIN_FILENO, &sh->original_term);
 }

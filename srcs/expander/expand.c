@@ -77,6 +77,8 @@ static char	**pre_glob(t_minishell *sh, char *str)
 	char	**expanded;
 	char	**globbed;
 
+	if (!str)
+		return (NULL);
 	str = cmd_pre_expand(sh, str);
 	if (!str)
 		return (NULL);
@@ -106,6 +108,74 @@ void	free_globbed(char **v)
 	free(v);
 }
 
+void	expander(t_minishell *sh)
+{
+	size_t	i;
+
+	if (!sh->tree)
+		return ;
+	if (sh->tree->type == N_PIPE)
+	{
+		t_node	*curr;
+
+		curr = sh->tree;
+		curr->exec_args = N_PIPE;
+		while (curr)
+		{
+			if (curr->raw_args)
+			{
+				curr->exec_args = pre_glob(sh, curr->raw_args);
+				if (!curr->exec_args)
+				{
+					sh->exit_s = 1;
+					return ;
+				}
+				i = 0;
+				while (curr->exec_args[i])
+				{
+					curr->exec_args[i] = throw_quotes(curr->exec_args[i]);
+					if (!curr->exec_args[i])
+					{
+						free_globbed(curr->exec_args);
+						curr->exec_args = NULL;
+						sh->exit_s = 1;
+						return ;
+					}
+					i++;
+				}
+			}
+			curr = curr->right;
+		}
+	}
+	else if (sh->tree->type == N_CMD)
+	{
+		if (sh->tree->raw_args)
+		{
+			sh->tree->exec_args = pre_glob(sh, sh->tree->raw_args);
+			if (!sh->tree->exec_args)
+			{
+				sh->exit_s = 1;
+				return ;
+			}
+			i = 0;
+			while (sh->tree->exec_args[i])
+			{
+				sh->tree->exec_args[i] = throw_quotes(sh->tree->exec_args[i]);
+				if (!sh->tree->exec_args[i])
+				{
+					free_globbed(sh->tree->exec_args);
+					sh->tree->exec_args = NULL;
+					sh->exit_s = 1;
+					return ;
+				}
+				i++;
+			}
+		}
+	}
+	return ;
+}
+
+/*
 char	**expander(t_minishell *sh, char *str)
 {
 	char	**globbed;
@@ -124,3 +194,4 @@ char	**expander(t_minishell *sh, char *str)
 	}
 	return (globbed);
 }
+*/

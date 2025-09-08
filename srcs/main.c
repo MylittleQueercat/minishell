@@ -6,7 +6,7 @@
 /*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 14:51:28 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/07 01:09:50 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/07 20:57:52 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,26 +14,23 @@
 
 int	main(int argc, char **argv, char **envp)
 {
-	t_env	*env;
+	t_minishell	*sh;
 
-	(void)argv;
 	if (argc != 1)
+		return (printf("Usage : %s\n", argv[0]), 1);
+	sh = malloc(sizeof(t_minishell));
+	if (!sh)
+		return (printf("Error allocating memory for minishell\n"), 1);
+	init_minishell(sh, envp);
+	while (1)
 	{
-		ft_putstr_fd("Usage: ./minishell\n", 2);
-		return (1);
+		run_iteration(sh);
+		if (sh->tree)
+			run_exec(sh);
+		free(sh->line);
+		sh->line = NULL;
+		clear_ast(&sh->tree);
+		clear_token_list(&sh->tokens);
 	}
-	if (!envp || !*envp)
-	{
-		ft_putstr_fd("Error: No environment variables provided.\n", 2);
-		return (1);
-	}
-	env = init_env(envp);
-	if (!env)
-	{
-		ft_putstr_fd("Error: Failed to initialize environment.\n", 2);
-		return (1);
-	}
-	loop(env);
-	free_env(env);
-	return (0);
+	return (free_minishell(sh), sh->exit_s);
 }
