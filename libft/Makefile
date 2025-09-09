@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: aprigent <marvin42.fr>                     +#+  +:+       +#+         #
+#    By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/02/06 17:05:35 by aprigent          #+#    #+#              #
-#    Updated: 2025/09/07 00:57:03 by aprigent         ###   ########.fr        #
+#    Updated: 2025/09/09 18:59:42 by hguo             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -44,14 +44,36 @@ CC = cc
 
 CFLAGS = -Wall -Werror -Wextra -I./includes -MMD -MP -g3
 
+#  Colors & Emojis
+RESET := \033[0m
+BOLD  := \033[1m
+DIM   := \033[2m
+RED := \033[31m
+GRN := \033[32m
+BLU := \033[34m
+CYN := \033[36m
+OK    := $(GRN)✔$(RESET)
+FAIL  := $(RED)✘$(RESET)
+
+Q := @
+
+COLS := $(shell tput cols 2>/dev/null || echo 60)
+define HR
+	$(Q)printf "$(DIM)%0.s─$(RESET)" `seq 1 $(COLS)`; printf "\n"
+endef
+
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	ar rcs $(NAME) $(OBJS)
+	$(Q)printf "$(BLU)AR$(RESET)   $@  $(DIM)(%d objs)$(RESET)\n" $(words $(OBJS))
+	$(Q)ar rcs $(NAME) $(OBJS) && \
+		printf "$(OK) $(BOLD)$@ built successfully$(RESET)\n" || \
+		(printf "$(FAIL) archive failed\n"; exit 1)
 
 ${OBJS_DIR}%.o: ${SRCS_DIR}%.c
-	@mkdir -p $(OBJS_DIR)
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(Q)mkdir -p $(OBJS_DIR)
+	$(Q)printf "$(CYN)CC$(RESET)   %-40s → $(DIM)%s$(RESET)\n" "$<" "$@"
+	$(Q)$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
 	@rm -rf $(OBJS_DIR)

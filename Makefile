@@ -42,42 +42,112 @@ LDFLAGS = -L$(LIBFT_DIR) -lft
 
 DEPS = $(OBJS:.o=.d)
 
+#  Colors & Emojis
+RESET := \033[0m
+BOLD  := \033[1m
+DIM   := \033[2m
+
+BLK := \033[30m
+RED := \033[31m
+GRN := \033[32m
+YEL := \033[33m
+BLU := \033[34m
+MAG := \033[35m
+CYN := \033[36m
+WHT := \033[37m
+
+OK      := $(GRN)✔$(RESET)
+FAIL    := $(RED)✘$(RESET)
+GEAR    := 🛠️
+BROOM   := 🧹
+BOMB    := 💣
+RECYCLE := ♻️
+SHELL_E := 🐚
+
+define SHOW_BANNER
+	@printf "\033[34m                                                                                                    \033[0m\n"
+	@printf "\033[36m                                                                                                    \033[0m\n"
+	@printf "\033[1;34m   __    __      _____      __      _    _____    _____   __    __    _____   _____       _____      \033[0m\n"
+	@printf "\033[1;36m   \\ \\  / /     (_   _)    /  \\    / )  (_   _)  / ____\\ (  \\  /  )  / ___/  (_   _)     (_   _)     \033[0m\n"
+	@printf "\033[1;35m   () \\/ ()       | |     / /\\ \\  / /     | |   ( (___    \\ (__) /  ( (__      | |         | |       \033[0m\n"
+	@printf "\033[1;32m   / _  _ \\       | |     ) ) ) ) ) )     | |    \\___ \\    ) __ (    ) __)     | |         | |       \033[0m\n"
+	@printf "\033[1;33m  / / \\/ \\ \\      | |    ( ( ( ( ( (      | |        ) )  ( (  ) )  ( (        | |   __    | |   __  \033[0m\n"
+	@printf "\033[1;31m /_/      \\_\\    _| |__  / /  \\ \\/ /     _| |__  ___/ /    ) )( (    \\ \\___  __| |___) ) __| |___) ) \033[0m\n"
+	@printf "\033[35m(/          \\)  /_____( (_/    \\__/     /_____( /____/    /_/  \\_\\    \\____\\ \\________/  \\________/  \033[0m\n"
+	@printf "\033[34m                                                                                                    \033[0m\n"
+	@printf "\033[36m                                                                                                    \033[0m\n"
+	@printf "\033[1m			               Huilin and Argan                                                           \033[1m\n"
+	@printf "\033[34m                                                                                                    \033[0m\n"
+endef
+
+Q := @
+
+COLS := $(shell tput cols 2>/dev/null || echo 60)
+define HR
+	$(Q)printf "$(DIM)%0.s─$(RESET)" `seq 1 $(COLS)`; printf "\n"
+endef
+
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	@make -C $(LIBFT_DIR)
-	$(CC) $(CFLAGS) -o $@ $(OBJS) $(LDFLAGS) -lreadline -lncurses
+	$(Q)make -C $(LIBFT_DIR)
+	$(Q)$(CC) $(CFLAGS) -o $@ $(OBJS) $(LDFLAGS) -lreadline -lncurses \
+	 || { printf "$(FAIL) link failed\n"; exit 1; }
+	$(Q)printf "$(OK) $(BOLD)$@ built successfully$(RESET)\n"
+	$(SHOW_BANNER)
 
 ${OBJS_DIR}%.o: $(SRCS_DIR)%.c
-	@mkdir -p $(OBJS_DIR)
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(Q)mkdir -p $(OBJS_DIR)
+	$(Q)printf "$(CYN)CC$(RESET)   %-40s → $(DIM)%s$(RESET)\n" "$<" "$@"
+	$(Q)$(CC) $(CFLAGS) -c $< -o $@
 
 ${OBJS_DIR}builtins/%.o: $(BUILTIN_DIR)%.c
-	@mkdir -p $(OBJS_DIR)builtins
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(Q)mkdir -p $(OBJS_DIR)builtins
+	$(Q)printf "$(CYN)CC$(RESET)   %-40s → $(DIM)%s$(RESET)\n" "$<" "$@"
+	$(Q)$(CC) $(CFLAGS) -c $< -o $@
 
 ${OBJS_DIR}parse/%.o: $(PARSE_DIR)%.c
-	@mkdir -p $(OBJS_DIR)parse
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(Q)mkdir -p $(OBJS_DIR)parse
+	$(Q)printf "$(CYN)CC$(RESET)   %-40s → $(DIM)%s$(RESET)\n" "$<" "$@"
+	$(Q)$(CC) $(CFLAGS) -c $< -o $@
 
 ${OBJS_DIR}expander/%.o: $(EXPAND_DIR)%.c
-	@mkdir -p $(OBJS_DIR)expander
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(Q)mkdir -p $(OBJS_DIR)expander
+	$(Q)printf "$(CYN)CC$(RESET)   %-40s → $(DIM)%s$(RESET)\n" "$<" "$@"
+	$(Q)$(CC) $(CFLAGS) -c $< -o $@
 
 ${OBJS_DIR}token/%.o: $(TOKEN_DIR)%.c
-	@mkdir -p $(OBJS_DIR)token
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(Q)mkdir -p $(OBJS_DIR)token
+	$(Q)printf "$(CYN)CC$(RESET)   %-40s → $(DIM)%s$(RESET)\n" "$<" "$@"
+	$(Q)$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	@make -C $(LIBFT_DIR) clean
-	rm -rf $(OBJS_DIR)
+	$(call HR)
+	$(Q)printf "$(BROOM)  $(BOLD)clean$(RESET)\n"
+	$(Q)make -C $(LIBFT_DIR) clean
+	$(Q)rm -rf $(OBJS_DIR)
+	$(Q)printf "$(OK) objects removed$(RESET)\n"
 
 fclean: clean
-	@make -C $(LIBFT_DIR) fclean
-	rm -f $(NAME)
+	$(Q)printf "$(BOMB)  $(BOLD)fclean$(RESET)\n"
+	$(Q)make -C $(LIBFT_DIR) fclean
+	$(Q)rm -f $(NAME)
+	$(Q)printf "$(OK) binary removed$(RESET)\n"
+	$(call HR)
 
-re: fclean all
+re:
+	$(Q)$(MAKE) fclean
+	$(Q)$(MAKE) all
 
-.PHONY: all clean fclean re
+help:
+	$(call HR)
+	$(Q)printf "$(BOLD)Targets$(RESET)\n"
+	$(Q)printf "  make / all     — build $(NAME)\n"
+	$(Q)printf "  clean          — remove objects (*.o)\n"
+	$(Q)printf "  fclean         — remove objects and binary\n"
+	$(Q)printf "  re             — rebuild from scratch\n"
+	$(call HR)
+
+.PHONY: all clean fclean re help
 
 -include $(DEPS)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 14:48:19 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/07 01:55:17 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/09 20:08:43 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,12 +73,12 @@ typedef struct s_minishell
 
 typedef struct s_cmd
 {
-	char			*cmd;       // Command to execute
-	char			**args;      // Arguments for the command
-	char			*path;      // Path to the command
-	char			*input_file; // Input redirection file
-	char			*output_file; // Output redirection file
-	int				*pipes;     // Pipe file descriptors
+	char			*cmd;
+	char			**args;
+	char			*path;
+	char			*input_file;
+	char			*output_file;
+	int				*pipes;
 	int				type;
 }	t_cmd;
 
@@ -174,6 +174,7 @@ void	expand_heredoc(t_minishell sh, char *str, int fd);
 char	*ft_strjoin_free(char *s1, char *s2);
 void	free_globbed(char **v);
 void	expander(t_minishell *sh, t_node *node);
+//int		expand_tree(t_minishell *sh, t_node *node);
 
 /* clean */
 void	clean_message(t_minishell *sh);
