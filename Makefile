@@ -80,6 +80,10 @@ define SHOW_BANNER
 	@printf "\033[34m                                                                                                    \033[0m\n"
 endef
 
+define CLEAR_SCREEN
+	@printf "\033[2J\033[H"
+endef
+
 Q := @
 
 COLS := $(shell tput cols 2>/dev/null || echo 60)
@@ -94,6 +98,7 @@ $(NAME): $(OBJS)
 	$(Q)$(CC) $(CFLAGS) -o $@ $(OBJS) $(LDFLAGS) -lreadline -lncurses \
 	 || { printf "$(FAIL) link failed\n"; exit 1; }
 	$(Q)printf "$(OK) $(BOLD)$@ built successfully$(RESET)\n"
+	$(CLEAR_SCREEN)
 	$(SHOW_BANNER)
 
 ${OBJS_DIR}%.o: $(SRCS_DIR)%.c
