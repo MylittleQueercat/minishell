@@ -21,3 +21,11 @@ void	perror_exit(const char *msg, void (*fn)(t_env *), t_env *arg)
 	exit(EXIT_FAILURE);
 }
 
+void	perror_exit_pipes(const char *msg, int **pipes, int n)
+{
+	if (pipes)
+		free_pipes(pipes, n);
+	if (msg)
+		perror(msg);
+	exit(EXIT_FAILURE);
+}

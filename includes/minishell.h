@@ -65,6 +65,7 @@ typedef struct s_minishell
 	t_parse_err		parse_err;
 	t_env			*env;
 	int				exit_s;
+	int				**pipes;
 	int				fd_stdin;
 	int				fd_stdout;
 	struct termios	original_term;
@@ -96,9 +97,12 @@ void	run_exec(t_minishell *sh);
 void	run_iteration(t_minishell *sh);
 
 int		exec_builtin(t_cmd *cmd, t_env *env);
-int		exec_cmd(t_cmd *cmd, t_env *env);
+int		exec_cmd(t_cmd *cmd, t_env *env, int i, int n);
 int		exec_pipe(t_node *tree, t_env *env);
-void	execute_pipeline(t_minishell *sh, t_node *node);
+int		execute_pipeline(t_minishell *sh, t_node *node, int i, int nb_pipes);
+void	setup_pipe(int *pipes, int i, int n, t_cmd *cmd);
+
+int		count_pipes(t_node *node);
 
 char	*get_cmd_path(char *path, char *cmd);
 
@@ -169,7 +173,7 @@ void	expand_heredoc(t_minishell sh, char *str, int fd);
 // expand.c
 char	*ft_strjoin_free(char *s1, char *s2);
 void	free_globbed(char **v);
-void	expander(t_minishell *sh);
+void	expander(t_minishell *sh, t_node *node);
 
 /* clean */
 void	clean_message(t_minishell *sh);

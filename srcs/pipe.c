@@ -12,34 +12,20 @@
 
 #include "minishell.h"
 
-void	close_pipes(int **pipes, int n)
-{
-	int	i;
-
-	i = -1;
-	while (++i < n)
-	{
-		close(pipes[i][0]);
-		close(pipes[i][1]);
-	}
-}
-
-static void	setup_pipe(int **pipes, int i, int n, t_cmd *cmd)
+void	setup_pipe(int *pipes, int i, int n, t_cmd *cmd)
 {
 	if (i == 0)
-	{
-		dup2(pipes[i][1], STDOUT_FILENO);
-	}
+		dup2(pipes[1], STDOUT_FILENO);
 	else if (i == n - 1)
-	{
-		dup2(pipes[i - 1][0], STDIN_FILENO);
-	}
+		dup2(pipes[0], STDIN_FILENO);
 	else
 	{
-		dup2(pipes[i - 1][0], STDIN_FILENO);
-		dup2(pipes[i][1], STDOUT_FILENO);
+		dup2(pipes[0], STDIN_FILENO);
+		dup2(pipes[1], STDOUT_FILENO);
 	}
-	cmd->pipes = pipes[i];
+	close(pipes[0]);
+	close(pipes[1]);
+	cmd->pipes = pipes;
 }
 
 static int	**create_pipes(int n)
@@ -70,54 +56,45 @@ int	count_pipes(t_node *node)
 	while (node && node->type == N_PIPE)
 	{
 		count++;
-		node = node->right;
+		node = node->left;
 	}
 	return (count);
 }
 
-void	execute_pipeline(t_minishell *sh, t_node *node)
+int	execute_pipeline(t_minishell *sh, t_node *node, int i, int nb_pipes)
 {
-	int		**pipes;
-	int		n;
-	int		i;
-	pid_t	pid;
-
-	n = count_pipes(node) + 1;
-	pipes = create_pipes(n);
-	if (!pipes)
-		return (sh->exit_s = 1, (void)0);
-	while (node && node->type == N_PIPE)
+	if (i == 0)
 	{
-		node->cmd = malloc(sizeof(t_cmd));
-		if (!node->cmd)
-			return (perror("malloc"), free_pipes(pipes, n - 1), (void)0);
-		ft_bzero(node->cmd, sizeof(t_cmd));
-		node = node->right;
+		sh->pipes = create_pipes(nb_pipes);
+		if (!sh->pipes)
+			return (perror("Error creating pipes"), -1);
 	}
-	i = -1;
-	while (++i < n)
+	if (node->left->type == N_PIPE)
 	{
-		pid = fork();
-		if (pid < 0)
-			return (perror("fork"), free_pipes(pipes, n - 1));
-		if (pid == 0)
-		{
-			setup_pipe(pipes, i, n, node->cmd);
-			node->cmd->cmd = node->exec_args[0];
-			node->cmd->args = node->exec_args;
-			exec_cmd(node->cmd, sh->env);
-			close_pipes(pipes, n - 1);
-			exit(sh->exit_s);
-		}
-		if (node->right)
-			node = node->right;
-		else
-			break ;
+		if (execute_pipeline(sh, node->left, i + 1, nb_pipes) == -1)
+			return (-1);
 	}
-	close_pipes(pipes, n - 1);
-	free_pipes(pipes, n - 1);
-	while (n-- > 0)
-		waitpid(-1, &sh->exit_s, 0);
-	if (WIFEXITED(sh->exit_s))
-		sh->exit_s = WEXITSTATUS(sh->exit_s);
+	else if (node->left->type == N_CMD)
+	{
+		node->left->cmd = malloc(sizeof(t_cmd));
+		if (!node->left->cmd)
+			return (perror("malloc"), free_pipes(sh->pipes, nb_pipes - 1), -1);
+		ft_bzero(node->left->cmd, sizeof(t_cmd));
+		node->left->cmd->args = node->left->exec_args;
+		node->left->cmd->cmd = node->left->exec_args[0];
+		node->left->cmd->pipes = sh->pipes[i];
+		exec_cmd(node->left->cmd, sh->env, i, nb_pipes);
+	}
+	if (node->right->type == N_CMD)
+	{
+		node->right->cmd = malloc(sizeof(t_cmd));
+		if (!node->right->cmd)
+			return (perror("malloc"), free_pipes(sh->pipes, nb_pipes - 1), -1);
+		ft_bzero(node->right->cmd, sizeof(t_cmd));
+		node->right->cmd->args = node->right->exec_args;
+		node->right->cmd->cmd = node->right->exec_args[0];
+		node->right->cmd->pipes = sh->pipes[i];
+		exec_cmd(node->right->cmd, sh->env, i, nb_pipes);
+	}
+	return (0);
 }

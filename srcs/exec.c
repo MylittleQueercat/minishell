@@ -36,7 +36,7 @@ int	exec_builtin(t_cmd *cmd, t_env *env)
 	return (1);
 }
 
-int	exec_cmd(t_cmd *cmd, t_env *env)
+int	exec_cmd(t_cmd *cmd, t_env *env, int i, int n)
 {
 	int	status;
 	int	pid;
@@ -49,12 +49,8 @@ int	exec_cmd(t_cmd *cmd, t_env *env)
 	}
 	if (pid == 0)
 	{
-		printf("Executing command: %s\n", cmd->cmd);
-		/*if (cmd->pipes)
-		{
-			dup2(cmd->pipes[0], STDIN_FILENO);
-			dup2(cmd->pipes[1], STDOUT_FILENO);
-		}*/
+		if (n > 1)
+			setup_pipe(cmd->pipes, i, n, cmd);
 		cmd->path = get_cmd_path(env->path, cmd->cmd);
 		if (!cmd->path)
 		{
@@ -70,8 +66,6 @@ int	exec_cmd(t_cmd *cmd, t_env *env)
 		return (127);
 	else if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
-	else
-		return (1);
 	return (1);
 }
 
@@ -100,13 +94,12 @@ void	print_ast(t_node *node)
 
 void	run_exec(t_minishell *sh)
 {
-	print_ast(sh->tree);
 	sh->tree->cmd = malloc(sizeof(t_cmd));
 	ft_bzero(sh->tree->cmd, sizeof(t_cmd));
 	if (!sh->tree->cmd)
 		return (printf("Error allocating memory for command\n"), (void)0);
 	if (sh->tree->type == N_PIPE)
-		execute_pipeline(sh, sh->tree);
+		execute_pipeline(sh, sh->tree, 0, count_pipes(sh->tree) + 1);
 	else if (sh->tree->type == N_CMD && sh->tree->exec_args)
 	{
 		sh->tree->cmd->cmd = sh->tree->exec_args[0];
@@ -114,7 +107,7 @@ void	run_exec(t_minishell *sh)
 		if (is_builtin(sh->tree->cmd->cmd))
 			sh->exit_s = exec_builtin(sh->tree->cmd, sh->env);
 		else
-			sh->exit_s = exec_cmd(sh->tree->cmd, sh->env);
+			sh->exit_s = exec_cmd(sh->tree->cmd, sh->env, 0, 0);
 	}
 	else
 	{

@@ -3,7 +3,7 @@ NAME = minishell
 CC = cc
 
 CFLAGS = -Wall -Werror -Wextra -I$(LIBFT_DIR)/includes -I./includes -MMD -MP \
-		 -g3 -std=gnu99
+		 -g3
 
 LIBFT_DIR = ./libft
 LIBFT = $(LIBFT_DIR)/libft.a
@@ -50,23 +50,23 @@ $(NAME): $(OBJS)
 
 ${OBJS_DIR}%.o: $(SRCS_DIR)%.c
 	@mkdir -p $(OBJS_DIR)
-	$(CC) $(CFLAGS) -c $< -o $@ -lreadline -lncurses
+	$(CC) $(CFLAGS) -c $< -o $@
 
 ${OBJS_DIR}builtins/%.o: $(BUILTIN_DIR)%.c
 	@mkdir -p $(OBJS_DIR)builtins
-	$(CC) $(CFLAGS) -c $< -o $@ -lreadline -lncurses
+	$(CC) $(CFLAGS) -c $< -o $@
 
 ${OBJS_DIR}parse/%.o: $(PARSE_DIR)%.c
 	@mkdir -p $(OBJS_DIR)parse
-	$(CC) $(CFLAGS) -c $< -o $@ -lreadline -lncurses
+	$(CC) $(CFLAGS) -c $< -o $@
 
 ${OBJS_DIR}expander/%.o: $(EXPAND_DIR)%.c
 	@mkdir -p $(OBJS_DIR)expander
-	$(CC) $(CFLAGS) -c $< -o $@ -lreadline -lncurses
+	$(CC) $(CFLAGS) -c $< -o $@
 
 ${OBJS_DIR}token/%.o: $(TOKEN_DIR)%.c
 	@mkdir -p $(OBJS_DIR)token
-	$(CC) $(CFLAGS) -c $< -o $@ -lreadline -lncurses
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
 	@make -C $(LIBFT_DIR) clean
