@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 15:26:30 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/08 00:47:14 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/09 18:40:34 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ int	exec_cmd_or_builtin(t_minishell *sh, t_cmd *cmd, int i, int n)
 		return (exec_cmd(sh, cmd, i, n));
 }
 
+/*
 void	run_exec(t_minishell *sh)
 {
 	int	i;
@@ -113,4 +114,88 @@ void	run_exec(t_minishell *sh)
 		else
 			printf("Unsupported node type for execution.\n");
 	}
+}
+*/
+
+int	run_subtree(t_minishell *sh, t_node *node)
+{
+	t_cmd	cmd;
+	int		st;
+
+	if (!node)
+		return (0);
+	if (node->type == N_PIPE)
+		return execute_pipeline(sh, node, 0, count_pipes(node) + 1);
+	if (node->type == N_AND)
+	{
+		st = run_subtree(sh, node->left);
+		if (st == 0) st = run_subtree(sh, node->right);
+		return (st);
+	}
+	if (node->type == N_OR)
+	{
+		st = run_subtree(sh, node->left);
+		if (st != 0) st = run_subtree(sh, node->right);
+		return (st);
+	}
+	if (node->type == N_CMD)
+	{
+		if (!node->exec_args || !node->exec_args[0])
+			return (0);
+		ft_bzero(&cmd, sizeof(cmd));
+		cmd.cmd  = node->exec_args[0];
+		cmd.args = node->exec_args;
+		if (is_builtin(cmd.cmd))
+			return (exec_builtin(&cmd, sh->env));
+		return (exec_cmd(&cmd, sh->env, 0, 0));
+	}
+	return (1);
+}
+
+void    run_exec(t_minishell *sh)
+{
+	t_node	*n;
+	t_cmd	cmd;
+
+	n = sh->tree;
+	if (!n)
+		return ;
+	if (n->type == N_PIPE)
+	{
+		sh->exit_s = execute_pipeline(sh, n, 0, count_pipes(n) + 1);
+		return ;
+	}
+	if (n->type == N_AND)
+	{
+		sh->exit_s = run_subtree(sh, n->left);
+		if (sh->exit_s == 0)
+			sh->exit_s = run_subtree(sh, n->right);
+		return ;
+	}
+	if (n->type == N_OR)
+	{
+		sh->exit_s = run_subtree(sh, n->left);
+		if (sh->exit_s != 0)
+			sh->exit_s = run_subtree(sh, n->right);
+		return ;
+	}
+	if (n->type == N_CMD)
+	{
+		if (!n->exec_args || !n->exec_args[0])
+		{
+			printf("No command to execute.\n");
+			sh->exit_s = 0;
+			return ;
+		}
+		ft_bzero(&cmd, sizeof(cmd));       
+		cmd.cmd  = n->exec_args[0];
+		cmd.args = n->exec_args;
+		if (is_builtin(cmd.cmd))
+			sh->exit_s = exec_builtin(&cmd, sh->env);
+		else
+			sh->exit_s = exec_cmd(&cmd, sh->env, 0, 0);
+		return ;
+	}
+	printf("Unsupported node type for execution.\n");
+	sh->exit_s = 1;
 }

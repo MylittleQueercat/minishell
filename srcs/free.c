@@ -6,7 +6,7 @@
 /*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/07 00:41:21 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/08 00:39:58 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/09 20:02:26 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,7 @@
 
 void	free_array(char **arr)
 {
-	int i;
-
+	int	i;
 
 	if (arr == NULL)
 		return ;

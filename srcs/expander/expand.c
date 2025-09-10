@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 16:00:57 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/07 02:03:43 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/09 20:07:19 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,55 +112,36 @@ void	expander(t_minishell *sh, t_node *node)
 {
 	size_t	i;
 
-	if (node->type == N_PIPE)
+	if (!node)
+		return ;
+	if (node->type != N_CMD)
 	{
 		expander(sh, node->left);
 		expander(sh, node->right);
+		return ;
 	}
-	else if (node->type == N_CMD && node->raw_args)
+	if (!node->raw_args)
 	{
-		if (node->raw_args)
-		{
-			node->exec_args = pre_glob(sh, node->raw_args);
-			if (!node->exec_args)
-			{
-				sh->exit_s = 1;
-				return ;
-			}
-			i = 0;
-			while (node->exec_args[i])
-			{
-				node->exec_args[i] = throw_quotes(node->exec_args[i]);
-				if (!node->exec_args[i])
-				{
-					free_globbed(node->exec_args);
-					node->exec_args = NULL;
-					sh->exit_s = 1;
-					return ;
-				}
-				i++;
-			}
-		}
+		node->exec_args = NULL;
+		return ;
 	}
-}
-
-/*
-char	**expander(t_minishell *sh, char *str)
-{
-	char	**globbed;
-	size_t	i;
-
-	globbed = pre_glob(sh, str);
-	if (!globbed)
-		return (NULL);
+	node->exec_args = pre_glob(sh, node->raw_args);
+	if (!node->exec_args)
+	{
+		sh->exit_s = 1;
+		return ;
+	}
 	i = 0;
-	while (globbed[i])
+	while (node->exec_args[i])
 	{
-		globbed[i] = throw_quotes(globbed[i]);
+		node->exec_args[i] = throw_quotes(node->exec_args[i]);
+		if (!node->exec_args[i])
+		{
+			free_globbed(node->exec_args);
+			node->exec_args = NULL;
+			sh->exit_s = 1;
+			return ;
+		}
 		i++;
-		if (!globbed[i])
-		return (free_globbed(globbed), NULL);
 	}
-	return (globbed);
 }
-*/

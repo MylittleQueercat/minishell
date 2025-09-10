@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 19:17:02 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/07 02:01:55 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/09 19:03:19 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	is_valid_var_char(char c)
 
 char	*get_env_val(t_minishell *sh, char *var)
 {
-	t_envl *envlst;
+	t_envl	*envlst;
 
 	envlst = sh->env->envl;
 	while (envlst)
