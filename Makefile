@@ -18,7 +18,7 @@ EXPAND_DIR = ./srcs/expander/
 TOKEN_DIR = ./srcs/token/
 
 SRCS = main.c exec.c path.c utils.c init_env.c loop.c error_exit.c free.c \
-		clean.c mini_signal.c init_minishell.c pipe.c
+		clean.c mini_signal.c init_minishell.c pipe.c ft_atoll.c
 
 PARSE_SRCS = parse.c parse_clear.c parse_err.c parse_node.c parse_simple_cmd.c \
 			 parse_util.c
@@ -30,7 +30,7 @@ EXPAND_SRCS = expand.c expand_asterisker.c expand_globber.c expand_heredoc.c \
 TOKEN_SRCS = token.c token_add_to_end.c token_handler.c token_list.c \
 			 token_util.c
 
-BUILTIN_SRCS = echo.c env.c pwd.c cd.c export.c unset.c export_utils.c
+BUILTIN_SRCS = echo.c env.c pwd.c cd.c export.c unset.c export_utils.c exit.c
 
 OBJS = $(SRCS:%.c=${OBJS_DIR}%.o) \
 		$(BUILTIN_SRCS:%.c=${OBJS_DIR}builtins/%.o) \

@@ -75,10 +75,12 @@ typedef struct s_cmd
 {
 	char			*cmd;       // Command to execute
 	char			**args;      // Arguments for the command
+	int				argc;
 	char			*path;      // Path to the command
-	char			*input_file; // Input redirection file
-	char			*output_file; // Output redirection file
-	int				*pipes;     // Pipe file descriptors
+	char			*infile;
+	char			*outfile;
+	int				in_fd;
+	int				out_fd;
 	int				type;
 }	t_cmd;
 
@@ -96,11 +98,12 @@ void	free_pipes(int **pipes, int n);
 void	run_exec(t_minishell *sh);
 void	run_iteration(t_minishell *sh);
 
-int		exec_builtin(t_cmd *cmd, t_env *env);
-int		exec_cmd(t_cmd *cmd, t_env *env, int i, int n);
+int		exec_cmd_or_builtin(t_minishell *sh, t_cmd *cmd, int i, int n);
+int		exec_builtin(t_minishell *sh, t_cmd *cmd);
+int		exec_cmd(t_minishell *sh, t_cmd *cmd, int i, int n);
 int		exec_pipe(t_node *tree, t_env *env);
-int		execute_pipeline(t_minishell *sh, t_node *node, int i, int nb_pipes);
-void	setup_pipe(int *pipes, int i, int n, t_cmd *cmd);
+int		execute_pipeline(t_minishell *sh, t_node *node, int *i, int nb_pipes);
+void	setup_pipes(int **pipes, int i, int n, t_cmd *cmd);
 
 int		count_pipes(t_node *node);
 
@@ -109,13 +112,13 @@ char	*get_cmd_path(char *path, char *cmd);
 void	build_prompt(t_minishell *sh);
 t_envl	*get_last_envl(t_envl *envl);
 char	*strjoin_free_s1(char *s1, char *s2);
+long long	ft_atoll(const char *str);
 
 void	perror_exit(const char *msg, void (*fn)(t_env *), t_env *arg);
 
 void	loop(t_minishell *sh);
 
 int		is_builtin(const char *cmd);
-int		exec_builtin(t_cmd *cmd, t_env *env);
 
 void	print_export(t_env *env);
 
@@ -125,9 +128,7 @@ int		ft_pwd(t_cmd *cmd);
 int		ft_cd(t_cmd *cmd, t_env *env);
 int		ft_export(t_cmd *cmd, t_env *env);
 int		ft_unset(t_cmd *cmd, t_env *env);
-
-void	print_ast(t_node *node);
-
+int		ft_exit(t_minishell *sh, t_cmd *cmd);
 // parsing
 //
 //

@@ -15,7 +15,7 @@
 void	get_env(t_env *env, char **envp, int i)
 {
 	t_envl	*new;
-	int	equal_pos;
+	int		equal_pos;
 
 	while (envp[++i])
 	{
@@ -28,7 +28,7 @@ void	get_env(t_env *env, char **envp, int i)
 			get_last_envl(env->envl)->next = new;
 		equal_pos = ft_strchr(envp[i], '=') - envp[i];
 		if (equal_pos == -1)
-			continue;
+			continue ;
 		new->name = (char *)malloc(sizeof(char) * (equal_pos + 1));
 		if (!new->name)
 			perror_exit("Allocation error for env name", free_env, env);
@@ -82,7 +82,7 @@ void	empty_env(t_env *env)
 		perror_exit("Allocation error for PWD/OLDPWD", free_env, env);
 }
 
-void set_envp(t_env *env, int i, int size)
+void	set_envp(t_env *env, int i, int size)
 {
 	t_envl	*current;
 
@@ -108,7 +108,7 @@ void set_envp(t_env *env, int i, int size)
 	env->envp[i] = NULL;
 }
 
-t_env *init_env(char **envp)
+t_env	*init_env(char **envp)
 {
 	t_env	*env;
 

@@ -12,52 +12,44 @@
 
 #include "minishell.h"
 
-/* * exec.c
- * This file contains the functions responsible for executing commands in the shell.
- * It handles external commands, and pipelines. (pipelines not very clean yet)
- * Does not handle all built-in commands yet, but will be implemented in the future.
- */
-
-int	exec_builtin(t_cmd *cmd, t_env *env)
+int	exec_builtin(t_minishell *sh, t_cmd *cmd)
 {
-	if (ft_strncmp(cmd->cmd, "echo", 4) == 0)
+	if (ft_strcmp(cmd->cmd, "echo") == 0)
 		return (ft_echo(cmd));
-	else if (ft_strncmp(cmd->cmd, "env", 3) == 0)
-		return (ft_env(cmd, env));
-	else if (ft_strncmp(cmd->cmd, "pwd", 3) == 0)
+	if (ft_strcmp(cmd->cmd, "cd") == 0)
+		return (ft_cd(cmd, sh->env));
+	if (ft_strcmp(cmd->cmd, "pwd") == 0)
 		return (ft_pwd(cmd));
-	else if (ft_strncmp(cmd->cmd, "cd", 2) == 0)
-		return (ft_cd(cmd, env));
-	else if (ft_strncmp(cmd->cmd, "export", 6) == 0)
-		return (ft_export(cmd, env));
-	else if (ft_strncmp(cmd->cmd, "unset", 5) == 0)
-		return (ft_unset(cmd, env));
+	if (ft_strcmp(cmd->cmd, "export") == 0)
+		return (ft_export(cmd, sh->env));
+	if (ft_strcmp(cmd->cmd, "unset") == 0)
+		return (ft_unset(cmd, sh->env));
+	if (ft_strcmp(cmd->cmd, "env") == 0)
+		return (ft_env(cmd, sh->env));
+	if (ft_strcmp(cmd->cmd, "exit") == 0)
+		return (ft_exit(sh, cmd));
 	printf("Command not found: %s\n", cmd->cmd);
 	return (1);
 }
 
-int	exec_cmd(t_cmd *cmd, t_env *env, int i, int n)
+int	exec_cmd(t_minishell *sh, t_cmd *cmd, int i, int n)
 {
 	int	status;
 	int	pid;
 
 	pid = fork();
 	if (pid < 0)
-	{
-		perror("fork");
-		return (0);
-	}
+		return (perror("fork"), -1);
 	if (pid == 0)
 	{
-		if (n > 1)
-			setup_pipe(cmd->pipes, i, n, cmd);
-		cmd->path = get_cmd_path(env->path, cmd->cmd);
+		setup_pipes(sh->pipes, i, n, cmd);
+		cmd->path = get_cmd_path(sh->env->path, cmd->cmd);
 		if (!cmd->path)
 		{
 			printf("Command not found: %s\n", cmd->cmd);
 			exit(EXIT_FAILURE);
 		}
-		execve(cmd->path, cmd->args, env->envp);
+		execve(cmd->path, cmd->args, sh->env->envp);
 		perror("execve");
 		exit(EXIT_FAILURE);
 	}
@@ -69,45 +61,50 @@ int	exec_cmd(t_cmd *cmd, t_env *env, int i, int n)
 	return (1);
 }
 
-int	exec_pipe_cmd(t_node *tree, t_env *env)
+int	exec_cmd_or_builtin(t_minishell *sh, t_cmd *cmd, int i, int n)
 {
-	(void)env;
-	(void)tree;
-	return (0);
-}
-
-void	print_ast(t_node *node)
-{
-	if (!node)
-		return ;
-	printf("Node Type: %d\n", node->type);
-	if (node->exec_args)
-	{
-		printf("Exec Args: ");
-		for (int i = 0; node->exec_args[i]; i++)
-			printf("%s ", node->exec_args[i]);
-		printf("\n");
-	}
-	print_ast(node->left);
-	print_ast(node->right);
+	if (is_builtin(cmd->cmd))
+		return (exec_builtin(sh, cmd));
+	else
+		return (exec_cmd(sh, cmd, i, n));
 }
 
 void	run_exec(t_minishell *sh)
 {
+	int	i;
+
+	i = 0;
 	sh->tree->cmd = malloc(sizeof(t_cmd));
-	ft_bzero(sh->tree->cmd, sizeof(t_cmd));
 	if (!sh->tree->cmd)
 		return (printf("Error allocating memory for command\n"), (void)0);
+	ft_bzero(sh->tree->cmd, sizeof(t_cmd));
 	if (sh->tree->type == N_PIPE)
-		execute_pipeline(sh, sh->tree, 0, count_pipes(sh->tree) + 1);
+	{
+		if (execute_pipeline(sh, sh->tree, &i, count_pipes(sh->tree)) == -1)
+			return ;
+	}
+	if (sh->tree->type == N_AND)
+	{
+		if (exec_cmd_or_builtin(sh, sh->tree->left->cmd, -1, 0) == 0)
+			sh->exit_s = exec_cmd_or_builtin(sh, sh->tree->right->cmd, -1, 0);
+		else
+			sh->exit_s = 1;
+	}
+	else if (sh->tree->type == N_OR)
+	{
+		if (exec_cmd_or_builtin(sh, sh->tree->left->cmd, -1, 0) != 0)
+			sh->exit_s = exec_cmd_or_builtin(sh, sh->tree->right->cmd, -1, 0);
+		else
+			sh->exit_s = 0;
+	}
 	else if (sh->tree->type == N_CMD && sh->tree->exec_args)
 	{
 		sh->tree->cmd->cmd = sh->tree->exec_args[0];
 		sh->tree->cmd->args = sh->tree->exec_args;
 		if (is_builtin(sh->tree->cmd->cmd))
-			sh->exit_s = exec_builtin(sh->tree->cmd, sh->env);
+			sh->exit_s = exec_builtin(sh, sh->tree->cmd);
 		else
-			sh->exit_s = exec_cmd(sh->tree->cmd, sh->env, 0, 0);
+			sh->exit_s = exec_cmd(sh, sh->tree->cmd, -1, 0);
 	}
 	else
 	{

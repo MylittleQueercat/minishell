@@ -26,7 +26,7 @@ static void	change_env_var(char **envp, const char *var, int index)
 	envp[index] = new_var;
 }
 
-static void add_env_var(t_env *env, const char *var)
+static void	add_env_var(t_env *env, const char *var)
 {
 	int		i;
 	size_t	size;
@@ -38,7 +38,7 @@ static void add_env_var(t_env *env, const char *var)
 	env->envp = (char **)ft_realloc(env->envp, size, size + sizeof(char *));
 	if (!env->envp)
 	{
-		ft_putstr_fd("Error: Failed to allocate memory for environment variable.\n", 2);
+		printf("Error: Failed to allocate memory for environment variable.\n");
 		return ;
 	}
 	env->envp[i] = ft_strdup(var);
@@ -52,8 +52,8 @@ static void add_env_var(t_env *env, const char *var)
 
 int	ft_export(t_cmd *cmd, t_env *env)
 {
-	int	i;
-	int	j;
+	int		i;
+	int		j;
 	char	*p;
 	int		flag;
 
@@ -69,7 +69,7 @@ int	ft_export(t_cmd *cmd, t_env *env)
 		if (!p)
 		{
 			printf("export: '%s': not a valid identifier\n", cmd->args[i]);
-			continue;
+			continue ;
 		}
 		j = -1;
 		flag = 0;
