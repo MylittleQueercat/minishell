@@ -18,14 +18,19 @@ char	*get_cmd_path(char *path, char *cmd)
 	int		i;
 
 	i = 0;
+	if (cmd && (ft_strchr(cmd, '/') || !path))
+	{
+		if (!access(cmd, X_OK))
+			return (ft_strdup(cmd));
+		return (NULL);
+	}
 	paths = ft_split(path, ':');
 	if (!paths)
 		return (NULL);
 	while (paths[i])
 	{
-		path = paths[i];
 		path = ft_strjoin(paths[i], "/");
-		path = ft_strjoin(path, cmd);
+		path = strjoin_free_s1(path, cmd);
 		if (!access(path, X_OK))
 			return (free_array(paths), path);
 		free(path);

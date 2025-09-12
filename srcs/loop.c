@@ -12,35 +12,6 @@
 
 #include "minishell.h"
 
-void	print_ast(t_node *node)
-{
-	if (!node)
-		return ;
-	printf("Node type: %d\n", node->type);
-	if (node->type == N_CMD)
-	{
-		if (node->raw_args)
-			printf("  Raw args: %s\n", node->raw_args);
-		if (node->exec_args)
-		{
-			printf("  Exec args: ");
-			for (int i = 0; node->exec_args[i]; i++)
-				printf("'%s' ", node->exec_args[i]);
-			printf("\n");
-		}
-	}
-	if (node->left)
-	{
-		printf("Left:\n");
-		print_ast(node->left);
-	}
-	if (node->right)
-	{
-		printf("Right:\n");
-		print_ast(node->right);
-	}
-}
-
 void	clear_ast_token(t_minishell *sh)
 {
 	clear_ast(&sh->tree);
@@ -76,5 +47,4 @@ void	run_iteration(t_minishell *sh)
 		clear_ast_token(sh);
 		return ;
 	}
-	print_ast(sh->tree);
 }

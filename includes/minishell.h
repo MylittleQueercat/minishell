@@ -65,7 +65,9 @@ typedef struct s_minishell
 	t_parse_err		parse_err;
 	t_env			*env;
 	int				exit_s;
+	int				exit_flag;
 	int				**pipes;
+	int				nb_pipes;
 	int				fd_stdin;
 	int				fd_stdout;
 	struct termios	original_term;
@@ -90,10 +92,15 @@ void	init_minishell(t_minishell *sh, char **envp);
 
 t_env	*init_env(char **envp);
 
+void	init_cmd(t_cmd *cmd, t_node *node);
+
 void	free_minishell(t_minishell *sh);
 void	free_env(t_env *env);
 void	free_array(char **arr);
 void	free_pipes(int **pipes, int n);
+void	free_tree(t_node *node);
+
+void	clear_ast_token(t_minishell *sh);
 
 void	run_exec(t_minishell *sh);
 void	run_iteration(t_minishell *sh);
@@ -113,6 +120,7 @@ void	build_prompt(t_minishell *sh);
 t_envl	*get_last_envl(t_envl *envl);
 char	*strjoin_free_s1(char *s1, char *s2);
 long long	ft_atoll(const char *str);
+void	open_redirections(t_cmd *cmd);
 
 void	perror_exit(const char *msg, void (*fn)(t_env *), t_env *arg);
 
@@ -128,7 +136,7 @@ int		ft_pwd(t_cmd *cmd);
 int		ft_cd(t_cmd *cmd, t_env *env);
 int		ft_export(t_cmd *cmd, t_env *env);
 int		ft_unset(t_cmd *cmd, t_env *env);
-int		ft_exit(t_minishell *sh, t_cmd *cmd);
+int		ft_exit(t_minishell *sh, t_cmd *cmd, char *m);
 // parsing
 //
 //

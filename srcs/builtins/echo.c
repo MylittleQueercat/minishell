@@ -23,12 +23,12 @@ int	ft_echo(t_cmd *cmd)
 	i = 1 + n_flag;
 	while (cmd->args[i])
 	{
-		ft_putstr_fd(cmd->args[i], 1);
+		printf("%s", cmd->args[i]);
 		if (cmd->args[i + 1])
-			ft_putchar_fd(' ', 1);
+			printf(" ");
 		i++;
 	}
 	if (!n_flag)
-		ft_putchar_fd('\n', 1);
+		printf("\n");
 	return (0);
 }

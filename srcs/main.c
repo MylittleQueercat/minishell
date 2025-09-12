@@ -15,6 +15,7 @@
 int	main(int argc, char **argv, char **envp)
 {
 	t_minishell	*sh;
+	int			exit;
 
 	if (argc != 1)
 		return (printf("Usage : %s\n", argv[0]), 1);
@@ -27,10 +28,13 @@ int	main(int argc, char **argv, char **envp)
 		run_iteration(sh);
 		if (sh->tree)
 			run_exec(sh);
+		if (sh->exit_flag)
+			break ;
 		free(sh->line);
 		sh->line = NULL;
 		clear_ast(&sh->tree);
 		clear_token_list(&sh->tokens);
 	}
-	return (free_minishell(sh), sh->exit_s);
+	exit = sh->exit_s;
+	return (free_minishell(sh), exit);
 }

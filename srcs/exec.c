@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 15:26:30 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/09 18:40:34 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/11 19:32:23 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 int	exec_builtin(t_minishell *sh, t_cmd *cmd)
 {
+	setup_pipes(NULL, 0, -1, cmd);
 	if (ft_strcmp(cmd->cmd, "echo") == 0)
 		return (ft_echo(cmd));
 	if (ft_strcmp(cmd->cmd, "cd") == 0)
@@ -27,7 +28,7 @@ int	exec_builtin(t_minishell *sh, t_cmd *cmd)
 	if (ft_strcmp(cmd->cmd, "env") == 0)
 		return (ft_env(cmd, sh->env));
 	if (ft_strcmp(cmd->cmd, "exit") == 0)
-		return (ft_exit(sh, cmd));
+		return (ft_exit(sh, cmd, "minishell: "));
 	printf("Command not found: %s\n", cmd->cmd);
 	return (1);
 }
@@ -47,107 +48,57 @@ int	exec_cmd(t_minishell *sh, t_cmd *cmd, int i, int n)
 		if (!cmd->path)
 		{
 			printf("Command not found: %s\n", cmd->cmd);
-			exit(EXIT_FAILURE);
+			exit((free_minishell(sh), 127));
 		}
 		execve(cmd->path, cmd->args, sh->env->envp);
 		perror("execve");
-		exit(EXIT_FAILURE);
+		exit((free(cmd->path), free_minishell(sh), 126));
 	}
 	waitpid(pid, &status, 0);
-	if (status == 256)
-		return (127);
-	else if (WIFEXITED(status))
-		return (WEXITSTATUS(status));
-	return (1);
+	sh->exit_s = status >> 8;
+	return (sh->exit_s);
 }
 
 int	exec_cmd_or_builtin(t_minishell *sh, t_cmd *cmd, int i, int n)
 {
+	int	vl;
 	if (is_builtin(cmd->cmd))
-		return (exec_builtin(sh, cmd));
+	{
+		vl = exec_builtin(sh, cmd);
+		dup2(sh->fd_stdout, STDOUT_FILENO);
+		dup2(sh->fd_stdin, STDIN_FILENO);
+		return (vl);
+	}
 	else
 		return (exec_cmd(sh, cmd, i, n));
 }
 
-/*
-void	run_exec(t_minishell *sh)
+int	run_subtree(t_minishell *sh, t_node *node, t_cmd cmd, int st)
 {
-	int	i;
-
-	i = 0;
-	sh->tree->cmd = malloc(sizeof(t_cmd));
-	if (!sh->tree->cmd)
-		return (printf("Error allocating memory for command\n"), (void)0);
-	ft_bzero(sh->tree->cmd, sizeof(t_cmd));
-	if (sh->tree->type == N_PIPE)
-	{
-		if (execute_pipeline(sh, sh->tree, &i, count_pipes(sh->tree)) == -1)
-			return ;
-	}
-	if (sh->tree->type == N_AND)
-	{
-		if (exec_cmd_or_builtin(sh, sh->tree->left->cmd, -1, 0) == 0)
-			sh->exit_s = exec_cmd_or_builtin(sh, sh->tree->right->cmd, -1, 0);
-		else
-			sh->exit_s = 1;
-	}
-	else if (sh->tree->type == N_OR)
-	{
-		if (exec_cmd_or_builtin(sh, sh->tree->left->cmd, -1, 0) != 0)
-			sh->exit_s = exec_cmd_or_builtin(sh, sh->tree->right->cmd, -1, 0);
-		else
-			sh->exit_s = 0;
-	}
-	else if (sh->tree->type == N_CMD && sh->tree->exec_args)
-	{
-		sh->tree->cmd->cmd = sh->tree->exec_args[0];
-		sh->tree->cmd->args = sh->tree->exec_args;
-		if (is_builtin(sh->tree->cmd->cmd))
-			sh->exit_s = exec_builtin(sh, sh->tree->cmd);
-		else
-			sh->exit_s = exec_cmd(sh, sh->tree->cmd, -1, 0);
-	}
-	else
-	{
-		if (sh->tree->type == N_CMD)
-			printf("No command to execute.\n");
-		else
-			printf("Unsupported node type for execution.\n");
-	}
-}
-*/
-
-int	run_subtree(t_minishell *sh, t_node *node)
-{
-	t_cmd	cmd;
-	int		st;
-
 	if (!node)
 		return (0);
 	if (node->type == N_PIPE)
-		return execute_pipeline(sh, node, 0, count_pipes(node) + 1);
+		return (execute_pipeline(sh, node, 0, count_pipes(node)));
 	if (node->type == N_AND)
 	{
-		st = run_subtree(sh, node->left);
-		if (st == 0) st = run_subtree(sh, node->right);
+		st = run_subtree(sh, node->left, cmd, 0);
+		if (st == 0)
+			st = run_subtree(sh, node->right, cmd, 0);
 		return (st);
 	}
 	if (node->type == N_OR)
 	{
-		st = run_subtree(sh, node->left);
-		if (st != 0) st = run_subtree(sh, node->right);
+		st = run_subtree(sh, node->left, cmd, 0);
+		if (st != 0)
+			st = run_subtree(sh, node->right, cmd, 0);
 		return (st);
 	}
 	if (node->type == N_CMD)
 	{
 		if (!node->exec_args || !node->exec_args[0])
 			return (0);
-		ft_bzero(&cmd, sizeof(cmd));
-		cmd.cmd  = node->exec_args[0];
-		cmd.args = node->exec_args;
-		if (is_builtin(cmd.cmd))
-			return (exec_builtin(&cmd, sh->env));
-		return (exec_cmd(&cmd, sh->env, 0, 0));
+		init_cmd(&cmd, node);
+		return (exec_cmd_or_builtin(sh, &cmd, 0, -1));
 	}
 	return (1);
 }
@@ -156,46 +107,38 @@ void    run_exec(t_minishell *sh)
 {
 	t_node	*n;
 	t_cmd	cmd;
+	int		i;
 
 	n = sh->tree;
 	if (!n)
 		return ;
+	i = 0;
 	if (n->type == N_PIPE)
 	{
-		sh->exit_s = execute_pipeline(sh, n, 0, count_pipes(n) + 1);
+		sh->exit_s = execute_pipeline(sh, n, &i, count_pipes(n));
 		return ;
 	}
 	if (n->type == N_AND)
 	{
-		sh->exit_s = run_subtree(sh, n->left);
+		sh->exit_s = run_subtree(sh, n->left, cmd, 0);
 		if (sh->exit_s == 0)
-			sh->exit_s = run_subtree(sh, n->right);
+			sh->exit_s = run_subtree(sh, n->right, cmd, 0);
 		return ;
 	}
 	if (n->type == N_OR)
 	{
-		sh->exit_s = run_subtree(sh, n->left);
+		sh->exit_s = run_subtree(sh, n->left, cmd, 0);
 		if (sh->exit_s != 0)
-			sh->exit_s = run_subtree(sh, n->right);
+			sh->exit_s = run_subtree(sh, n->right, cmd, 0);
 		return ;
 	}
 	if (n->type == N_CMD)
 	{
 		if (!n->exec_args || !n->exec_args[0])
-		{
-			printf("No command to execute.\n");
-			sh->exit_s = 0;
-			return ;
-		}
-		ft_bzero(&cmd, sizeof(cmd));       
-		cmd.cmd  = n->exec_args[0];
-		cmd.args = n->exec_args;
-		if (is_builtin(cmd.cmd))
-			sh->exit_s = exec_builtin(&cmd, sh->env);
-		else
-			sh->exit_s = exec_cmd(&cmd, sh->env, 0, 0);
-		return ;
+			return (printf("No command to execute.\n"), (void)(sh->exit_s = 0));
+		init_cmd(&cmd, n);
+		return (sh->exit_s = exec_cmd_or_builtin(sh, &cmd, 0, -1), (void)0);
 	}
 	printf("Unsupported node type for execution.\n");
-	sh->exit_s = 1;
+	return (sh->exit_s = 1, (void)0);
 }

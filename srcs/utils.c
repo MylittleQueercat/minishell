@@ -55,3 +55,46 @@ char	*strjoin_free_s1(char *s1, char *s2)
 	free(s1);
 	return (joined);
 }
+
+void	print_io_list(t_io_node *io)
+{
+	while (io)
+	{
+		printf("IO type: %d, raw value: %s\n", io->type, io->raw_value);
+		if (io->exec_value)
+		{
+			printf("  Exec values: ");
+			for (int i = 0; io->exec_value[i]; i++)
+				printf("'%s' ", io->exec_value[i]);
+			printf("\n");
+		}
+		io = io->next;
+	}
+}
+
+void	init_cmd(t_cmd *cmd, t_node *node)
+{
+	t_io_node	*io;
+
+	ft_bzero(cmd, sizeof(t_cmd));
+	cmd->cmd = node->exec_args[0];
+	cmd->args = node->exec_args;
+	cmd->out_fd = -1;
+	cmd->in_fd = -1;
+	io = node->io_list;
+	while (io)
+	{
+		io->exec_value = ft_split(io->raw_value, ' ');
+		if (io->type == IO_IN)
+			cmd->infile = io->exec_value[0];
+		else if (io->type == IO_OUT)
+			cmd->outfile = io->exec_value[0];
+		else if (io->type == IO_HEREDOC)
+			cmd->infile = io->exec_value[0];
+		else if (io->type == IO_ADD_END)
+			cmd->outfile = io->exec_value[0];
+		cmd->type = io->type;
+		io = io->next;
+	}
+	open_redirections(cmd);
+}

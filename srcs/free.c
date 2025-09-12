@@ -6,7 +6,7 @@
 /*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/07 00:41:21 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/09 20:02:26 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/11 18:38:29 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,14 +55,21 @@ void	free_minishell(t_minishell *sh)
 {
 	if (!sh)
 		return ;
-	free_env(sh->env);
+	if (sh->pipes)
+		free_pipes(sh->pipes, sh->nb_pipes + 1);
+	if (sh->env)
+		free_env(sh->env);
 	if (sh->fd_stdin != -1)
 		close(sh->fd_stdin);
 	if (sh->fd_stdout != -1)
 		close(sh->fd_stdout);
-	tcsetattr(STDIN_FILENO, TCSANOW, &sh->original_term);
-	free(sh->prompt);
+	if (sh->prompt)
+		free(sh->prompt);
+	clear_ast_token(sh);
 	rl_clear_history();
+	if (sh->line)
+		free(sh->line);
+	tcsetattr(STDIN_FILENO, TCSANOW, &sh->original_term);
 	free(sh);
 }
 

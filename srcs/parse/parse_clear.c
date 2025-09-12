@@ -70,4 +70,4 @@ void	clear_ast(t_node **ast)
 		return ;
 	clear_ast_node(*ast);
 	*ast = NULL;
-}			
+}

@@ -6,7 +6,7 @@
 /*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 00:36:50 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/08 00:46:38 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/11 18:40:46 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,12 +35,12 @@ void	close_pipes(int **pipes, int i, int n)
 
 void	setup_pipes(int **pipes, int i, int n, t_cmd *cmd)
 {
-	if (i == 0)
+	if (i == 0 && n > 0)
 	{
 		dup2(pipes[i][1], STDOUT_FILENO);
 		close_pipes(pipes, i, n);
 	}
-	else if (i == n)
+	else if (i == n && n > 0)
 	{
 		dup2(pipes[i - 1][0], STDIN_FILENO);
 		close_pipes(pipes, i, n);
@@ -83,51 +83,35 @@ static int	**create_pipes(int n)
 	return (pipes);
 }
 
-int	count_pipes(t_node *node)
+int	execute_pipeline(t_minishell *sh, t_node *node, int *i, int n)
 {
-	int	count;
-
-	count = 0;
-	while (node && node->type == N_PIPE)
-	{
-		count++;
-		node = node->left;
-	}
-	return (count);
-}
-
-int	execute_pipeline(t_minishell *sh, t_node *node, int *i, int nb_pipes)
-{
+	sh->nb_pipes = n;
 	if (*i == 0)
 	{
-		sh->pipes = create_pipes(nb_pipes);
+		sh->pipes = create_pipes(sh->nb_pipes);
 		if (!sh->pipes)
 			return (perror("Error creating pipes"), -1);
 	}
 	if (node->left->type == N_PIPE)
 	{
-		if (execute_pipeline(sh, node->left, i, nb_pipes) == -1)
+		if (execute_pipeline(sh, node->left, i, sh->nb_pipes) == -1)
 			return (-1);
 	}
 	else if (node->left->type == N_CMD)
 	{
 		node->left->cmd = malloc(sizeof(t_cmd));
 		if (!node->left->cmd)
-			return (perror("malloc"), free_pipes(sh->pipes, nb_pipes - 1), -1);
-		ft_bzero(node->left->cmd, sizeof(t_cmd));
-		node->left->cmd->args = node->left->exec_args;
-		node->left->cmd->cmd = node->left->exec_args[0];
-		exec_cmd_or_builtin(sh, node->left->cmd, (*i)++, nb_pipes);
+			return (perror("malloc"), -1);
+		init_cmd(node->left->cmd, node->left);
+		exec_cmd_or_builtin(sh, node->left->cmd, (*i)++, sh->nb_pipes);
 	}
 	if (node->right->type == N_CMD)
 	{
 		node->right->cmd = malloc(sizeof(t_cmd));
 		if (!node->right->cmd)
-			return (perror("malloc"), free_pipes(sh->pipes, nb_pipes - 1), -1);
-		ft_bzero(node->right->cmd, sizeof(t_cmd));
-		node->right->cmd->args = node->right->exec_args;
-		node->right->cmd->cmd = node->right->exec_args[0];
-		exec_cmd_or_builtin(sh, node->right->cmd, (*i)++, nb_pipes);
+			return (perror("malloc"), -1);
+		init_cmd(node->right->cmd, node->right);
+		exec_cmd_or_builtin(sh, node->right->cmd, (*i)++, sh->nb_pipes);
 	}
 	return (0);
 }
