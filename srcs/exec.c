@@ -22,7 +22,7 @@ int	exec_builtin(t_minishell *sh, t_cmd *cmd)
 	if (ft_strcmp(cmd->cmd, "pwd") == 0)
 		return (ft_pwd(cmd));
 	if (ft_strcmp(cmd->cmd, "export") == 0)
-		return (ft_export(cmd, sh->env));
+		return (ft_export(sh, cmd));
 	if (ft_strcmp(cmd->cmd, "unset") == 0)
 		return (ft_unset(cmd, sh->env));
 	if (ft_strcmp(cmd->cmd, "env") == 0)

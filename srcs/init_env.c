@@ -72,7 +72,6 @@ void	set_env(t_env *env, t_envl *current)
 void	empty_env(t_env *env)
 {
 	env->envl = NULL;
-	env->export = NULL;
 	env->path = ft_strdup("");
 	if (!env->path)
 		perror_exit("Allocation error for PATH", free_env, env);

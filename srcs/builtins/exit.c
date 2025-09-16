@@ -54,7 +54,7 @@ int	ft_exit(t_minishell *sh, t_cmd *cmd, char *m)
 		if (is_str_digit(cmd->args[1]) == 0)
 		{
 			printf("%sexit: %s: numeric argument required\n", m, cmd->args[1]);
-			return (sh->exit_flag = 1, -1);
+			return (sh->exit_flag = 1, 2);
 		}
 		else
 			return (sh->exit_flag = 1, ft_atoll(cmd->args[1]) % 256);

@@ -44,7 +44,6 @@ void	free_env(t_env *env)
 		current = next;
 	}
 	free_array(env->envp);
-	free_array(env->export);
 	free(env->path);
 	free(env->pwd);
 	free(env->oldpwd);

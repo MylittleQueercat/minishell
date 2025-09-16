@@ -49,7 +49,6 @@ typedef struct s_env
 {
 	t_envl	*envl;
 	char	**envp;
-	char	**export;
 	char	*path;
 	char	*pwd;
 	char	*oldpwd;
@@ -128,13 +127,16 @@ void	loop(t_minishell *sh);
 
 int		is_builtin(const char *cmd);
 
-void	print_export(t_env *env);
+void	print_sorted_env(t_env *env);
+int		is_valid_identifier(const char *str);
+int		var_exists(t_env *env, const char *var);
+int		update_envp(t_env *env);
 
 int		ft_env(t_cmd *cmd, t_env *env);
 int		ft_echo(t_cmd *cmd);
 int		ft_pwd(t_cmd *cmd);
 int		ft_cd(t_cmd *cmd, t_env *env);
-int		ft_export(t_cmd *cmd, t_env *env);
+int		ft_export(t_minishell *sh, t_cmd *cmd);
 int		ft_unset(t_cmd *cmd, t_env *env);
 int		ft_exit(t_minishell *sh, t_cmd *cmd, char *m);
 // parsing

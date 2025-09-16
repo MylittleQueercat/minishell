@@ -1,18 +1,54 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env_utils.c                                        :+:      :+:    :+:   */
+/*   export_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 12:24:32 by aprigent          #+#    #+#             */
-/*   Updated: 2025/07/18 12:24:53 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/13 21:45:00 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	sort_env(char **envp)
+int	is_valid_identifier(const char *str)
+{
+	int	i;
+
+	if (!str || (!ft_isalpha(str[0]) && str[0] != '_'))
+		return (0);
+	i = 1;
+	while (str[i] && str[i] != '=')
+	{
+		if (!ft_isalnum(str[i]) && str[i] != '_')
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+int	var_exists(t_env *env, const char *var)
+{
+	t_envl	*current;
+	int		len;
+
+	current = env->envl;
+
+	while (current)
+	{
+		len = ft_strlen(current->name);
+		if (ft_strncmp(current->name, var, len) == 0
+				&& (var[len] == '=' || var[len] == '\0'))
+			return (1);
+		current = current->next;
+	}
+	return (0);
+}
+
+
+
+static void	sort_envp(char **envp)
 {
 	int		i;
 	int		j;
@@ -38,45 +74,32 @@ void	sort_env(char **envp)
 	}
 }
 
-
-void	print_exp(char **env_cpy, int i)
+static void	print_envp(t_env *env, int flag)
 {
-	char	*equal_sign;
-	char	*var_name;
-	char	*var_value;
-
-	while (env_cpy[++i])
-	{
-		equal_sign = ft_strchr(env_cpy[i], '=');
-		var_name = ft_substr(env_cpy[i], 0, equal_sign - env_cpy[i]);
-		var_value = ft_strdup(equal_sign + 1);
-		if (!var_value || !var_name)
-		{
-			free(var_name);
-			free(var_value);
-			ft_putstr_fd("Error: Failed to allocate memory for environment variable.\n", 2);
-			return ;
-		}
-		printf("declare -x %s=\"%s\"\n", var_name, var_value);
-	}
-}
-
-void	print_export(t_env *env)
-{
-	char	**env_cpy;
 	int		i;
+	int		j;
+	char	*p;
 
 	i = 0;
 	while (env->envp[i])
+	{
+		p = ft_strchr(env->envp[i], '=');
+		j = (int)(p - env->envp[i]);
+		if (p && flag == -1)
+			printf("declare -x %.*s=\"%s\"\n", j, env->envp[i], p + 1);
+		else if (p && flag == 1)
+			printf("%s\n", env->envp[i]);
+		else if (!p && flag == -1)
+			printf("declare -x %s\n", env->envp[i]);
+		else if (!p && flag == 1)
+			printf("%s\n", env->envp[i]);
 		i++;
-	env_cpy = (char **)malloc(sizeof(char *) * (i + 1));
-	env_cpy[i] = NULL;
-	while (--i >= 0)
-		env_cpy[i] = ft_strdup(env->envp[i]);
-	sort_env(env_cpy);
-	print_exp(env_cpy, -1);
-	while (i >= 0)
-		free(env_cpy[i--]);
-	free(env_cpy);
+	}
+}
+
+void	print_sorted_env(t_env *env)
+{
+	sort_envp(env->envp);
+	print_envp(env, -1);
 }
 
