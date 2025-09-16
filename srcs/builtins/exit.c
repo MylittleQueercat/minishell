@@ -6,13 +6,13 @@
 /*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 17:16:13 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/02 19:13:38 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/16 15:19:52 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	count_args(char **args)
+int	count_args(char **args)
 {
 	int	i;
 

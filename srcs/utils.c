@@ -6,7 +6,7 @@
 /*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 16:47:07 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/07 18:57:17 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/16 18:38:44 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,29 +72,21 @@ void	print_io_list(t_io_node *io)
 	}
 }
 
-void	init_cmd(t_cmd *cmd, t_node *node)
+int	init_cmd(t_minishell *sh, t_node *node)
 {
-	t_io_node	*io;
+	t_cmd	*cmd;
 
+	node->cmd = malloc(sizeof(t_cmd));
+	if (!node->cmd)
+		return (perror("malloc"), -1);
+	cmd = node->cmd;
 	ft_bzero(cmd, sizeof(t_cmd));
 	cmd->cmd = node->exec_args[0];
 	cmd->args = node->exec_args;
 	cmd->out_fd = -1;
 	cmd->in_fd = -1;
-	io = node->io_list;
-	while (io)
-	{
-		io->exec_value = ft_split(io->raw_value, ' ');
-		if (io->type == IO_IN)
-			cmd->infile = io->exec_value[0];
-		else if (io->type == IO_OUT)
-			cmd->outfile = io->exec_value[0];
-		else if (io->type == IO_HEREDOC)
-			cmd->infile = io->exec_value[0];
-		else if (io->type == IO_ADD_END)
-			cmd->outfile = io->exec_value[0];
-		cmd->type = io->type;
-		io = io->next;
-	}
-	open_redirections(cmd);
+	parse_io(node, cmd);
+	if (cmd->type == IO_HEREDOC)
+		exec_heredoc(sh, cmd, cmd->in_fd);
+	return (0);
 }

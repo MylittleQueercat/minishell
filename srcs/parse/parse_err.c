@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/13 18:06:55 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/04 17:49:08 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/16 14:50:07 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ void	handle_parse_err(t_minishell *sh)
 {
 	t_token_type	tok;
 
+	printf("Parsing error\n");
 	if (!sh)
 		return ;
 	if (sh->parse_err.type == 0)

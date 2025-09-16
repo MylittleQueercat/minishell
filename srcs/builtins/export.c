@@ -12,6 +12,24 @@
 
 #include "minishell.h"
 
+char	*get_env_value(const char *name, char **envp)
+{
+	int		i;
+	size_t	len;
+
+	if (!name || !envp)
+		return (NULL);
+	len = ft_strlen(name);
+	i = 0;
+	while (envp[i])
+	{
+		if (ft_strncmp(envp[i], name, len) == 0 && envp[i][len] == '=')
+			return (envp[i] + len + 1);
+		i++;
+	}
+	return (NULL);
+}
+
 int	update_envp(t_env *env)
 {
 	t_envl	*current;
@@ -41,7 +59,7 @@ int	update_envp(t_env *env)
 	return (0);
 }
 
-static void	change_env_var(t_env *env, const char *var)
+void	change_env_var(t_env *env, const char *var)
 {
 	t_envl	*current;
 	char	*new_value;

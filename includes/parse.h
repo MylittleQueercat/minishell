@@ -54,6 +54,7 @@ typedef struct s_node
 	struct s_node	*left;
 	struct s_node	*right;
 	t_cmd			*cmd;
+	int				is_in_pipe;
 }	t_node;
 
 typedef enum e_parse_err_type
