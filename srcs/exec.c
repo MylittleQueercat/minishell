@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 15:26:30 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/16 18:18:36 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/17 19:07:43 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,7 +131,8 @@ void	run_exec(t_minishell *sh)
 	i = 0;
 	if (n->type == N_PIPE)
 		return (sh->exit_s = exec_pipeline(sh, n, &i, count_pipes(n)), (void)0);
-	init_cmd(sh, n);
+	if (init_cmd(sh, n))
+		return (sh->exit_s = 1, (void)0);
 	if (n->type == N_AND)
 	{
 		sh->exit_s = run_subtree(sh, n->left, n->cmd, 0);
@@ -150,7 +151,6 @@ void	run_exec(t_minishell *sh)
 	{
 		if (!n->exec_args || !n->exec_args[0])
 			return (printf("No command to execute.\n"), (void)(sh->exit_s = 0));
-		init_cmd(sh, n);
 		return (sh->exit_s = exec_cmd_or_builtin(sh, n, 0, -1), (void)0);
 	}
 	printf("Unsupported node type for execution.\n");

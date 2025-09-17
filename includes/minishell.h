@@ -111,7 +111,7 @@ int		exec_builtin(t_minishell *sh, t_cmd *cmd);
 int		exec_cmd(t_minishell *sh, t_cmd *cmd, int i, int n);
 int		exec_pipe(t_node *tree, t_env *env);
 int		exec_pipeline(t_minishell *sh, t_node *node, int *i, int nb_pipes);
-void	exec_heredoc(t_minishell *sh, t_cmd *cmd, int fd);
+int		exec_heredoc(t_minishell *sh, t_node *node);
 void	setup_pipes(int **pipes, int i, int n, t_cmd *cmd);
 void	close_pipes(int **pipes, int i, int n);
 void	close_all_pipes(int **pipes, int i, int n);
@@ -124,8 +124,6 @@ void	build_prompt(t_minishell *sh);
 t_envl	*get_last_envl(t_envl *envl);
 char	*strjoin_free_s1(char *s1, char *s2);
 long long	ft_atoll(const char *str);
-void	open_redirections(t_cmd *cmd);
-void	parse_io(t_node *node, t_cmd *cmd);
 void	add_colors(t_minishell *sh);
 int		count_args(char **args);
 
