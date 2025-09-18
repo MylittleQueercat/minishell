@@ -6,7 +6,7 @@
 /*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 13:02:48 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/07 19:00:34 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/18 21:39:19 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,18 +69,6 @@ void	set_env(t_env *env, t_envl *current)
 	}
 }
 
-void	empty_env(t_env *env)
-{
-	env->envl = NULL;
-	env->path = ft_strdup("");
-	if (!env->path)
-		perror_exit("Allocation error for PATH", free_env, env);
-	env->pwd = getcwd(NULL, 0);
-	env->oldpwd = getcwd(NULL, 0);
-	if (!env->pwd || !env->oldpwd)
-		perror_exit("Allocation error for PWD/OLDPWD", free_env, env);
-}
-
 void	set_envp(t_env *env, int i, int size)
 {
 	t_envl	*current;
@@ -105,6 +93,34 @@ void	set_envp(t_env *env, int i, int size)
 		current = current->next;
 	}
 	env->envp[i] = NULL;
+}
+
+void	empty_env(t_env *env)
+{
+	env->pwd = getcwd(NULL, 0);
+	env->path = ft_strdup("");
+	if (!env->pwd || !env->path)
+		perror_exit("Allocation error for PWD or PATH", free_env, env);
+	env->envl = malloc(sizeof(t_envl));
+	if (!env->envl)
+		perror_exit("Allocation error for env struct", free_env, env);
+	env->envl->name = ft_strdup("PWD");
+	env->envl->value = ft_strdup(env->pwd);
+	env->envl->next = malloc(sizeof(t_envl));
+	if (!env->envl->next || !env->envl->name || !env->envl->value)
+		perror_exit("Allocation error for env struct", free_env, env);
+	env->envl->next->name = ft_strdup("SHLVL");
+	env->envl->next->value = ft_strdup("1");
+	env->envl->next->next = NULL;
+	if (!env->envl->next->name || !env->envl->next->value)
+		perror_exit("Allocation error for env struct", free_env, env);
+	env->envl->next->next = malloc(sizeof(t_envl));
+	env->envl->next->next->name = ft_strdup("_");
+	env->envl->next->next->value = ft_strdup("/usr/bin/env");
+	env->envl->next->next->next = NULL;
+	if (!env->envl->next->next->name || !env->envl->next->next->value)
+		perror_exit("Allocation error for env struct", free_env, env);
+	set_envp(env, 0, 0);
 }
 
 t_env	*init_env(char **envp)

@@ -6,7 +6,7 @@
 /*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 12:24:32 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/13 21:45:00 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/18 21:55:08 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,19 +34,16 @@ int	var_exists(t_env *env, const char *var)
 	int		len;
 
 	current = env->envl;
-
 	while (current)
 	{
 		len = ft_strlen(current->name);
 		if (ft_strncmp(current->name, var, len) == 0
-				&& (var[len] == '=' || var[len] == '\0'))
+			&& (var[len] == '=' || var[len] == '\0'))
 			return (1);
 		current = current->next;
 	}
 	return (0);
 }
-
-
 
 static void	sort_envp(char **envp)
 {
@@ -97,9 +94,8 @@ static void	print_envp(t_env *env, int flag)
 	}
 }
 
-void	print_sorted_env(t_env *env)
+void	print_sorted_env(t_env *env, int flag)
 {
 	sort_envp(env->envp);
-	print_envp(env, -1);
+	print_envp(env, flag);
 }
-

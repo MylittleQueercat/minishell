@@ -6,7 +6,7 @@
 /*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/17 16:35:18 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/17 19:19:20 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/18 20:45:59 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,8 +74,12 @@ int	init_cmd(t_minishell *sh, t_node *node)
 		return (perror("malloc"), 1);
 	cmd = node->cmd;
 	ft_bzero(cmd, sizeof(t_cmd));
-	cmd->cmd = node->exec_args[0];
-	cmd->args = node->exec_args;
+	if (node->exec_args)
+	{
+		cmd->cmd = node->exec_args[0];
+		cmd->args = node->exec_args;
+		cmd->argc = count_args(node->exec_args);
+	}
 	cmd->out_fd = -1;
 	cmd->in_fd = -1;
 	return (parse_io(sh, node, cmd));

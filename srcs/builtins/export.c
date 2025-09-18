@@ -122,7 +122,7 @@ int	ft_export(t_minishell *sh, t_cmd *cmd)
 	int		i;
 
 	if (!cmd->args[1])
-		return (print_sorted_env(sh->env), 0);
+		return (print_sorted_env(sh->env, -1), 0);
 	i = 1;
 	while (cmd->args[i])
 	{

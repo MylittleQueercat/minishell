@@ -6,11 +6,13 @@
 /*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 14:51:28 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/07 20:57:52 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/18 21:25:00 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int	g_st = 0;
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -27,7 +29,7 @@ int	main(int argc, char **argv, char **envp)
 	{
 		run_iteration(sh);
 		if (sh->tree)
-			run_exec(sh);
+			run_exec(sh, sh->tree);
 		if (sh->exit_flag)
 			break ;
 		free(sh->line);

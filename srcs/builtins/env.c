@@ -14,15 +14,11 @@
 
 int	ft_env(t_cmd *cmd, t_env *env)
 {
-	int	i;
-
 	if (cmd->args[1])
 	{
 		printf("env: '%s': No such file or directory\n", cmd->args[1]);
 		return (1);
 	}
-	i = 0;
-	while (env->envp[i])
-		printf("%s\n", env->envp[i++]);
+	print_sorted_env(env, 1);
 	return (0);
 }

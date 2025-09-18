@@ -6,7 +6,7 @@
 /*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/11 18:46:06 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/17 18:44:34 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/18 21:22:07 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,31 +20,6 @@ int	is_builtin_output(const char *cmd)
 	return (0);
 }
 
-void	close_all_pipes(int **pipes, int i, int n)
-{
-	while (i < n)
-	{
-		close(pipes[i][0]);
-		close(pipes[i][1]);
-		i++;
-	}
-}
-
-int	count_pipes(t_node *node)
-{
-	int	count;
-
-	count = 0;
-	while (node)
-	{
-		if (node->type == N_PIPE)
-			count++;
-		node = node->left;
-	}
-	return (count);
-}
-
-
 void	add_colors(t_minishell *sh)
 {
 	char	*colors[3];
@@ -56,4 +31,18 @@ void	add_colors(t_minishell *sh)
 	cmd.cmd = *colors;
 	cmd.args = colors;
 	ft_export(sh, &cmd);
+}
+
+void	setup_redirections(t_cmd *cmd)
+{
+	if (cmd->in_fd != -1)
+	{
+		dup2(cmd->in_fd, STDIN_FILENO);
+		close(cmd->in_fd);
+	}
+	if (cmd->out_fd != -1)
+	{
+		dup2(cmd->out_fd, STDOUT_FILENO);
+		close(cmd->out_fd);
+	}
 }

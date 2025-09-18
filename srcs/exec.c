@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 15:26:30 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/17 19:07:43 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/18 22:13:01 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 int	exec_builtin(t_minishell *sh, t_cmd *cmd)
 {
-	setup_pipes(NULL, 0, -1, cmd);
 	if (ft_strcmp(cmd->cmd, "echo") == 0)
 		return (ft_echo(cmd));
 	if (ft_strcmp(cmd->cmd, "cd") == 0)
@@ -33,7 +32,7 @@ int	exec_builtin(t_minishell *sh, t_cmd *cmd)
 	return (1);
 }
 
-int	exec_cmd(t_minishell *sh, t_cmd *cmd, int i, int n)
+int	exec_cmd(t_minishell *sh, t_cmd *cmd)
 {
 	int	status;
 	int	pid;
@@ -43,27 +42,28 @@ int	exec_cmd(t_minishell *sh, t_cmd *cmd, int i, int n)
 		return (perror("fork"), -1);
 	if (pid == 0)
 	{
-		setup_pipes(sh->pipes, i, n, cmd);
+		setup_redirections(cmd);
 		cmd->path = get_cmd_path(sh->env->path, cmd, -1);
 		if (!cmd->path)
 		{
-			printf("Command not found: %s\n", cmd->cmd);
-			exit((free_minishell(sh), 127));
+			printf("minishell: %s: command not found\n", cmd->cmd);
+			exit(127);
 		}
 		execve(cmd->path, cmd->args, sh->env->envp);
 		perror("execve");
-		exit((free(cmd->path), free_minishell(sh), 126));
+		exit((free(cmd->path), 126));
 	}
 	waitpid(pid, &status, 0);
 	sh->exit_s = status >> 8;
 	return (sh->exit_s);
 }
 
-int	exec_cmd_or_builtin(t_minishell *sh, t_node *node, int i, int n)
+int	exec_cmd_or_builtin(t_minishell *sh, t_node *node)
 {
 	int	vl;
 	int	pid;
 
+	setup_redirections(node->cmd);
 	if (is_builtin(node->cmd->cmd))
 	{
 		if (node->is_in_pipe == 1 && is_builtin_output(node->cmd->cmd))
@@ -71,88 +71,74 @@ int	exec_cmd_or_builtin(t_minishell *sh, t_node *node, int i, int n)
 			pid = fork();
 			if (pid == 0)
 			{
-				setup_pipes(sh->pipes, i, n, node->cmd);
 				exec_builtin(sh, node->cmd);
 				exit(sh->exit_s);
 			}
 			waitpid(pid, &vl, 0);
 			sh->exit_s = vl >> 8;
-			return (sh->exit_s);
 		}
 		else
-		{
-			vl = exec_builtin(sh, node->cmd);
-			dup2(sh->fd_stdin, STDIN_FILENO);
-			dup2(sh->fd_stdout, STDOUT_FILENO);
-			return (vl);
-		}
+			sh->exit_s = exec_builtin(sh, node->cmd);
 	}
 	else
-		return (exec_cmd(sh, node->cmd, i, n));
+		sh->exit_s = exec_cmd(sh, node->cmd);
+	dup2(sh->fd_stdin, STDIN_FILENO);
+	dup2(sh->fd_stdout, STDOUT_FILENO);
+	return (sh->exit_s);
 }
 
-int	run_subtree(t_minishell *sh, t_node *node, t_cmd *cmd, int st)
+int	fork_node(t_minishell *sh, t_node *node)
 {
-	if (!node)
-		return (0);
-	if (node->type == N_PIPE)
-		return (exec_pipeline(sh, node, 0, count_pipes(node)));
-	if (node->type == N_AND)
-	{
-		st = run_subtree(sh, node->left, cmd, 0);
-		if (st == 0)
-			st = run_subtree(sh, node->right, cmd, 0);
-		return (st);
-	}
-	if (node->type == N_OR)
-	{
-		st = run_subtree(sh, node->left, cmd, 0);
-		if (st != 0)
-			st = run_subtree(sh, node->right, cmd, 0);
-		return (st);
-	}
+	int	pid[2];
+	int fd[2];
+	int	status[2];
+
+	if (pipe(fd) == -1)
+		return (perror("pipe"), -1);
+	pid[0] = fork();
+	if (pid[0] < 0)
+		return (perror("fork"), -1);
+	if (pid[0] == 0)
+		child_process(sh, node, fd, 0);
+	pid[1] = fork();
+	if (pid[1] < 0)
+		return (perror("fork"), -1);
+	if (pid[1] == 0)
+		child_process(sh, node, fd, 1);
+	close(fd[0]);
+	close(fd[1]);
+	waitpid(pid[0], &status[0], 0);
+	waitpid(pid[1], &status[1], 0);
+	if ((status[1] & 0x7F) == 0)
+		return (sh->exit_s = (status[1] >> 8) & 0xFF);
+	else
+		return (sh->exit_s = 128 + (status[1] & 0x7F));
+}
+
+int	run_exec(t_minishell *sh, t_node *node)
+{
 	if (node->type == N_CMD)
 	{
 		if (!node->exec_args || !node->exec_args[0])
 			return (0);
-		return (init_cmd(sh, node), exec_cmd_or_builtin(sh, node, 0, -1));
+		return (init_cmd(sh, node), exec_cmd_or_builtin(sh, node));
 	}
+	if (node->type == N_AND)
+	{
+		g_st = run_exec(sh, node->left);
+		if (g_st == 0)
+			g_st = run_exec(sh, node->right);
+		return (g_st);
+	}
+	if (node->type == N_OR)
+	{
+		g_st = run_exec(sh, node->left);
+		if (g_st != 0)
+			g_st = run_exec(sh, node->right);
+		return (g_st);
+	}
+	if (node->type == N_PIPE)
+		return (fork_node(sh, node));
+	printf("Unknown node type: %d\n", node->type);
 	return (1);
-}
-
-void	run_exec(t_minishell *sh)
-{
-	t_node	*n;
-	int		i;
-
-	n = sh->tree;
-	if (!n)
-		return ;
-	i = 0;
-	if (n->type == N_PIPE)
-		return (sh->exit_s = exec_pipeline(sh, n, &i, count_pipes(n)), (void)0);
-	if (init_cmd(sh, n))
-		return (sh->exit_s = 1, (void)0);
-	if (n->type == N_AND)
-	{
-		sh->exit_s = run_subtree(sh, n->left, n->cmd, 0);
-		if (sh->exit_s == 0)
-			sh->exit_s = run_subtree(sh, n->right, n->cmd, 0);
-		return ;
-	}
-	if (n->type == N_OR)
-	{
-		sh->exit_s = run_subtree(sh, n->left, n->cmd, 0);
-		if (sh->exit_s != 0)
-			sh->exit_s = run_subtree(sh, n->right, n->cmd, 0);
-		return ;
-	}
-	if (n->type == N_CMD)
-	{
-		if (!n->exec_args || !n->exec_args[0])
-			return (printf("No command to execute.\n"), (void)(sh->exit_s = 0));
-		return (sh->exit_s = exec_cmd_or_builtin(sh, n, 0, -1), (void)0);
-	}
-	printf("Unsupported node type for execution.\n");
-	return (sh->exit_s = 1, (void)0);
 }

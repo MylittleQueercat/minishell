@@ -40,6 +40,8 @@
 
 #define LS_COLORS "LS_COLORS=di=34:ln=36:so=32:pi=33:ex=31:bd=34;46:cd=34;43:su=37;41:sg=30;43:tw=30;42:ow=34;42"
 
+extern int	g_st;
+
 typedef struct s_envl
 {
 	char			*name;
@@ -103,20 +105,16 @@ void	free_tree(t_node *node);
 
 void	clear_ast_token(t_minishell *sh);
 
-void	run_exec(t_minishell *sh);
 void	run_iteration(t_minishell *sh);
 
-int		exec_cmd_or_builtin(t_minishell *sh, t_node *node, int i, int n);
+int		run_exec(t_minishell *sh, t_node *node);
+int		exec_cmd_or_builtin(t_minishell *sh, t_node *node);
 int		exec_builtin(t_minishell *sh, t_cmd *cmd);
-int		exec_cmd(t_minishell *sh, t_cmd *cmd, int i, int n);
-int		exec_pipe(t_node *tree, t_env *env);
-int		exec_pipeline(t_minishell *sh, t_node *node, int *i, int nb_pipes);
+int		exec_cmd(t_minishell *sh, t_cmd *cmd);
 int		exec_heredoc(t_minishell *sh, t_node *node);
-void	setup_pipes(int **pipes, int i, int n, t_cmd *cmd);
-void	close_pipes(int **pipes, int i, int n);
-void	close_all_pipes(int **pipes, int i, int n);
 
-int		count_pipes(t_node *node);
+int		fork_node(t_minishell *sh, t_node *node);
+void	child_process(t_minishell *sh, t_node *node, int *fds, int n);
 
 char	*get_cmd_path(char *path, t_cmd *cmd, int i);
 
@@ -126,6 +124,7 @@ char	*strjoin_free_s1(char *s1, char *s2);
 long long	ft_atoll(const char *str);
 void	add_colors(t_minishell *sh);
 int		count_args(char **args);
+void	setup_redirections(t_cmd *cmd);
 
 void	perror_exit(const char *msg, void (*fn)(t_env *), t_env *arg);
 
@@ -134,7 +133,7 @@ void	loop(t_minishell *sh);
 int		is_builtin(const char *cmd);
 int		is_builtin_output(const char *cmd);
 
-void	print_sorted_env(t_env *env);
+void	print_sorted_env(t_env *env, int flag);
 int		is_valid_identifier(const char *str);
 int		var_exists(t_env *env, const char *var);
 int		update_envp(t_env *env);
