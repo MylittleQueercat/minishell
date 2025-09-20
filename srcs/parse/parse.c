@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 18:42:05 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/04 17:48:46 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/20 08:09:49 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 /* In this file, we convert the token string into a command syntax tree. */
 
 /* Parse the smallest units (use recursion) */
-t_node	*parse_cmd_unit(t_minishell *sh, t_token **it)
+t_node	*parse_cmd_unit(t_sh *sh, t_token **it)
 {
 	t_node	*node;
 
@@ -42,13 +42,13 @@ t_node	*parse_cmd_unit(t_minishell *sh, t_token **it)
    Link the left and right subtrees, so the executor can run the commands in
    logical order.
 */
-t_node	*comb_cmd(t_minishell *sh, t_token_type op, t_node *lf, t_node *rg)
+t_node	*comb_cmd(t_sh *sh, t_token_type op, t_node *lf, t_node *rg)
 {
 	t_node	*node;
 
 	if (sh->parse_err.type)
 		return (NULL);
-	node = create_new_node(get_node_type(op));
+	node = create_new_node(sh, get_node_type(op));
 	if (!node)
 	{
 		set_parse_err(sh, E_MEMORY);
@@ -60,7 +60,7 @@ t_node	*comb_cmd(t_minishell *sh, t_token_type op, t_node *lf, t_node *rg)
 }
 
 /* Combine units into larger structures according to operator priority */
-t_node	*parse_cmd(t_minishell *sh, t_token **it, int min_prio)
+t_node	*parse_cmd(t_sh *sh, t_token **it, int min_prio)
 {
 	t_node			*left;
 	t_node			*right;
@@ -84,12 +84,12 @@ t_node	*parse_cmd(t_minishell *sh, t_token **it, int min_prio)
 			return (left);
 		left = comb_cmd(sh, op, left, right);
 		if (!left)
-			return (clear_ast(&left), clear_ast(&right), NULL);
+			return (NULL);
 	}
 	return (left);
 }
 
-t_node	*parse(t_minishell *sh)
+t_node	*parse(t_sh *sh)
 {
 	t_node	*cmd_tree;
 	t_token	*it;

@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 16:01:16 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/04 18:20:24 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/20 08:02:57 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 
 # define PROMPT "minishell👾 "
 
-typedef struct s_minishell	t_minishell;
+typedef struct s_sh	t_sh;
 
 typedef enum e_token_type
 {
@@ -46,11 +46,11 @@ typedef struct s_token
 // token_add_to_end.c
 int		add_sep_to_end(t_token_type type, char **line, t_token **token_list);
 int		is_quote(char c);
-int		add_word_to_end(t_minishell *sh, char **line, t_token **token_list);
+int		add_word_to_end(t_sh *sh, char **line, t_token **token_list);
 
 // token_handler.c
 int		handler_sep(char **line, t_token **token_list);
-t_token	*token_handler(t_minishell *sh);
+t_token	*token_handler(t_sh *sh);
 
 // token_list.c
 t_token	*create_new_token(char *value, t_token_type type);
@@ -62,9 +62,9 @@ int		is_sep(char *str);
 int		ft_isspace(char c);
 void	skip_space(char **str);
 int		skip_quote(char *line, size_t *i);
-void	print_quote_err(t_minishell *sh, char c);
+void	print_quote_err(t_sh *sh, char c);
 
 // token.c
-t_token	*tokenizer(t_minishell *sh);
+t_token	*tokenizer(t_sh *sh);
 
 #endif

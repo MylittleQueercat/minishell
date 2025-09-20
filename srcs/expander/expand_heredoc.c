@@ -6,35 +6,13 @@
 /*   By: leticiabi <leticiabi@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 14:48:16 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/17 17:01:59 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/20 06:50:48 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 // Bonus Part
 
 #include "minishell.h"
-
-static void	ft_del(void *ptr)
-{
-	free(ptr);
-	ptr = NULL;
-}
-
-void	*go_trash(void *ptr, bool clean)
-{
-	static t_list	*list;
-
-	if (!clean)
-	{
-		ft_lstadd_back(&list, ft_lstnew(ptr));
-		return (ptr);
-	}
-	else
-	{
-		ft_lstclear(&list, ft_del);
-		return (NULL);
-	}
-}
 
 static	int	expand_heredoc_printer(t_minishell sh, char *str, size_t i, int fd)
 {
@@ -48,7 +26,7 @@ static	int	expand_heredoc_printer(t_minishell sh, char *str, size_t i, int fd)
 		i++;
 	if (i != start)
 	{
-		tmp = go_trash(ft_substr(str, start, i), false);
+		tmp = a_substr(sh.a, str, start, i);
 		tmp = get_env_val(&sh, tmp);
 		if (tmp)
 			ft_putstr_fd(tmp, fd);

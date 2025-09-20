@@ -6,13 +6,13 @@
 /*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 13:23:30 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/18 20:40:41 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/20 08:08:18 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	update_pwd(t_env *env)
+int	update_pwd(t_sh *sh, t_env *env)
 {
 	char	*cwd;
 	char	*tmp;
@@ -20,26 +20,22 @@ int	update_pwd(t_env *env)
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
 		return (perror("getcwd"), 0);
-	if (env->oldpwd)
-		free(env->oldpwd);
-	env->oldpwd = ft_strdup(get_env_value("PWD", env->envp));
+	env->oldpwd = a_strdup(sh->a, get_env_value("PWD", env->envp));
 	if (!env->oldpwd)
-		return (printf("cd: allocation error\n"), free(cwd), 0);
-	tmp = ft_strjoin("OLDPWD=", env->oldpwd);
+		return (printf("cd: allocation error\n"), 0);
+	tmp = a_strjoin(sh->a, "OLDPWD=", env->oldpwd);
 	if (!tmp)
-		return (printf("cd: allocation error\n"), free(cwd), 0);
-	change_env_var(env, tmp);
-	if (env->pwd)
-		free(env->pwd);
+		return (printf("cd: allocation error\n"), 0);
+	change_env_var(sh, env, tmp);
 	env->pwd = cwd;
-	tmp = ft_strjoin("PWD=", env->pwd);
+	tmp = a_strjoin(sh->a, "PWD=", env->pwd);
 	if (!tmp)
-		return (printf("cd: allocation error\n"), free(cwd), 0);
-	change_env_var(env, tmp);
+		return (printf("cd: allocation error\n"), 0);
+	change_env_var(sh, env, tmp);
 	return (1);
 }
 
-int	cd_no_arg(t_env *env)
+int	cd_no_arg(t_sh *sh, t_env *env)
 {
 	char	*home;
 
@@ -54,20 +50,20 @@ int	cd_no_arg(t_env *env)
 		perror("cd");
 		return (0);
 	}
-	return (update_pwd(env));
+	return (update_pwd(sh, env));
 }
 
-int	cd_root(t_env *env)
+int	cd_root(t_sh *sh, t_env *env)
 {
 	if (chdir("/") != 0)
 	{
 		perror("cd");
 		return (0);
 	}
-	return (update_pwd(env));
+	return (update_pwd(sh, env));
 }
 
-int	ft_cd(t_cmd *cmd, t_env *env)
+int	ft_cd(t_sh *sh, t_cmd *cmd, t_env *env)
 {
 	if (cmd->argc > 2)
 	{
@@ -78,7 +74,7 @@ int	ft_cd(t_cmd *cmd, t_env *env)
 		|| ft_strncmp(cmd->args[1], "--", 2) == 0
 		|| ft_strncmp(cmd->args[1], "$HOME", 6) == 0
 		|| ft_strncmp(cmd->args[1], "~/", 2) == 0)
-		return (cd_no_arg(env));
+		return (cd_no_arg(sh, env));
 	if (ft_strncmp(cmd->args[1], "-", 2) == 0)
 	{
 		cmd->args[1] = NULL;
@@ -89,5 +85,5 @@ int	ft_cd(t_cmd *cmd, t_env *env)
 		perror("cd");
 		return (0);
 	}
-	return (update_pwd(env));
+	return (update_pwd(sh, env));
 }

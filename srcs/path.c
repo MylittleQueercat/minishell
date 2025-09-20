@@ -6,20 +6,20 @@
 /*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 16:43:18 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/16 15:19:07 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/20 07:59:16 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static char	*abs_path(char *cmd)
+static char	*abs_path(t_sh *sh, char *cmd)
 {
 	if (!access(cmd, X_OK))
-		return (ft_strdup(cmd));
+		return (a_strdup(sh->a, cmd));
 	return (NULL);
 }
 
-char	*get_cmd_path(char *path, t_cmd *cmd, int i)
+char	*get_cmd_path(t_sh *sh, char *path, t_cmd *cmd, int i)
 {
 	char	**paths;
 
@@ -27,22 +27,21 @@ char	*get_cmd_path(char *path, t_cmd *cmd, int i)
 	{
 		cmd->argc = count_args(cmd->args);
 		cmd->args[cmd->argc++] = "--color=auto";
-		cmd->args = ft_realloc(cmd->args, sizeof(char *) * cmd->argc,
+		cmd->args = a_realloc(sh->a, cmd->args, sizeof(char *) * cmd->argc,
 				sizeof(char *) * (cmd->argc + 1));
 		cmd->args[cmd->argc] = NULL;
 	}
 	if (cmd->cmd[0] == '/' || cmd->cmd[0] == '.')
-		return (abs_path(cmd->cmd));
-	paths = ft_split(path, ':');
+		return (abs_path(sh, cmd->cmd));
+	paths = a_split(sh->a, path, ':');
 	if (!paths)
 		return (NULL);
 	while (paths[++i])
 	{
-		path = ft_strjoin(paths[i], "/");
-		path = strjoin_free_s1(path, cmd->cmd);
+		path = a_strjoin(sh->a, paths[i], "/");
+		path = a_strjoin(sh->a, path, cmd->cmd);
 		if (!access(path, X_OK))
-			return (free_array(paths), path);
-		free(path);
+			return (path);
 	}
-	return (free_array(paths), NULL);
+	return (NULL);
 }

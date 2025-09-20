@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 19:17:02 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/09 19:03:19 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/20 08:15:58 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	is_valid_var_char(char c)
 	return (0);
 }
 
-char	*get_env_val(t_minishell *sh, char *var)
+char	*get_env_val(t_sh *sh, char *var)
 {
 	t_envl	*envlst;
 
@@ -33,7 +33,7 @@ char	*get_env_val(t_minishell *sh, char *var)
 	return (NULL);
 }
 
-char	*clean_empty(char *str)
+char	*clean_empty(t_sh *sh, char *str)
 {
 	size_t	i;
 	size_t	j;
@@ -44,7 +44,7 @@ char	*clean_empty(char *str)
 	if ((str[0] == '\'' && str[1] == '\'' && !str[2])
 		|| (str[0] == '"' && str[1] == '"' && !str[2]))
 		return (str);
-	tmp = ft_calloc(ft_strlen(str) + 1, sizeof(char));
+	tmp = a_calloc(sh->a, ft_strlen(str) + 1, sizeof(char));
 	i = 0;
 	j = 0;
 	while (str[i])
@@ -55,8 +55,7 @@ char	*clean_empty(char *str)
 		else
 			tmp[j++] = str[i++];
 	}
-	free(str);
 	len = ft_strlen(tmp) + 1;
-	arr = ft_calloc(len, sizeof(char));
-	return (ft_strlcpy(arr, tmp, len), free(tmp), arr);
+	arr = a_calloc(sh->a, len, sizeof(char));
+	return (ft_strlcpy(arr, tmp, len), arr);
 }

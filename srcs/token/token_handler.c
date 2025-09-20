@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 16:36:07 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/04 17:47:25 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/20 06:20:07 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ t_token	*token_handler(t_minishell *sh)
 	while (*p)
 	{
 		if (invalid)
-			return (clear_token_list(&token_list), NULL);
+			return (NULL);
 		if (ft_isspace(*p))
 			skip_space(&p);
 		else if (!ft_strncmp(p, "&&", 2) || !ft_strncmp(p, ">", 1)

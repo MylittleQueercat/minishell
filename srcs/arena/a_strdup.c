@@ -1,34 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   echo.c                                             :+:      :+:    :+:   */
+/*   a_strdup.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/17 12:10:50 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/20 07:26:46 by aprigent         ###   ########.fr       */
+/*   Created: 2025/09/20 06:03:50 by aprigent          #+#    #+#             */
+/*   Updated: 2025/09/20 06:04:11 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "arena.h"
 
-int	ft_echo(t_cmd *cmd)
+char	*a_strdup(t_arena *arena, const char *s)
 {
-	int	i;
-	int	n_flag;
+	size_t	len;
+	char	*dup;
 
-	n_flag = 0;
-	if (cmd->args[1] && ft_strncmp(cmd->args[1], "-n", 2) == 0)
-		n_flag = 1;
-	i = 1 + n_flag;
-	while (cmd->args[i])
-	{
-		printf("%s", cmd->args[i]);
-		if (cmd->args[i + 1])
-			printf(" ");
-		i++;
-	}
-	if (!n_flag)
-		printf("\n");
-	return (0);
+	if (!s)
+		return (NULL);
+	len = ft_strlen(s);
+	dup = arena_alloc(arena, len + 1);
+	if (!dup)
+		return (NULL);
+	ft_memcpy(dup, s, len);
+	dup[len] = '\0';
+	return (dup);
 }

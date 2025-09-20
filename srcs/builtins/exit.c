@@ -6,7 +6,7 @@
 /*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 17:16:13 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/16 15:19:52 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/20 08:06:36 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static int	is_str_digit(char *str)
 	return (1);
 }
 
-int	ft_exit(t_minishell *sh, t_cmd *cmd, char *m)
+int	ft_exit(t_sh *sh, t_cmd *cmd, char *m)
 {
 	printf("exit\n");
 	cmd->argc = count_args(cmd->args);

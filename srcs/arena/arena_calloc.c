@@ -1,31 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   error_exit.c                                       :+:      :+:    :+:   */
+/*   arena_calloc.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/07 01:51:47 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/07 01:52:39 by aprigent         ###   ########.fr       */
+/*   Created: 2025/06/30 16:58:37 by aprigent          #+#    #+#             */
+/*   Updated: 2025/09/20 08:12:06 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "arena.h"
 
-void	perror_exit(const char *msg, void (*fn)(t_env *), t_env *arg)
+void	*a_calloc(t_arena *arena, size_t nmemb, size_t size)
 {
-	if (fn && arg)
-		fn(arg);
-	if (msg)
-		perror(msg);
-	exit(EXIT_FAILURE);
-}
+	void	*ptr;
 
-void	perror_exit_pipes(const char *msg, int **pipes, int n)
-{
-	if (pipes)
-		free_pipes(pipes, n);
-	if (msg)
-		perror(msg);
-	exit(EXIT_FAILURE);
+	ptr = arena_alloc(arena, nmemb * size);
+	if (!ptr)
+		return (NULL);
+	ft_bzero(ptr, (nmemb * size));
+	return (ptr);
 }

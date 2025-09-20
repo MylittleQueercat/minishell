@@ -6,13 +6,13 @@
 /*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 11:50:17 by aprigent          #+#    #+#             */
-/*   Updated: 2025/07/18 12:07:45 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/20 08:06:32 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ft_unset(t_cmd *cmd, t_env *env)
+int	ft_unset(t_sh *sh, t_cmd *cmd, t_env *env)
 {
 	t_envl	*current;
 	t_envl	*prev;
@@ -38,9 +38,6 @@ int	ft_unset(t_cmd *cmd, t_env *env)
 					prev->next = current->next;
 				else
 					env->envl = current->next;
-				free(current->name);
-				free(current->value);
-				free(current);
 				break ;
 			}
 			prev = current;
@@ -48,5 +45,5 @@ int	ft_unset(t_cmd *cmd, t_env *env)
 		}
 		i++;
 	}
-	return (update_envp(env));
+	return (update_envp(sh, env));
 }

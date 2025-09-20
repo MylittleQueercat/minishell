@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 19:20:27 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/02 17:41:38 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/20 06:45:11 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ static void	skip_word(char const *s, size_t *i)
 	}
 }
 
-static char	**allocate_mem(char const *str, char **res)
+static char	**allocate_mem(t_minishell *sh, char const *str, char **res)
 {
 	size_t	begin;
 	size_t	i;
@@ -44,7 +44,7 @@ static char	**allocate_mem(char const *str, char **res)
 		{
 			begin = i;
 			skip_word(str, &i);
-			res[j] = ft_calloc(i - begin + 1, sizeof(char));
+			res[j] = a_calloc(sh->a, i - begin + 1, sizeof(char));
 			if (!res[j])
 				return (NULL);
 			j++;
@@ -96,7 +96,7 @@ static char	**filler(char const *str, char **res)
 	return (res);
 }
 
-char	**expand_split(char const *str)
+char	**expand_split(t_minishell *sh, char const *str)
 {
 	size_t	i;
 	size_t	count;
@@ -114,10 +114,10 @@ char	**expand_split(char const *str)
 		while (str[i] && str[i] == ' ')
 			i++;
 	}
-	res = ft_calloc(count + 1, sizeof(char *));
+	res = a_calloc(sh->a, count + 1, sizeof(char *));
 	to_free = res;
 	res = allocate_mem(str, res);
 	if (!res || !count)
-		return (free_char_arr2(to_free), NULL);
+		return (NULL);
 	return (filler(str, res));
 }

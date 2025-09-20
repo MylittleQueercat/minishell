@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 14:52:55 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/07 01:59:39 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/20 08:05:39 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	sig_quit_handler(int num)
 	ft_putstr_fd("Quit: 3\n", 1);
 }
 
-void	init_signals(t_minishell *sh)
+void	init_signals(t_sh *sh)
 {
 	struct termios	term;
 

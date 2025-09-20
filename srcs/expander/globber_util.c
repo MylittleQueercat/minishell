@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 16:43:01 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/05 15:19:43 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/20 06:44:04 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,18 +41,6 @@ size_t	match_count(char *pattern)
 	return (count);
 }
 
-void	free_char_arr3(char	***to_free)
-{
-	size_t	i;
-
-	if (!to_free)
-		return ;
-	i = 0;
-	while (to_free[i])
-		free_char_arr2(to_free[i++]);
-	free(to_free);
-}
-
 static size_t	count_str_arr(char	***str_arr)
 {
 	size_t	i;
@@ -72,7 +60,7 @@ static size_t	count_str_arr(char	***str_arr)
 	return (count);
 }
 
-char	**join_str_arr(char ***str_arr)
+char	**join_str_arr(t_minishell *sh, char ***str_arr)
 {
 	size_t	i;
 	size_t	j;
@@ -80,7 +68,7 @@ char	**join_str_arr(char ***str_arr)
 	char	**joined;
 
 	count = count_str_arr(str_arr);
-	joined = (char **)ft_calloc(count + 1, sizeof(char *));
+	joined = a_calloc(sh->a, count + 1, sizeof(char *));
 	if (!joined)
 		return (NULL);
 	i = 0;
@@ -90,11 +78,11 @@ char	**join_str_arr(char ***str_arr)
 		j = 0;
 		while (str_arr[i][j])
 		{
-			joined[count + j] = ft_strdup(str_arr[i][j]);
+			joined[count + j] = a_strdup(sh->a, str_arr[i][j]);
 			j++;
 		}
 		count += j;
 		i++;
 	}
-	return (free_char_arr3(str_arr), joined);
+	return (joined);
 }

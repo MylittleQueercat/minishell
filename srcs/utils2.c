@@ -6,7 +6,7 @@
 /*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/11 18:46:06 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/18 21:22:07 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/20 08:06:00 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	is_builtin_output(const char *cmd)
 	return (0);
 }
 
-void	add_colors(t_minishell *sh)
+void	add_colors(t_sh *sh)
 {
 	char	*colors[3];
 	t_cmd	cmd;

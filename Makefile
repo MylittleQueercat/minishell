@@ -17,7 +17,7 @@ PARSE_DIR = ./srcs/parse/
 EXPAND_DIR = ./srcs/expander/
 TOKEN_DIR = ./srcs/token/
 
-SRCS = main.c exec.c path.c utils.c init_env.c loop.c error_exit.c free.c \
+SRCS = main.c exec.c path.c utils.c init_env.c loop.c free.c \
 		clean.c mini_signal.c init_minishell.c pipe.c ft_atoll.c utils2.c \
 		heredoc.c init_cmd.c
 

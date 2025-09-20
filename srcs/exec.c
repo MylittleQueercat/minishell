@@ -6,24 +6,24 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 15:26:30 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/18 22:13:01 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/20 07:56:03 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	exec_builtin(t_minishell *sh, t_cmd *cmd)
+int	exec_builtin(t_sh *sh, t_cmd *cmd)
 {
 	if (ft_strcmp(cmd->cmd, "echo") == 0)
 		return (ft_echo(cmd));
 	if (ft_strcmp(cmd->cmd, "cd") == 0)
-		return (ft_cd(cmd, sh->env));
+		return (ft_cd(sh, cmd, sh->env));
 	if (ft_strcmp(cmd->cmd, "pwd") == 0)
 		return (ft_pwd(cmd));
 	if (ft_strcmp(cmd->cmd, "export") == 0)
 		return (ft_export(sh, cmd));
 	if (ft_strcmp(cmd->cmd, "unset") == 0)
-		return (ft_unset(cmd, sh->env));
+		return (ft_unset(sh, cmd, sh->env));
 	if (ft_strcmp(cmd->cmd, "env") == 0)
 		return (ft_env(cmd, sh->env));
 	if (ft_strcmp(cmd->cmd, "exit") == 0)
@@ -32,7 +32,7 @@ int	exec_builtin(t_minishell *sh, t_cmd *cmd)
 	return (1);
 }
 
-int	exec_cmd(t_minishell *sh, t_cmd *cmd)
+int	exec_cmd(t_sh *sh, t_cmd *cmd)
 {
 	int	status;
 	int	pid;
@@ -43,22 +43,22 @@ int	exec_cmd(t_minishell *sh, t_cmd *cmd)
 	if (pid == 0)
 	{
 		setup_redirections(cmd);
-		cmd->path = get_cmd_path(sh->env->path, cmd, -1);
+		cmd->path = get_cmd_path(sh, sh->env->path, cmd, -1);
 		if (!cmd->path)
 		{
 			printf("minishell: %s: command not found\n", cmd->cmd);
-			exit(127);
+			exit((free_all(sh), 127));
 		}
 		execve(cmd->path, cmd->args, sh->env->envp);
 		perror("execve");
-		exit((free(cmd->path), 126));
+		exit((free_all(sh), 126));
 	}
 	waitpid(pid, &status, 0);
-	sh->exit_s = status >> 8;
-	return (sh->exit_s);
+	g_st = status >> 8;
+	return (g_st);
 }
 
-int	exec_cmd_or_builtin(t_minishell *sh, t_node *node)
+int	exec_cmd_or_builtin(t_sh *sh, t_node *node)
 {
 	int	vl;
 	int	pid;
@@ -71,23 +71,23 @@ int	exec_cmd_or_builtin(t_minishell *sh, t_node *node)
 			pid = fork();
 			if (pid == 0)
 			{
-				exec_builtin(sh, node->cmd);
-				exit(sh->exit_s);
+				g_st = exec_builtin(sh, node->cmd);
+				exit((free_all(sh), g_st));
 			}
 			waitpid(pid, &vl, 0);
-			sh->exit_s = vl >> 8;
+			g_st = (vl >> 8);
 		}
 		else
-			sh->exit_s = exec_builtin(sh, node->cmd);
+			g_st = exec_builtin(sh, node->cmd);
 	}
 	else
-		sh->exit_s = exec_cmd(sh, node->cmd);
+		g_st = exec_cmd(sh, node->cmd);
 	dup2(sh->fd_stdin, STDIN_FILENO);
 	dup2(sh->fd_stdout, STDOUT_FILENO);
-	return (sh->exit_s);
+	return (g_st);
 }
 
-int	fork_node(t_minishell *sh, t_node *node)
+int	fork_node(t_sh *sh, t_node *node)
 {
 	int	pid[2];
 	int fd[2];
@@ -115,7 +115,7 @@ int	fork_node(t_minishell *sh, t_node *node)
 		return (sh->exit_s = 128 + (status[1] & 0x7F));
 }
 
-int	run_exec(t_minishell *sh, t_node *node)
+int	run_exec(t_sh *sh, t_node *node)
 {
 	if (node->type == N_CMD)
 	{

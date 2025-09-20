@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/13 18:39:54 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/04 17:49:18 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/20 08:11:20 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,11 @@ t_node_type	get_node_type(t_token_type type)
 	return (N_PIPE);
 }
 
-t_node	*create_new_node(t_node_type type)
+t_node	*create_new_node(t_sh *sh, t_node_type type)
 {
 	t_node	*new_node;
 
-	new_node = (t_node *)ft_calloc(1, sizeof(t_node));
+	new_node = (t_node *)a_calloc(sh->a, 1, sizeof(t_node));
 	if (!new_node)
 		return (NULL);
 	new_node->type = type;
@@ -43,17 +43,17 @@ t_io_type	get_io_type(t_token_type type)
 	return (IO_ADD_END);
 }
 
-t_io_node	*create_new_io_node(t_token_type type, char *raw_value)
+t_io_node	*create_new_io_node(t_sh *sh, t_token_type type, char *raw_v)
 {
 	t_io_node	*new_node;
 
-	new_node = (t_io_node *)ft_calloc(1, sizeof(t_io_node));
+	new_node = (t_io_node *)a_calloc(sh->a, 1, sizeof(t_io_node));
 	if (!new_node)
 		return (NULL);
 	new_node->type = get_io_type(type);
-	new_node->raw_value = ft_strdup(raw_value);
+	new_node->raw_value = a_strdup(sh->a, raw_v);
 	if (!new_node->raw_value)
-		return (free(new_node), NULL);
+		return (NULL);
 	return (new_node);
 }
 

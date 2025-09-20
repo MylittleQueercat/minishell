@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 20:05:24 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/04 17:54:16 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/20 06:53:25 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int	set_direntry(struct dirent **entry, DIR *dir)
 	return (1);
 }
 
-static char	**globber_help(char *str)
+static char	**globber_help(t_minishell *sh, char *str)
 {
 	char			**result;
 	struct dirent	*entry;
@@ -50,36 +50,38 @@ static char	**globber_help(char *str)
 	count = match_count(str);
 	if (!is_with_asterisk(str) || !count)
 	{
-		result = (char **)ft_calloc(2, sizeof(char *));
-		result[0] = ft_strdup(str);
+		result = (char **)a_calloc(sh->a, 2, sizeof(char *));
+		result[0] = a_strdup(sh->a, str);
 		return (result);
 	}
 	else
 	{
 		dir = opendir(".");
-		result = (char **)ft_calloc(count + 1, sizeof(char *));
+		if (!dir)
+			return (NULL);
+		result = (char **)a_calloc(sh->a, count + 1, sizeof(char *));
 		count = 0;
 		while (set_direntry(&entry, dir) && entry)
 			if (check_star(str, entry->d_name) && match_vis(str, entry->d_name))
-				result[count++] = ft_strdup(entry->d_name);
+				result[count++] = a_strdup(sh->a, entry->d_name);
 		closedir(dir);
 	}
 	return (result);
 }
 
-char	**expand_globber(char **expanded)
+char	**expand_globber(t_minishell *sh, char **expanded)
 {
 	size_t	i;
 	size_t	expanded_len;
 	char	***globbed;
 
 	expanded_len = get_str_arr_len(expanded);
-	globbed = (char ***)ft_calloc(expanded_len + 1, sizeof(char **));
+	globbed = (char ***)a_calloc(sh->a, expanded_len + 1, sizeof(char **));
 	i = 0;
 	while (expanded[i])
 	{
-		globbed[i] = globber_help(expanded[i]);
+		globbed[i] = globber_help(sh, expanded[i]);
 		i++;
 	}
-	return (free_char_arr2(expanded), join_str_arr(globbed));
+	return (join_str_arr(sh, globbed)
 }

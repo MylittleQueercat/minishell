@@ -6,13 +6,13 @@
 /*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 00:36:50 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/18 20:06:32 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/20 08:05:51 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	child_process(t_minishell *sh, t_node *node, int *fd, int n)
+void	child_process(t_sh *sh, t_node *node, int *fd, int n)
 {
 	if (n == 1)
 		dup2(fd[1], STDOUT_FILENO);

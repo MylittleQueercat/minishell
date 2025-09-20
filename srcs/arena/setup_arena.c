@@ -1,34 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   echo.c                                             :+:      :+:    :+:   */
+/*   setup_arena.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/17 12:10:50 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/20 07:26:46 by aprigent         ###   ########.fr       */
+/*   Created: 2025/09/20 05:47:25 by aprigent          #+#    #+#             */
+/*   Updated: 2025/09/20 05:48:15 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ft_echo(t_cmd *cmd)
+t_arena	*setup_arena(void)
 {
-	int	i;
-	int	n_flag;
+	t_arena	*a;
 
-	n_flag = 0;
-	if (cmd->args[1] && ft_strncmp(cmd->args[1], "-n", 2) == 0)
-		n_flag = 1;
-	i = 1 + n_flag;
-	while (cmd->args[i])
-	{
-		printf("%s", cmd->args[i]);
-		if (cmd->args[i + 1])
-			printf(" ");
-		i++;
-	}
-	if (!n_flag)
-		printf("\n");
-	return (0);
+	a = malloc(sizeof(t_arena));
+	if (!a)
+		return (printf("Error malloc\n"), NULL);
+	arena_init(a, 1024 * 1024);
+	if (a->data == NULL)
+		return (printf("Error malloc\n"), free(a), NULL);
+	return (a);
 }
+

@@ -6,13 +6,13 @@
 /*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 14:26:06 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/17 19:21:33 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/20 08:06:10 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	heredoc_child(t_minishell *sh, t_node *node, int fd)
+void	heredoc_child(t_sh *sh, t_node *node, int fd)
 {
 	char	*line;
 
@@ -39,7 +39,7 @@ void	heredoc_child(t_minishell *sh, t_node *node, int fd)
 	exit(0);
 }
 
-void	heredoc_parent(t_minishell *sh, t_node *node, int pid)
+void	heredoc_parent(t_sh *sh, t_node *node, int pid)
 {
 	int	status;
 
@@ -55,7 +55,7 @@ void	heredoc_parent(t_minishell *sh, t_node *node, int pid)
 	g_sigstate.sigint_heredoc = false;
 }
 
-int	exec_heredoc(t_minishell *sh, t_node *node)
+int	exec_heredoc(t_sh *sh, t_node *node)
 {
 	int	pid;
 

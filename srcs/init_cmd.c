@@ -6,13 +6,13 @@
 /*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/17 16:35:18 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/18 20:45:59 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/20 07:54:44 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	open_redirections(t_minishell *sh, t_node *node, t_cmd *cmd)
+int	open_redirections(t_sh *sh, t_node *node, t_cmd *cmd)
 {
 	if (cmd->infile && cmd->type != IO_HEREDOC)
 	{
@@ -41,14 +41,14 @@ int	open_redirections(t_minishell *sh, t_node *node, t_cmd *cmd)
 	return (0);
 }
 
-int	parse_io(t_minishell *sh, t_node *node, t_cmd *cmd)
+int	parse_io(t_sh *sh, t_node *node, t_cmd *cmd)
 {
 	t_io_node	*io;
 
 	io = node->io_list;
 	while (io)
 	{
-		io->exec_value = ft_split(io->raw_value, ' ');
+		io->exec_value = a_split(sh->a, io->raw_value, ' ');
 		if (!io->exec_value)
 			return (perror("malloc"), -1);
 		if (io->type == IO_IN)
@@ -65,11 +65,11 @@ int	parse_io(t_minishell *sh, t_node *node, t_cmd *cmd)
 	return (open_redirections(sh, node, cmd));
 }
 
-int	init_cmd(t_minishell *sh, t_node *node)
+int	init_cmd(t_sh *sh, t_node *node)
 {
 	t_cmd	*cmd;
 
-	node->cmd = malloc(sizeof(t_cmd));
+	node->cmd = arena_alloc(sh->a, sizeof(t_cmd));
 	if (!node->cmd)
 		return (perror("malloc"), 1);
 	cmd = node->cmd;

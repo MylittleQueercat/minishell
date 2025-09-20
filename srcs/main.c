@@ -6,7 +6,7 @@
 /*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 14:51:28 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/18 21:25:00 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/20 07:52:39 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,27 +16,27 @@ int	g_st = 0;
 
 int	main(int argc, char **argv, char **envp)
 {
-	t_minishell	*sh;
-	int			exit;
+	t_sh	*sh;
+	t_arena		*arena;
 
 	if (argc != 1)
 		return (printf("Usage : %s\n", argv[0]), 1);
-	sh = malloc(sizeof(t_minishell));
+	sh = setup_minishell(envp);
 	if (!sh)
-		return (printf("Error allocating memory for minishell\n"), 1);
-	init_minishell(sh, envp);
+		return (perror("Error malloc\n"), 1);
 	while (1)
 	{
+		arena = malloc(sizeof(t_arena));
+		if (!arena)
+			return (free_all(sh), 1);
+		sh->a = arena;
+		arena_init(arena, 1024 * 1024);
+		if (arena->data == NULL)
+			return (perror("malloc"), free_all(sh), 1);
 		run_iteration(sh);
 		if (sh->tree)
 			run_exec(sh, sh->tree);
-		if (sh->exit_flag)
-			break ;
-		free(sh->line);
-		sh->line = NULL;
-		clear_ast(&sh->tree);
-		clear_token_list(&sh->tokens);
+		arena_free(sh->a);
 	}
-	exit = sh->exit_s;
-	return (free_minishell(sh), exit);
+	return (free_all(sh), g_st);
 }

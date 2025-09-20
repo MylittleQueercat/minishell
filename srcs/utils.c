@@ -6,7 +6,7 @@
 /*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 16:47:07 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/17 18:40:22 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/20 08:04:38 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,18 +22,16 @@ int	is_builtin(const char *cmd)
 	return (0);
 }
 
-void	build_prompt(t_minishell *sh)
+void	build_prompt(t_sh *sh)
 {
 	char	*new_prompt;
 
 	if (!sh->env->pwd)
-		sh->env->pwd = ft_strdup("~");
-	new_prompt = ft_strjoin("\033[1;32mminishell:\033[0m ", sh->env->pwd);
+		sh->env->pwd = a_strdup(sh->a, "~");
+	new_prompt = a_strjoin(sh->a, "\033[1;32mminishell:\033[0m ", sh->env->pwd);
 	if (!new_prompt)
 		return ;
-	free(sh->prompt);
-	sh->prompt = ft_strjoin(new_prompt, " $ ");
-	free(new_prompt);
+	sh->prompt = a_strjoin(sh->a, new_prompt, " $ ");
 }
 
 t_envl	*get_last_envl(t_envl *envl)
@@ -43,31 +41,4 @@ t_envl	*get_last_envl(t_envl *envl)
 	while (envl->next)
 		envl = envl->next;
 	return (envl);
-}
-
-char	*strjoin_free_s1(char *s1, char *s2)
-{
-	char	*joined;
-
-	if (!s1)
-		return (NULL);
-	joined = ft_strjoin(s1, s2);
-	free(s1);
-	return (joined);
-}
-
-void	print_io_list(t_io_node *io)
-{
-	while (io)
-	{
-		printf("IO type: %d, raw value: %s\n", io->type, io->raw_value);
-		if (io->exec_value)
-		{
-			printf("  Exec values: ");
-			for (int i = 0; io->exec_value[i]; i++)
-				printf("'%s' ", io->exec_value[i]);
-			printf("\n");
-		}
-		io = io->next;
-	}
 }

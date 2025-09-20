@@ -6,38 +6,33 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 19:58:32 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/16 14:52:11 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/20 08:02:21 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	clear_ast_token(t_minishell *sh)
-{
-	clear_ast(&sh->tree);
-	clear_token_list(&sh->tokens);
-	free(sh->line);
-	sh->line = NULL;
-}
-
-void	run_iteration(t_minishell *sh)
+void	run_iteration(t_sh *sh)
 {
 	init_signals(sh);
 	build_prompt(sh);
+	if (sh->prompt == NULL)
+		exit((perror("Error malloc"), free_all(sh), 1));
 	sh->line = readline(sh->prompt);
 	if (!sh->line)
-		exit((printf("exit\n"), free_minishell(sh), 0));
+		exit((printf("exit\n"), free_all(sh), 0));
 	if (sh->line && !*sh->line)
-		return (free(sh->line), (void)(sh->line = NULL, sh->exit_s = 130));
+		return (g_st = 130, (void)0);
 	if (sh->line[0])
 		add_history(sh->line);
 	sh->tokens = tokenizer(sh);
 	if (!sh->tokens)
-		return (free(sh->line), printf("Token err\n"), (void)(sh->line = NULL));
+		return (g_st = 1, (void)0);
 	sh->tree = parse(sh);
 	if (sh->parse_err.type)
-		return (handle_parse_err(sh), clear_ast_token(sh), (void)0);
+		return (g_st = 1, handle_parse_err(sh), (void)0);
 	expander(sh, sh->tree);
 	if (!sh->tree->exec_args && sh->tree->type == N_CMD)
-		return (printf("No command to exec.\n"), clear_ast_token(sh), (void)0);
+		return (g_st = 1, printf("minishell: syntax error: "
+				"empty command\n"), (void)0);
 }

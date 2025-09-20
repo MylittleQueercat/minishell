@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 20:05:45 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/04 17:53:35 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/20 06:46:32 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ static void	filler_no_quotes(char *str, size_t *i, char *result, size_t *j)
 	(*i)++;
 }
 
-char	*throw_quotes(char *str)
+char	*throw_quotes(t_minishell *sh, char *str)
 {
 	char	*result;
 	size_t	i;
@@ -56,7 +56,7 @@ char	*throw_quotes(char *str)
 
 	i = 0;
 	j = 0;
-	result = ft_calloc(strlen_no_quotes(str) + 1, sizeof(char));
+	result = a_calloc(sh->a, strlen_no_quotes(str) + 1, sizeof(char));
 	if (!result)
 		return (NULL);
 	while (str[i])
@@ -66,5 +66,6 @@ char	*throw_quotes(char *str)
 		else
 			result[j++] = str[i++];
 	}
-	return (free(str), result);
-}	
+	result[j] = 0;
+	return (result);
+}

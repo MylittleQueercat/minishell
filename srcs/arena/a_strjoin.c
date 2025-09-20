@@ -1,34 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   echo.c                                             :+:      :+:    :+:   */
+/*   a_strjoin.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/17 12:10:50 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/20 07:26:46 by aprigent         ###   ########.fr       */
+/*   Created: 2025/09/20 06:04:40 by aprigent          #+#    #+#             */
+/*   Updated: 2025/09/20 06:05:11 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "arena.h"
 
-int	ft_echo(t_cmd *cmd)
+char	*a_strjoin(t_arena *arena, const char *s1, const char *s2)
 {
-	int	i;
-	int	n_flag;
+	size_t	len1;
+	size_t	len2;
+	char	*joined;
 
-	n_flag = 0;
-	if (cmd->args[1] && ft_strncmp(cmd->args[1], "-n", 2) == 0)
-		n_flag = 1;
-	i = 1 + n_flag;
-	while (cmd->args[i])
-	{
-		printf("%s", cmd->args[i]);
-		if (cmd->args[i + 1])
-			printf(" ");
-		i++;
-	}
-	if (!n_flag)
-		printf("\n");
-	return (0);
+	if (!s1 || !s2)
+		return (NULL);
+	len1 = ft_strlen(s1);
+	len2 = ft_strlen(s2);
+	joined = arena_alloc(arena, len1 + len2 + 1);
+	if (!joined)
+		return (NULL);
+	ft_memcpy(joined, s1, len1);
+	ft_memcpy(joined + len1, s2, len2);
+	joined[len1 + len2] = 0;
+	return (joined);
 }

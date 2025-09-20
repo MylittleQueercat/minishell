@@ -6,15 +6,15 @@
 /*   By: leticiabi <leticiabi@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 17:34:02 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/04 17:46:51 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/20 06:25:29 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 /*
-*  In this file, we create tokens (separators or words), and add them to the 
-*  end of the token list in order, while moving the input pointer to the next 
+*  In this file, we create tokens (separators or words), and add them to the
+*  end of the token list in order, while moving the input pointer to the next
 *  unprocessed position.
 */
 
@@ -59,12 +59,12 @@ int	add_word_to_end(t_minishell *sh, char **line, t_token **token_list)
 		else
 			i++;
 	}
-	value = ft_substr(curr_place, 0, i);
+	value = a_substr(sh->a, curr_place, 0, i);
 	if (!value)
 		return (0);
 	token = create_new_token(value, T_WORD);
 	if (!token)
-		return (free(value), 0);
+		return (0);
 	*line += i;
 	return (token_list_add_back(token_list, token), 1);
 }

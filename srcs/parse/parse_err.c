@@ -6,13 +6,13 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/13 18:06:55 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/16 14:50:07 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/20 08:10:52 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	set_parse_err(t_minishell *sh, t_parse_err_type type)
+void	set_parse_err(t_sh *sh, t_parse_err_type type)
 {
 	sh->parse_err.type = type;
 }
@@ -44,11 +44,10 @@ static const char	*token_type_str(t_token_type t)
 	return ("token");
 }
 
-void	handle_parse_err(t_minishell *sh)
+void	handle_parse_err(t_sh *sh)
 {
 	t_token_type	tok;
 
-	printf("Parsing error\n");
 	if (!sh)
 		return ;
 	if (sh->parse_err.type == 0)
@@ -64,6 +63,4 @@ void	handle_parse_err(t_minishell *sh)
 		ft_putstr_fd("'\n", 2);
 		sh->exit_s = 258;
 	}
-	clear_ast(&sh->tree);
-	ft_bzero(&sh->parse_err, sizeof(sh->parse_err));
 }

@@ -6,7 +6,7 @@
 /*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 12:52:46 by aprigent          #+#    #+#             */
-/*   Updated: 2025/07/17 12:55:23 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/20 07:26:30 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,5 @@ int	ft_pwd(t_cmd *cmd)
 		return (1);
 	}
 	printf("%s\n", cwd);
-	free(cwd);
 	return (0);
 }
