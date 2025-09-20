@@ -27,13 +27,13 @@ static char	*cmd_pre_expand(t_sh *sh, char *str)
 	while (str[i])
 	{
 		if (str[i] == '\'')
-			arr = a_strjoin(sh->a, arr, handle_squotes(str, &i));
+			arr = a_strjoin(sh->a, arr, handle_squotes(sh, str, &i));
 		else if (str[i] == '"')
 			arr = a_strjoin(sh->a, arr, handle_dquotes(sh, str, &i));
 		else if (str[i] == '$')
 			arr = a_strjoin(sh->a, arr, handle_dollar(sh, str, &i));
 		else
-			arr = a_strjoin(sh->a, arr, handle_normal(str, &i));
+			arr = a_strjoin(sh->a, arr, handle_normal(sh, str, &i));
 	}
 	return (arr);
 }
@@ -88,7 +88,7 @@ void	expander(t_sh *sh, t_node *node)
 	i = -1;
 	while (node->exec_args[++i])
 	{
-		node->exec_args[i] = throw_quotes(node->exec_args[i]);
+		node->exec_args[i] = throw_quotes(sh, node->exec_args[i]);
 		if (!node->exec_args[i])
 			return (node->exec_args = NULL, (void)(g_st = 1));
 	}

@@ -36,3 +36,41 @@ void	run_iteration(t_sh *sh)
 		return (g_st = 1, printf("minishell: syntax error: "
 				"empty command\n"), (void)0);
 }
+
+void	set_last_cmd_st(t_sh *sh)
+{
+	char	*st_str;
+	char	*tmp;
+
+	st_str = a_itoa(sh->a, g_st);
+	if (!st_str)
+		return (perror("malloc"), (void)0);
+	tmp = a_strjoin(sh->sh_arena, "?", st_str);
+	if (!tmp)
+		return (perror("malloc"), (void)0);
+	change_env_var(sh, sh->env, tmp);
+}
+
+void	loop(t_sh *sh)
+{
+	t_arena	*arena;
+
+	while (1)
+	{
+		g_st = 0;
+		arena = malloc(sizeof(t_arena));
+		if (!arena)
+			exit((perror("malloc"), free_all(sh), 1));
+		sh->a = arena;
+		arena_init(arena, 1024 * 1024);
+		if (arena->data == NULL)
+			exit((perror("malloc"), free_all(sh), 1));
+		run_iteration(sh);
+		free(sh->line);
+		sh->line = NULL;
+		if (sh->tree && g_st == 0)
+			run_exec(sh, sh->tree);
+		set_last_cmd_st(sh);
+		arena_free(sh->a);
+	}
+}

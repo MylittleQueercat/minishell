@@ -112,19 +112,19 @@ static int	add_env_var(t_sh *sh, t_env *env, const char *var)
 	return (1);
 }
 
-int	ft_export(t_sh *sh, t_cmd *cmd)
+void	ft_export(t_sh *sh, t_cmd *cmd)
 {
 	int		i;
 
 	if (!cmd->args[1])
-		return (print_sorted_env(sh->env, -1), 0);
+		return (print_sorted_env(sh->env, -1), (g_st = 0), (void)0);
 	i = 1;
 	while (cmd->args[i])
 	{
 		if (is_valid_identifier(cmd->args[i]) == 0)
 		{
 			printf("export: '%s': not a valid identifier\n", cmd->args[i]);
-			return (1);
+			return (g_st = 1, (void)0);
 		}
 		else
 		{
@@ -133,10 +133,10 @@ int	ft_export(t_sh *sh, t_cmd *cmd)
 			else
 			{
 				if (add_env_var(sh, sh->env, cmd->args[i]) == 0)
-					return (1);
+					return (g_st = 1, (void)0);
 			}
 		}
 		i++;
 	}
-	return (update_envp(sh, sh->env));
+	g_st = update_envp(sh, sh->env);
 }

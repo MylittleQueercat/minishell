@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-t_token	*create_new_token(t_minishell *sh, char *value, t_token_type type)
+t_token	*create_new_token(t_sh *sh, char *value, t_token_type type)
 {
 	t_token	*new_token;
 

@@ -20,14 +20,17 @@ int	update_pwd(t_sh *sh, t_env *env)
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
 		return (perror("getcwd"), 0);
-	env->oldpwd = a_strdup(sh->a, get_env_value("PWD", env->envp));
+	env->oldpwd = a_strdup(sh->sh_arena, get_env_value("PWD", env->envp));
 	if (!env->oldpwd)
 		return (printf("cd: allocation error\n"), 0);
 	tmp = a_strjoin(sh->a, "OLDPWD=", env->oldpwd);
 	if (!tmp)
 		return (printf("cd: allocation error\n"), 0);
 	change_env_var(sh, env, tmp);
-	env->pwd = cwd;
+	env->pwd = a_strdup(sh->sh_arena, cwd);
+	if (!env->pwd)
+		return (printf("cd: allocation error\n"), 0);
+	free(cwd);
 	tmp = a_strjoin(sh->a, "PWD=", env->pwd);
 	if (!tmp)
 		return (printf("cd: allocation error\n"), 0);
@@ -35,7 +38,7 @@ int	update_pwd(t_sh *sh, t_env *env)
 	return (1);
 }
 
-int	cd_no_arg(t_sh *sh, t_env *env)
+void	cd_no_arg(t_sh *sh, t_env *env)
 {
 	char	*home;
 
@@ -43,47 +46,50 @@ int	cd_no_arg(t_sh *sh, t_env *env)
 	if (!home)
 	{
 		printf("cd: HOME not set\n");
-		return (0);
+		g_st = 1;
 	}
-	if (chdir(home) != 0)
+	else if (chdir(home) != 0)
 	{
 		perror("cd");
-		return (0);
+		g_st = 1;
 	}
-	return (update_pwd(sh, env));
+	else
+		g_st = update_pwd(sh, env);
 }
 
-int	cd_root(t_sh *sh, t_env *env)
+void	cd_root(t_sh *sh, t_env *env)
 {
 	if (chdir("/") != 0)
 	{
 		perror("cd");
-		return (0);
+		g_st = 1;
 	}
-	return (update_pwd(sh, env));
+	else
+		g_st = update_pwd(sh, env);
 }
 
-int	ft_cd(t_sh *sh, t_cmd *cmd, t_env *env)
+void	ft_cd(t_sh *sh, t_cmd *cmd, t_env *env)
 {
 	if (cmd->argc > 2)
 	{
 		printf("cd: too many arguments\n");
-		return (0);
+		g_st = 1;
 	}
-	if (cmd->argc == 1 || ft_strncmp(cmd->args[1], "~", 2) == 0
+	else if (cmd->argc == 1 || ft_strncmp(cmd->args[1], "~", 2) == 0
 		|| ft_strncmp(cmd->args[1], "--", 2) == 0
 		|| ft_strncmp(cmd->args[1], "$HOME", 6) == 0
 		|| ft_strncmp(cmd->args[1], "~/", 2) == 0)
-		return (cd_no_arg(sh, env));
-	if (ft_strncmp(cmd->args[1], "-", 2) == 0)
+		cd_no_arg(sh, env);
+	else if (ft_strncmp(cmd->args[1], "-", 2) == 0)
 	{
 		cmd->args[1] = NULL;
-		return (ft_pwd(cmd));
+		ft_pwd();
 	}
-	if (chdir(cmd->args[1]) != 0)
+	else if (chdir(cmd->args[1]) != 0)
 	{
 		perror("cd");
-		return (0);
+		g_st = 1;
 	}
-	return (update_pwd(sh, env));
+	else
+		g_st = update_pwd(sh, env);
 }

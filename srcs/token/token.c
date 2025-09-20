@@ -14,7 +14,7 @@
 
 // Convert a line of user input → into a token linked list -> return
 
-t_token	*tokenizer(t_minishell *sh)
+t_token	*tokenizer(t_sh *sh)
 {
 	t_token	*token_list;
 

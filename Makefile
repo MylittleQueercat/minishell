@@ -16,6 +16,7 @@ BUILTIN_DIR = ./srcs/builtins/
 PARSE_DIR = ./srcs/parse/
 EXPAND_DIR = ./srcs/expander/
 TOKEN_DIR = ./srcs/token/
+ARENA_DIR = ./srcs/arena/
 
 SRCS = main.c exec.c path.c utils.c init_env.c loop.c free.c \
 		clean.c mini_signal.c init_minishell.c pipe.c ft_atoll.c utils2.c \
@@ -33,11 +34,15 @@ TOKEN_SRCS = token.c token_add_to_end.c token_handler.c token_list.c \
 
 BUILTIN_SRCS = echo.c env.c pwd.c cd.c export.c unset.c export_utils.c exit.c
 
+ARENA_SRCS = arena.c arena_calloc.c arena_split.c a_itoa.c a_strdup.c \
+			  a_substr.c a_strjoin.c setup_arena.c
+
 OBJS = $(SRCS:%.c=${OBJS_DIR}%.o) \
 		$(BUILTIN_SRCS:%.c=${OBJS_DIR}builtins/%.o) \
 		$(PARSE_SRCS:%.c=${OBJS_DIR}parse/%.o) \
 		$(EXPAND_SRCS:%.c=${OBJS_DIR}expander/%.o) \
-		$(TOKEN_SRCS:%.c=${OBJS_DIR}token/%.o)
+		$(TOKEN_SRCS:%.c=${OBJS_DIR}token/%.o) \
+		$(ARENA_SRCS:%.c=${OBJS_DIR}arena/%.o)
 
 LDFLAGS = -L$(LIBFT_DIR) -lft
 
@@ -124,6 +129,11 @@ ${OBJS_DIR}expander/%.o: $(EXPAND_DIR)%.c
 
 ${OBJS_DIR}token/%.o: $(TOKEN_DIR)%.c
 	$(Q)mkdir -p $(OBJS_DIR)token
+	$(Q)printf "$(CYN)CC$(RESET)   %-40s → $(DIM)%s$(RESET)\n" "$<" "$@"
+	$(Q)$(CC) $(CFLAGS) -c $< -o $@
+
+${OBJS_DIR}arena/%.o: $(SRCS_DIR)arena/%.c
+	$(Q)mkdir -p $(OBJS_DIR)arena
 	$(Q)printf "$(CYN)CC$(RESET)   %-40s → $(DIM)%s$(RESET)\n" "$<" "$@"
 	$(Q)$(CC) $(CFLAGS) -c $< -o $@
 

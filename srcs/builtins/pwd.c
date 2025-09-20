@@ -12,21 +12,20 @@
 
 #include "minishell.h"
 
-int	ft_pwd(t_cmd *cmd)
+void	ft_pwd()
 {
 	char	*cwd;
 
-	if (cmd->args[1])
-	{
-		printf("pwd: '%s': No such file or directory\n", cmd->args[1]);
-		return (1);
-	}
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
 	{
 		perror("getcwd");
-		return (1);
+		g_st = 1;
 	}
-	printf("%s\n", cwd);
-	return (0);
+	else
+	{
+		printf("%s\n", cwd);
+		free(cwd);
+		g_st = 0;
+	}
 }

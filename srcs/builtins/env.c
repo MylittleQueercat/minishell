@@ -12,13 +12,17 @@
 
 #include "minishell.h"
 
-int	ft_env(t_cmd *cmd, t_env *env)
+void	ft_env(t_cmd *cmd, t_env *env)
 {
-	if (cmd->args[1])
+	cmd->argc = count_args(cmd->args);
+	if (cmd->argc > 1)
 	{
 		printf("env: '%s': No such file or directory\n", cmd->args[1]);
-		return (1);
+		g_st = 127;
 	}
-	print_sorted_env(env, 1);
-	return (0);
+	else if (cmd->argc == 1)
+	{
+		print_sorted_env(env, 1);
+		g_st = 0;
+	}
 }

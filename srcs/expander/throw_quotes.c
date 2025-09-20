@@ -48,7 +48,7 @@ static void	filler_no_quotes(char *str, size_t *i, char *result, size_t *j)
 	(*i)++;
 }
 
-char	*throw_quotes(t_minishell *sh, char *str)
+char	*throw_quotes(t_sh *sh, char *str)
 {
 	char	*result;
 	size_t	i;

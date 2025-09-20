@@ -12,6 +12,29 @@
 
 #include "minishell.h"
 
+static long long	ft_atoll(const char *str)
+{
+	long long	result;
+	int			sign;
+
+	result = 0;
+	sign = 1;
+	while (*str == ' ' || (*str >= 9 && *str <= 13))
+		str++;
+	if (*str == '-' || *str == '+')
+	{
+		if (*str == '-')
+			sign = -1;
+		str++;
+	}
+	while (*str >= '0' && *str <= '9')
+	{
+		result = result * 10 + (*str - '0');
+		str++;
+	}
+	return (result * sign);
+}
+
 int	count_args(char **args)
 {
 	int	i;
@@ -40,25 +63,28 @@ static int	is_str_digit(char *str)
 	return (1);
 }
 
-int	ft_exit(t_sh *sh, t_cmd *cmd, char *m)
+void	ft_exit(t_sh *sh, t_cmd *cmd, char *m)
 {
 	printf("exit\n");
 	cmd->argc = count_args(cmd->args);
 	if (cmd->argc > 2)
 	{
 		printf("%sexit: too many arguments\n", m);
-		return (1);
+		g_st = 1;
 	}
-	if (cmd->argc == 2)
+	else if (cmd->argc == 2)
 	{
 		if (is_str_digit(cmd->args[1]) == 0)
 		{
 			printf("%sexit: %s: numeric argument required\n", m, cmd->args[1]);
-			return (sh->exit_flag = 1, 2);
+			exit((free_all(sh), 2));
 		}
 		else
-			return (sh->exit_flag = 1, ft_atoll(cmd->args[1]) % 256);
+		{
+			g_st = ft_atoll(cmd->args[1]) % 256;
+			exit((free_all(sh), g_st));
+		}
 	}
 	else
-		return (sh->exit_flag = 1, 0);
+		exit((free_all(sh), 0));
 }

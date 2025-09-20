@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int	ft_echo(t_cmd *cmd)
+void	ft_echo(t_cmd *cmd)
 {
 	int	i;
 	int	n_flag;
@@ -30,5 +30,5 @@ int	ft_echo(t_cmd *cmd)
 	}
 	if (!n_flag)
 		printf("\n");
-	return (0);
+	g_st = 0;
 }

@@ -18,14 +18,14 @@
 *  unprocessed position.
 */
 
-int	add_sep_to_end(t_token_type type, char **line, t_token **token_list)
+int	add_sep_to_end(t_sh *m, t_token_type type, char **line, t_token **t_l)
 {
 	t_token	*token;
 
-	token = create_new_token(NULL, type);
+	token = create_new_token(m, NULL, type);
 	if (!token)
 		return (0);
-	token_list_add_back(token_list, token);
+	token_list_add_back(t_l, token);
 	(*line)++;
 	if (type == T_RD_HEREDOC || type == T_RD_ADD_END || type == T_AND
 		|| type == T_OR)
@@ -40,7 +40,7 @@ int	is_quote(char c)
 	return (0);
 }
 
-int	add_word_to_end(t_minishell *sh, char **line, t_token **token_list)
+int	add_word_to_end(t_sh *sh, char **line, t_token **token_list)
 {
 	char	*curr_place;
 	char	*value;
@@ -62,7 +62,7 @@ int	add_word_to_end(t_minishell *sh, char **line, t_token **token_list)
 	value = a_substr(sh->a, curr_place, 0, i);
 	if (!value)
 		return (0);
-	token = create_new_token(value, T_WORD);
+	token = create_new_token(sh, value, T_WORD);
 	if (!token)
 		return (0);
 	*line += i;

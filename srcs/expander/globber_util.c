@@ -60,7 +60,7 @@ static size_t	count_str_arr(char	***str_arr)
 	return (count);
 }
 
-char	**join_str_arr(t_minishell *sh, char ***str_arr)
+char	**join_str_arr(t_sh *sh, char ***str_arr)
 {
 	size_t	i;
 	size_t	j;

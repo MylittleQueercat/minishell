@@ -12,10 +12,27 @@
 
 #include "minishell.h"
 
+void	close_fds(t_sh *sh)
+{
+	if (sh->fd_stdin != -1)
+	{
+		dup2(sh->fd_stdin, STDIN_FILENO);
+		close(sh->fd_stdin);
+		sh->fd_stdin = -1;
+	}
+	if (sh->fd_stdout != -1)
+	{
+		dup2(sh->fd_stdout, STDOUT_FILENO);
+		close(sh->fd_stdout);
+		sh->fd_stdout = -1;
+	}
+}
+
 void	free_all(t_sh *sh)
 {
 	if (!sh)
 		return ;
+	close_fds(sh);
 	if (sh->a)
 		arena_free(sh->a);
 	if (sh->sh_arena)

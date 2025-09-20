@@ -103,22 +103,21 @@ int		init_cmd(t_sh *sh, t_node *node);
 
 void	free_all(t_sh *sh);
 
-void	run_iteration(t_sh *sh);
+void	loop(t_sh *sh);
 
-int		run_exec(t_sh *sh, t_node *node);
-int		exec_cmd_or_builtin(t_sh *sh, t_node *node);
-int		exec_builtin(t_sh *sh, t_cmd *cmd);
-int		exec_cmd(t_sh *sh, t_cmd *cmd);
+void	run_exec(t_sh *sh, t_node *node);
+void	exec_cmd_or_builtin(t_sh *sh, t_node *node);
+void	exec_builtin(t_sh *sh, t_cmd *cmd);
+void	exec_cmd(t_sh *sh, t_cmd *cmd);
 int		exec_heredoc(t_sh *sh, t_node *node);
 
-int		fork_node(t_sh *sh, t_node *node);
+void	fork_node(t_sh *sh, t_node *node);
 void	child_process(t_sh *sh, t_node *node, int *fds, int n);
 
 char	*get_cmd_path(t_sh *sh, char *path, t_cmd *cmd, int i);
 
 void	build_prompt(t_sh *sh);
 t_envl	*get_last_envl(t_envl *envl);
-long long	ft_atoll(const char *str);
 void	add_colors(t_sh *sh);
 int		count_args(char **args);
 void	setup_redirections(t_cmd *cmd);
@@ -135,13 +134,13 @@ int		update_envp(t_sh *sh, t_env *env);
 void	change_env_var(t_sh *sh, t_env *env, const char *var);
 char	*get_env_value(const char *name, char **envp);
 
-int		ft_env(t_cmd *cmd, t_env *env);
-int		ft_echo(t_cmd *cmd);
-int		ft_pwd(t_cmd *cmd);
-int		ft_cd(t_sh *sh, t_cmd *cmd, t_env *env);
-int		ft_export(t_sh *sh, t_cmd *cmd);
-int		ft_unset(t_sh *sh, t_cmd *cmd, t_env *env);
-int		ft_exit(t_sh *sh, t_cmd *cmd, char *m);
+void	ft_env(t_cmd *cmd, t_env *env);
+void	ft_echo(t_cmd *cmd);
+void	ft_pwd();
+void	ft_cd(t_sh *sh, t_cmd *cmd, t_env *env);
+void	ft_export(t_sh *sh, t_cmd *cmd);
+void	ft_unset(t_sh *sh, t_cmd *cmd, t_env *env);
+void	ft_exit(t_sh *sh, t_cmd *cmd, char *m);
 // parsing
 //
 //
@@ -149,7 +148,7 @@ int		ft_exit(t_sh *sh, t_cmd *cmd, char *m);
 // expand_util.c
 char	*get_env_val(t_sh *sh, char *var);
 int		is_valid_var_char(char c);
-void	clean_empty(t_sh *sh, char *str);
+char	*clean_empty(t_sh *sh, char *str);
 
 // expand_split.c
 char	**expand_split(t_sh *sh, char const *str);
@@ -174,7 +173,7 @@ int		set_direntry(struct dirent **entry, DIR *dir);
 char	**expand_globber(t_sh *sh, char **expanded);
 
 // throw_quotes.c
-char	*throw_quotes(char *str);
+char	*throw_quotes(t_sh *sh, char *str);
 
 // expand_aterisker.c
 bool	check_star(char *mask, char *str);

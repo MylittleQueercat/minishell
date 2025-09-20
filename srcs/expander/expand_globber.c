@@ -40,7 +40,7 @@ int	set_direntry(struct dirent **entry, DIR *dir)
 	return (1);
 }
 
-static char	**globber_help(t_minishell *sh, char *str)
+static char	**globber_help(t_sh *sh, char *str)
 {
 	char			**result;
 	struct dirent	*entry;
@@ -69,7 +69,7 @@ static char	**globber_help(t_minishell *sh, char *str)
 	return (result);
 }
 
-char	**expand_globber(t_minishell *sh, char **expanded)
+char	**expand_globber(t_sh *sh, char **expanded)
 {
 	size_t	i;
 	size_t	expanded_len;
@@ -83,5 +83,5 @@ char	**expand_globber(t_minishell *sh, char **expanded)
 		globbed[i] = globber_help(sh, expanded[i]);
 		i++;
 	}
-	return (join_str_arr(sh, globbed)
+	return (join_str_arr(sh, globbed));
 }

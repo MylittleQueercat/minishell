@@ -21,7 +21,7 @@ void	child_process(t_sh *sh, t_node *node, int *fd, int n)
 	close(fd[0]);
 	close(fd[1]);
 	if (n == 1)
-		exit(run_exec(sh, node->left));
+		exit((run_exec(sh, node->left), free_all(sh), g_st));
 	else if (n == 0)
-		exit(run_exec(sh, node->right));
+		exit((run_exec(sh, node->right), free_all(sh), g_st));
 }

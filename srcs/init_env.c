@@ -125,7 +125,7 @@ t_env	*init_env(t_sh *sh, char **envp)
 {
 	t_env	*env;
 
-	env = arena_alloc(sh->sh_arena, sizeof(t_env));
+	env = (t_env*)arena_alloc(sh->sh_arena, sizeof(t_env));
 	if (!env)
 		exit((perror("Allocation error for env struct"), free_all(sh), 1));
 	ft_bzero(env, sizeof(t_env));

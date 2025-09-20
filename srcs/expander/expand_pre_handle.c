@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-char	*handle_squotes(t_minishell *sh, char *str, size_t *i)
+char	*handle_squotes(t_sh *sh, char *str, size_t *i)
 {
 	size_t	begin;
 
@@ -24,7 +24,7 @@ char	*handle_squotes(t_minishell *sh, char *str, size_t *i)
 	return (a_substr(sh->a, str, begin, *i - begin));
 }
 
-char	*handle_dollar(t_minishell *sh, char *str, size_t *i)
+char	*handle_dollar(t_sh *sh, char *str, size_t *i)
 {
 	size_t	begin;
 	char	*var;
@@ -53,7 +53,7 @@ char	*handle_dollar(t_minishell *sh, char *str, size_t *i)
 	return (a_strdup(sh->a, env_val));
 }
 
-static char	*handle_dquote_str(t_minishell *sh, char *str, size_t *i)
+static char	*handle_dquote_str(t_sh *sh, char *str, size_t *i)
 {
 	size_t	begin;
 
@@ -63,7 +63,7 @@ static char	*handle_dquote_str(t_minishell *sh, char *str, size_t *i)
 	return (a_substr(sh->a, str, begin, *i - begin));
 }
 
-char	*handle_dquotes(t_minishell *sh, char *str, size_t *i)
+char	*handle_dquotes(t_sh *sh, char *str, size_t *i)
 {
 	char	*arr;
 
@@ -80,7 +80,7 @@ char	*handle_dquotes(t_minishell *sh, char *str, size_t *i)
 	return (a_strjoin(sh->a, arr, "\""));
 }
 
-char	*handle_normal(t_minishell *sh, char *str, size_t *i)
+char	*handle_normal(t_sh *sh, char *str, size_t *i)
 {
 	size_t	begin;
 

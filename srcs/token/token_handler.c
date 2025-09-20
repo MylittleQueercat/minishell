@@ -21,29 +21,29 @@ into a token linked list:
   3. Save to the linked list.
 */
 
-int	handler_sep(char **line, t_token **token_list)
+int	handler_sep(t_sh *sh, char **line, t_token **token_list)
 {
 	if (!ft_strncmp(*line, "<<", 2))
-		return (add_sep_to_end(T_RD_HEREDOC, line, token_list) && 1);
+		return (add_sep_to_end(sh, T_RD_HEREDOC, line, token_list) && 1);
 	else if (!ft_strncmp(*line, ">>", 2))
-		return (add_sep_to_end(T_RD_ADD_END, line, token_list) && 1);
+		return (add_sep_to_end(sh, T_RD_ADD_END, line, token_list) && 1);
 	else if (!ft_strncmp(*line, "<", 1))
-		return (add_sep_to_end(T_RD_IN, line, token_list) && 1);
+		return (add_sep_to_end(sh, T_RD_IN, line, token_list) && 1);
 	else if (!ft_strncmp(*line, ">", 1))
-		return (add_sep_to_end(T_RD_OUT, line, token_list) && 1);
+		return (add_sep_to_end(sh, T_RD_OUT, line, token_list) && 1);
 	else if (!ft_strncmp(*line, "(", 1))
-		return (add_sep_to_end(T_PAREN_OP, line, token_list) && 1);
+		return (add_sep_to_end(sh, T_PAREN_OP, line, token_list) && 1);
 	else if (!ft_strncmp(*line, ")", 1))
-		return (add_sep_to_end(T_PAREN_CL, line, token_list) && 1);
+		return (add_sep_to_end(sh, T_PAREN_CL, line, token_list) && 1);
 	else if (!ft_strncmp(*line, "&&", 2))
-		return (add_sep_to_end(T_AND, line, token_list) && 1);
+		return (add_sep_to_end(sh, T_AND, line, token_list) && 1);
 	else if (!ft_strncmp(*line, "||", 2))
-		return (add_sep_to_end(T_OR, line, token_list) && 1);
+		return (add_sep_to_end(sh, T_OR, line, token_list) && 1);
 	else
-		return (add_sep_to_end(T_PIPE, line, token_list) && 1);
+		return (add_sep_to_end(sh, T_PIPE, line, token_list) && 1);
 }
 
-t_token	*token_handler(t_minishell *sh)
+t_token	*token_handler(t_sh *sh)
 {
 	int		invalid;
 	t_token	*token_list;
@@ -61,7 +61,7 @@ t_token	*token_handler(t_minishell *sh)
 		else if (!ft_strncmp(p, "&&", 2) || !ft_strncmp(p, ">", 1)
 			|| !ft_strncmp(p, "|", 1) || !ft_strncmp(p, "<", 1)
 			|| !ft_strncmp(p, "(", 1) || !ft_strncmp(p, ")", 1))
-			invalid = (!handler_sep(&p, &token_list) && 1);
+			invalid = (!handler_sep(sh, &p, &token_list) && 1);
 		else
 			invalid = (!add_word_to_end(sh, &p, &token_list) && 1);
 	}

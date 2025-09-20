@@ -30,7 +30,7 @@ static void	skip_word(char const *s, size_t *i)
 	}
 }
 
-static char	**allocate_mem(t_minishell *sh, char const *str, char **res)
+static char	**allocate_mem(t_sh *sh, char const *str, char **res)
 {
 	size_t	begin;
 	size_t	i;
@@ -96,12 +96,11 @@ static char	**filler(char const *str, char **res)
 	return (res);
 }
 
-char	**expand_split(t_minishell *sh, char const *str)
+char	**expand_split(t_sh *sh, char const *str)
 {
 	size_t	i;
 	size_t	count;
 	char	**res;
-	char	**to_free;
 
 	if (!str)
 		return (NULL);
@@ -115,8 +114,7 @@ char	**expand_split(t_minishell *sh, char const *str)
 			i++;
 	}
 	res = a_calloc(sh->a, count + 1, sizeof(char *));
-	to_free = res;
-	res = allocate_mem(str, res);
+	res = allocate_mem(sh, str, res);
 	if (!res || !count)
 		return (NULL);
 	return (filler(str, res));

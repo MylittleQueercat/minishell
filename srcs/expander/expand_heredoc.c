@@ -14,7 +14,7 @@
 
 #include "minishell.h"
 
-static	int	expand_heredoc_printer(t_minishell sh, char *str, size_t i, int fd)
+static	int	expand_heredoc_printer(t_sh sh, char *str, size_t i, int fd)
 {
 	size_t	start;
 	char	*tmp;
@@ -34,7 +34,7 @@ static	int	expand_heredoc_printer(t_minishell sh, char *str, size_t i, int fd)
 	return (i);
 }
 
-void	expand_heredoc(t_minishell sh, char *str, int fd)
+void	expand_heredoc(t_sh sh, char *str, int fd)
 {
 	size_t	i;
 

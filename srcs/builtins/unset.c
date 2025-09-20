@@ -12,21 +12,21 @@
 
 #include "minishell.h"
 
-int	ft_unset(t_sh *sh, t_cmd *cmd, t_env *env)
+void	ft_unset(t_sh *sh, t_cmd *cmd, t_env *env)
 {
 	t_envl	*current;
 	t_envl	*prev;
 	int		i;
 
 	if (!cmd->args[1])
-		return (0);
+		return (g_st = 0, (void)0);
 	i = 1;
 	while (cmd->args[i])
 	{
 		if (is_valid_identifier(cmd->args[i]) == 0)
 		{
 			printf("unset: '%s': not a valid identifier\n", cmd->args[i]);
-			return (1);
+			return (g_st = 1, (void)0);
 		}
 		current = env->envl;
 		prev = NULL;
@@ -45,5 +45,5 @@ int	ft_unset(t_sh *sh, t_cmd *cmd, t_env *env)
 		}
 		i++;
 	}
-	return (update_envp(sh, env));
+	g_st = update_envp(sh, env);
 }

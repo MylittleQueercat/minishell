@@ -12,34 +12,34 @@
 
 #include "minishell.h"
 
-int	exec_builtin(t_sh *sh, t_cmd *cmd)
+void	exec_builtin(t_sh *sh, t_cmd *cmd)
 {
 	if (ft_strcmp(cmd->cmd, "echo") == 0)
-		return (ft_echo(cmd));
-	if (ft_strcmp(cmd->cmd, "cd") == 0)
-		return (ft_cd(sh, cmd, sh->env));
-	if (ft_strcmp(cmd->cmd, "pwd") == 0)
-		return (ft_pwd(cmd));
-	if (ft_strcmp(cmd->cmd, "export") == 0)
-		return (ft_export(sh, cmd));
-	if (ft_strcmp(cmd->cmd, "unset") == 0)
-		return (ft_unset(sh, cmd, sh->env));
-	if (ft_strcmp(cmd->cmd, "env") == 0)
-		return (ft_env(cmd, sh->env));
-	if (ft_strcmp(cmd->cmd, "exit") == 0)
-		return (ft_exit(sh, cmd, "minishell: "));
-	printf("Command not found: %s\n", cmd->cmd);
-	return (1);
+		ft_echo(cmd);
+	else if (ft_strcmp(cmd->cmd, "cd") == 0)
+		ft_cd(sh, cmd, sh->env);
+	else if (ft_strcmp(cmd->cmd, "pwd") == 0)
+		ft_pwd(cmd);
+	else if (ft_strcmp(cmd->cmd, "export") == 0)
+		ft_export(sh, cmd);
+	else if (ft_strcmp(cmd->cmd, "unset") == 0)
+		ft_unset(sh, cmd, sh->env);
+	else if (ft_strcmp(cmd->cmd, "env") == 0)
+		ft_env(cmd, sh->env);
+	else if (ft_strcmp(cmd->cmd, "exit") == 0)
+		ft_exit(sh, cmd, "minishell: ");
+	else
+		printf("Command not found: %s\n", cmd->cmd);
 }
 
-int	exec_cmd(t_sh *sh, t_cmd *cmd)
+void	exec_cmd(t_sh *sh, t_cmd *cmd)
 {
 	int	status;
 	int	pid;
 
 	pid = fork();
 	if (pid < 0)
-		return (perror("fork"), -1);
+		return (perror("fork"), g_st = 1, (void)0);
 	if (pid == 0)
 	{
 		setup_redirections(cmd);
@@ -55,10 +55,9 @@ int	exec_cmd(t_sh *sh, t_cmd *cmd)
 	}
 	waitpid(pid, &status, 0);
 	g_st = status >> 8;
-	return (g_st);
 }
 
-int	exec_cmd_or_builtin(t_sh *sh, t_node *node)
+void	exec_cmd_or_builtin(t_sh *sh, t_node *node)
 {
 	int	vl;
 	int	pid;
@@ -71,38 +70,37 @@ int	exec_cmd_or_builtin(t_sh *sh, t_node *node)
 			pid = fork();
 			if (pid == 0)
 			{
-				g_st = exec_builtin(sh, node->cmd);
+				exec_builtin(sh, node->cmd);
 				exit((free_all(sh), g_st));
 			}
 			waitpid(pid, &vl, 0);
 			g_st = (vl >> 8);
 		}
 		else
-			g_st = exec_builtin(sh, node->cmd);
+			exec_builtin(sh, node->cmd);
 	}
 	else
-		g_st = exec_cmd(sh, node->cmd);
+		exec_cmd(sh, node->cmd);
 	dup2(sh->fd_stdin, STDIN_FILENO);
 	dup2(sh->fd_stdout, STDOUT_FILENO);
-	return (g_st);
 }
 
-int	fork_node(t_sh *sh, t_node *node)
+void	fork_node(t_sh *sh, t_node *node)
 {
 	int	pid[2];
 	int fd[2];
 	int	status[2];
 
 	if (pipe(fd) == -1)
-		return (perror("pipe"), -1);
+		return (perror("pipe"), g_st = 1, (void)0);
 	pid[0] = fork();
 	if (pid[0] < 0)
-		return (perror("fork"), -1);
+		return (perror("fork"), g_st = 1, (void)0);
 	if (pid[0] == 0)
 		child_process(sh, node, fd, 0);
 	pid[1] = fork();
 	if (pid[1] < 0)
-		return (perror("fork"), -1);
+		return (perror("fork"), g_st = 1, (void)0);
 	if (pid[1] == 0)
 		child_process(sh, node, fd, 1);
 	close(fd[0]);
@@ -110,35 +108,36 @@ int	fork_node(t_sh *sh, t_node *node)
 	waitpid(pid[0], &status[0], 0);
 	waitpid(pid[1], &status[1], 0);
 	if ((status[1] & 0x7F) == 0)
-		return (sh->exit_s = (status[1] >> 8) & 0xFF);
+		g_st = (status[1] >> 8) & 0xFF;
 	else
-		return (sh->exit_s = 128 + (status[1] & 0x7F));
+		g_st = 128 + (status[1] & 0x7F);
 }
 
-int	run_exec(t_sh *sh, t_node *node)
+void	run_exec(t_sh *sh, t_node *node)
 {
 	if (node->type == N_CMD)
 	{
 		if (!node->exec_args || !node->exec_args[0])
-			return (0);
-		return (init_cmd(sh, node), exec_cmd_or_builtin(sh, node));
+			return (g_st = 1,
+				printf("minishell: syntax error: empty command\n"), (void)0);
+		return (init_cmd(sh, node), exec_cmd_or_builtin(sh, node), (void)0);
 	}
 	if (node->type == N_AND)
 	{
-		g_st = run_exec(sh, node->left);
+		run_exec(sh, node->left);
 		if (g_st == 0)
-			g_st = run_exec(sh, node->right);
-		return (g_st);
+			run_exec(sh, node->right);
+		return ;
 	}
 	if (node->type == N_OR)
 	{
-		g_st = run_exec(sh, node->left);
+		run_exec(sh, node->left);
 		if (g_st != 0)
-			g_st = run_exec(sh, node->right);
-		return (g_st);
+			run_exec(sh, node->right);
+		return ;
 	}
 	if (node->type == N_PIPE)
-		return (fork_node(sh, node));
+		return (fork_node(sh, node), (void)0);
 	printf("Unknown node type: %d\n", node->type);
-	return (1);
+	g_st = 1;
 }

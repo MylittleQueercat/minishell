@@ -49,7 +49,7 @@ int	skip_quote(char *line, size_t *i)
 	return (0);
 }
 
-void	print_quote_err(t_minishell *sh, char c)
+void	print_quote_err(t_sh *sh, char c)
 {
 	ft_putstr_fd("minishell: unexpected EOF while looking for matching '", 2);
 	ft_putchar_fd(c, 2);
