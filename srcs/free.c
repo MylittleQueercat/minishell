@@ -30,6 +30,7 @@ void	close_stdio(t_sh *sh)
 
 void	free_all(t_sh *sh)
 {
+	rl_clear_history();
 	if (!sh)
 		return ;
 	close_stdio(sh);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   globber_util.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 16:43:01 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/20 06:44:04 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/22 16:36:03 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ size_t	match_count(char *pattern)
 
 	count = 0;
 	dir = opendir(".");
+	if (!dir)
+		return (0);
 	entry = readdir(dir);
 	while (entry)
 	{

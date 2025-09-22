@@ -3,22 +3,35 @@
 /*                                                        :::      ::::::::   */
 /*   loop.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 19:58:32 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/20 08:02:21 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/22 16:54:51 by aprigent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+void	reset_sh_struct(t_sh *sh)
+{
+	sh->tokens = NULL;
+	sh->tree = NULL;
+	sh->parse_err.type = 0;
+	sh->prompt = NULL;
+}
+
 void	run_iteration(t_sh *sh)
 {
+	char	*tmp;
+
 	init_signals(sh);
 	build_prompt(sh);
 	if (sh->prompt == NULL)
 		exit((perror("malloc"), free_all(sh), 1));
-	sh->line = readline(sh->prompt);
+	tmp = readline(sh->prompt);
+	sh->line = a_strdup(sh->a, tmp);
+	if (tmp)
+		free(tmp);
 	if (!sh->line)
 		exit((ft_putstr_fd("exit\n", 2), free_all(sh), 0));
 	if (sh->line && !*sh->line)
@@ -49,14 +62,13 @@ void	loop(t_sh *sh)
 		run_iteration(sh);
 		if (sh->line && !*sh->line)
 		{
-			free((free(sh->line), sh->line = NULL));
 			arena_free(sh->a);
 			continue ;
 		}
-		free((free(sh->line), sh->line = NULL));
 		default_signals();
 		if (sh->tree)
 			run_exec(sh, sh->tree);
 		arena_free(sh->a);
+		reset_sh_struct(sh);
 	}
 }

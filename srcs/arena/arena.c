@@ -1,4 +1,4 @@
-/*arena_split ************************************************************************** */
+/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   arena.c                                            :+:      :+:    :+:   */
@@ -32,25 +32,26 @@ void	*a_realloc(t_arena *arena, void *ptr, size_t old_size, size_t size)
 void	arena_init(t_arena *arena, size_t size)
 {
 	if (arena == NULL)
-		return;
+		return ;
 	arena->size = size;
 	arena->used = 0;
 	arena->data = malloc(size);
 	if (arena->data == NULL)
 	{
 		arena->size = 0;
-		return;
+		return ;
 	}
 	arena->next = NULL;
 }
 
 void	arena_free(t_arena *arena)
 {
-	t_arena *next;
+	t_arena	*next;
 
 	if (arena == NULL)
-		return;
+		return ;
 	next = arena->next;
+	ft_bzero(arena->data, arena->size);
 	free(arena->data);
 	free(arena);
 	if (next != NULL)
@@ -59,6 +60,8 @@ void	arena_free(t_arena *arena)
 
 void	*arena_alloc(t_arena *arena, size_t size)
 {
+	void	*ptr;
+
 	if (arena->used + size > arena->size)
 	{
 		if (arena->next == NULL)
@@ -76,7 +79,7 @@ void	*arena_alloc(t_arena *arena, size_t size)
 		}
 		return (arena_alloc(arena->next, size));
 	}
-	void *ptr = (char *)arena->data + arena->used;
+	ptr = (char *)arena->data + arena->used;
 	arena->used += size;
 	return (ptr);
 }
