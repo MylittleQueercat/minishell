@@ -72,24 +72,16 @@ void	expander(t_sh *sh, t_node *node)
 {
 	size_t	i;
 
-	if (!node)
-		return ;
-	if (node->type != N_CMD)
-	{
-		expander(sh, node->left);
-		expander(sh, node->right);
-		return ;
-	}
 	if (!node->raw_args)
-		return (node->exec_args = NULL, (void)(g_st = 1));
+		return (node->exec_args = NULL, (void)0);
 	node->exec_args = pre_glob(sh, node->raw_args);
 	if (!node->exec_args)
-		return ((void)(g_st = 1));
+		exit((perror("malloc"), free_all(sh), 1));
 	i = -1;
 	while (node->exec_args[++i])
 	{
 		node->exec_args[i] = throw_quotes(sh, node->exec_args[i]);
 		if (!node->exec_args[i])
-			return (node->exec_args = NULL, (void)(g_st = 1));
+			exit((perror("malloc"), free_all(sh), 1));
 	}
 }

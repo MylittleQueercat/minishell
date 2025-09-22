@@ -41,54 +41,59 @@ void	get_env(t_sh *sh, t_env *env, char **envp, int i)
 	}
 }
 
-void	set_env(t_sh *sh, t_env *env, t_envl *current)
+void	set_env(t_sh *sh, t_env *env, t_envl *curr)
 {
-	while (current)
+	while (curr)
 	{
-		if (ft_strcmp(current->name, "PATH") == 0)
+		if (ft_strcmp(curr->name, "PATH") == 0)
 		{
-			env->path = a_strdup(sh->sh_arena, current->value);
+			env->path = a_strdup(sh->sh_arena, curr->value);
 			if (!env->path)
 				exit((perror("Allocation error for PATH"), free_all(sh), 1));
 		}
-		else if (ft_strcmp(current->name, "PWD") == 0)
+		else if (ft_strcmp(curr->name, "PWD") == 0)
 		{
-			env->pwd = a_strdup(sh->sh_arena, current->value);
+			env->pwd = a_strdup(sh->sh_arena, curr->value);
 			if (!env->pwd)
 				exit((perror("Allocation error for PWD"), free_all(sh), 1));
 		}
-		else if (ft_strcmp(current->name, "OLDPWD") == 0)
+		else if (ft_strcmp(curr->name, "OLDPWD") == 0)
 		{
-			env->oldpwd = a_strdup(sh->sh_arena, current->value);
+			env->oldpwd = a_strdup(sh->sh_arena, curr->value);
 			if (!env->oldpwd)
 				exit((perror("Allocation error for OLDPWD"), free_all(sh), 1));
 		}
-		current = current->next;
+		curr = curr->next;
 	}
 }
 
 void	set_envp(t_sh *sh, t_env *env, int i, int size)
 {
-	t_envl	*current;
+	t_envl	*curr;
 
-	current = env->envl;
-	while (current)
+	curr = env->envl;
+	while (curr)
 	{
 		size++;
-		current = current->next;
+		curr = curr->next;
 	}
 	env->envp = arena_alloc(sh->sh_arena, sizeof(char *) * (size + 1));
 	if (!env->envp)
 		return ;
-	current = env->envl;
-	while (current)
+	curr = env->envl;
+	while (curr)
 	{
-		env->envp[i] = a_strjoin(sh->sh_arena, current->name, "=");
-		env->envp[i] = a_strjoin(sh->sh_arena, env->envp[i], current->value);
+		if (curr->value)
+		{
+			env->envp[i] = a_strjoin(sh->sh_arena, curr->name, "=");
+			env->envp[i] = a_strjoin(sh->sh_arena, env->envp[i], curr->value);
+		}
+		else
+			env->envp[i] = a_strdup(sh->sh_arena, curr->name);
 		if (!env->envp[i])
 			exit((perror("Allocation error for env array"), free_all(sh), 1));
 		i++;
-		current = current->next;
+		curr = curr->next;
 	}
 	env->envp[i] = NULL;
 }

@@ -88,7 +88,7 @@ static void	print_envp(t_env *env, int flag)
 			printf("%s\n", env->envp[i]);
 		else if (!p && flag == -1)
 			printf("declare -x %s\n", env->envp[i]);
-		else if (!p && flag == 1)
+		else if (!p && flag == 1 && ft_strchr(env->envp[i], '=') != NULL)
 			printf("%s\n", env->envp[i]);
 		i++;
 	}

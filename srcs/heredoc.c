@@ -18,6 +18,7 @@ void	heredoc_child(t_sh *sh, t_node *node, int fd)
 
 	node->io_list->heredoc = 0;//Need to be set in parser if delimiter is quoted
 	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
 	while (1)
 	{
 		line = readline("> ");
@@ -43,7 +44,7 @@ void	heredoc_parent(t_sh *sh, t_node *node, int pid)
 {
 	int	status;
 
-	waitpid(pid, &status, 0);
+	wait_and_signal(pid, &status);
 	close(node->cmd->in_fd);
 	if ((status & 0x7f) == SIGINT)
 	{

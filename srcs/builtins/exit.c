@@ -63,20 +63,22 @@ static int	is_str_digit(char *str)
 	return (1);
 }
 
-void	ft_exit(t_sh *sh, t_cmd *cmd, char *m)
+void	ft_exit(t_sh *sh, t_cmd *cmd)
 {
 	printf("exit\n");
 	cmd->argc = count_args(cmd->args);
 	if (cmd->argc > 2)
 	{
-		printf("%sexit: too many arguments\n", m);
+		ft_putstr_fd("minishell: exit: too many arguments\n", 2);
 		g_st = 1;
 	}
 	else if (cmd->argc == 2)
 	{
 		if (is_str_digit(cmd->args[1]) == 0)
 		{
-			printf("%sexit: %s: numeric argument required\n", m, cmd->args[1]);
+			ft_putstr_fd("minishell: exit: ", 2);
+			ft_putstr_fd(cmd->args[1], 2);
+			ft_putstr_fd(": numeric argument required\n", 2);
 			exit((free_all(sh), 2));
 		}
 		else

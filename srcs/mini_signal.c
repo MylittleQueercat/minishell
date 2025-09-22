@@ -29,6 +29,7 @@ void	sig_handler(int num)
 		rl_replace_line("", 0);
 		rl_on_new_line();
 		rl_redisplay();
+		g_st = 130;
 	}
 }
 
@@ -50,4 +51,17 @@ void	init_signals(t_sh *sh)
 	g_sigstate.sigint_child = false;
 	signal(SIGINT, sig_handler);
 	signal(SIGQUIT, SIG_IGN);
+}
+
+void	wait_and_signal(int pid, int *status)
+{
+	signal(SIGINT, SIG_IGN);
+	waitpid(pid, status, 0);
+	signal(SIGINT, sig_handler);
+}
+
+void	default_signals(void)
+{
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
 }

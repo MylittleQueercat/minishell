@@ -27,7 +27,7 @@ void	exec_builtin(t_sh *sh, t_cmd *cmd)
 	else if (ft_strcmp(cmd->cmd, "env") == 0)
 		ft_env(cmd, sh->env);
 	else if (ft_strcmp(cmd->cmd, "exit") == 0)
-		ft_exit(sh, cmd, "minishell: ");
+		ft_exit(sh, cmd);
 	else
 		printf("Command not found: %s\n", cmd->cmd);
 }
@@ -88,7 +88,7 @@ void	exec_cmd_or_builtin(t_sh *sh, t_node *node)
 void	fork_node(t_sh *sh, t_node *node)
 {
 	int	pid[2];
-	int fd[2];
+	int	fd[2];
 	int	status[2];
 
 	if (pipe(fd) == -1)
@@ -105,8 +105,8 @@ void	fork_node(t_sh *sh, t_node *node)
 		child_process(sh, node, fd, 1);
 	close(fd[0]);
 	close(fd[1]);
-	waitpid(pid[0], &status[0], 0);
 	waitpid(pid[1], &status[1], 0);
+	waitpid(pid[0], &status[0], 0);
 	if ((status[1] & 0x7F) == 0)
 		g_st = (status[1] >> 8) & 0xFF;
 	else
@@ -115,12 +115,17 @@ void	fork_node(t_sh *sh, t_node *node)
 
 void	run_exec(t_sh *sh, t_node *node)
 {
+	if (!node)
+		return ;
+	expander(sh, node);
 	if (node->type == N_CMD)
 	{
 		if (!node->exec_args || !node->exec_args[0])
 			return (g_st = 1,
 				printf("minishell: syntax error: empty command\n"), (void)0);
-		return (init_cmd(sh, node), exec_cmd_or_builtin(sh, node), (void)0);
+		if (init_cmd(sh, node) == 1)
+			return (g_st = 1, (void)0);
+		return (exec_cmd_or_builtin(sh, node), (void)0);
 	}
 	if (node->type == N_AND)
 	{

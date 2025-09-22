@@ -32,27 +32,32 @@ char	*get_env_value(const char *name, char **envp)
 
 int	update_envp(t_sh *sh, t_env *env)
 {
-	t_envl	*current;
+	t_envl	*curr;
 	int		i;
 	size_t	size;
 
 	i = 0;
 	size = 0;
-	current = env->envl;
-	while (current && ++size)
-		current = current->next;
+	curr = env->envl;
+	while (curr && ++size)
+		curr = curr->next;
 	env->envp = (char **)arena_alloc(sh->sh_arena, (size + 1) * sizeof(char *));
 	if (!env->envp)
 		return (perror("malloc"), 1);
-	current = env->envl;
-	while (current)
+	curr = env->envl;
+	while (curr)
 	{
-		env->envp[i] = a_strjoin(sh->sh_arena, current->name, "=");
-		env->envp[i] = a_strjoin(sh->sh_arena, env->envp[i], current->value);
+		if (curr->value)
+		{
+			env->envp[i] = a_strjoin(sh->sh_arena, curr->name, "=");
+			env->envp[i] = a_strjoin(sh->sh_arena, env->envp[i], curr->value);
+		}
+		else
+			env->envp[i] = a_strdup(sh->sh_arena, curr->name);
 		if (!env->envp[i])
 			return (perror("malloc"), 1);
 		i++;
-		current = current->next;
+		curr = curr->next;
 	}
 	env->envp[i] = NULL;
 	return (0);
@@ -60,27 +65,27 @@ int	update_envp(t_sh *sh, t_env *env)
 
 void	change_env_var(t_sh *sh, t_env *env, const char *var)
 {
-	t_envl	*current;
+	t_envl	*curr;
 	char	*new_value;
 	int		len;
 
-	current = env->envl;
-	while (current)
+	curr = env->envl;
+	while (curr)
 	{
-		len = ft_strlen(current->name);
-		if (ft_strncmp(current->name, var, len) == 0
+		len = ft_strlen(curr->name);
+		if (ft_strncmp(curr->name, var, len) == 0
 				&& (var[len] == '=' || var[len] == '\0'))
 		{
 			if (var[len] == '=')
 			{
 				new_value = a_strdup(sh->sh_arena, var + len + 1);
 				if (!new_value)
-					return (perror("malloc"), (void)0);
-				current->value = new_value;
+					exit((perror("malloc"), free_all(sh), 1));
+				curr->value = new_value;
 			}
 			return ;
 		}
-		current = current->next;
+		curr = curr->next;
 	}
 }
 
@@ -88,12 +93,10 @@ static int	add_env_var(t_sh *sh, t_env *env, const char *var)
 {
 	t_envl	*new;
 	char	*equal_sign;
-	char	*err_m;
 
-	err_m = "Error: Failed to allocate memory for new environment variable.\n";
 	new = (t_envl *)arena_alloc(sh->sh_arena, sizeof(t_envl));
 	if (!new)
-		return (printf("%s", err_m), 0);
+		exit((perror("malloc"), free_all(sh), 1));
 	equal_sign = ft_strchr(var, '=');
 	if (equal_sign)
 	{
@@ -106,7 +109,7 @@ static int	add_env_var(t_sh *sh, t_env *env, const char *var)
 		new->value = NULL;
 	}
 	if (!new->name || (equal_sign && !new->value))
-		return (printf("%s", err_m), 0);
+		return (perror("malloc"), 0);
 	new->next = env->envl;
 	env->envl = new;
 	return (1);
@@ -123,7 +126,9 @@ void	ft_export(t_sh *sh, t_cmd *cmd)
 	{
 		if (is_valid_identifier(cmd->args[i]) == 0)
 		{
-			printf("export: '%s': not a valid identifier\n", cmd->args[i]);
+			ft_putstr_fd("minishell: export: '", 2);
+			ft_putstr_fd(cmd->args[i], 2);
+			ft_putstr_fd("': not a valid identifier\n", 2);
 			return (g_st = 1, (void)0);
 		}
 		else

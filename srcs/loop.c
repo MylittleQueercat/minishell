@@ -17,12 +17,12 @@ void	run_iteration(t_sh *sh)
 	init_signals(sh);
 	build_prompt(sh);
 	if (sh->prompt == NULL)
-		exit((perror("Error malloc"), free_all(sh), 1));
+		exit((perror("malloc"), free_all(sh), 1));
 	sh->line = readline(sh->prompt);
 	if (!sh->line)
-		exit((printf("exit\n"), free_all(sh), 0));
+		exit((ft_putstr_fd("exit\n", 2), free_all(sh), 0));
 	if (sh->line && !*sh->line)
-		return (g_st = 130, (void)0);
+		return (g_st = 0, (void)0);
 	if (sh->line[0])
 		add_history(sh->line);
 	sh->tokens = tokenizer(sh);
@@ -31,24 +31,6 @@ void	run_iteration(t_sh *sh)
 	sh->tree = parse(sh);
 	if (sh->parse_err.type)
 		return (g_st = 1, handle_parse_err(sh), (void)0);
-	expander(sh, sh->tree);
-	if (!sh->tree->exec_args && sh->tree->type == N_CMD)
-		return (g_st = 1, printf("minishell: syntax error: "
-				"empty command\n"), (void)0);
-}
-
-void	set_last_cmd_st(t_sh *sh)
-{
-	char	*st_str;
-	char	*tmp;
-
-	st_str = a_itoa(sh->a, g_st);
-	if (!st_str)
-		return (perror("malloc"), (void)0);
-	tmp = a_strjoin(sh->sh_arena, "?", st_str);
-	if (!tmp)
-		return (perror("malloc"), (void)0);
-	change_env_var(sh, sh->env, tmp);
 }
 
 void	loop(t_sh *sh)
@@ -57,7 +39,6 @@ void	loop(t_sh *sh)
 
 	while (1)
 	{
-		g_st = 0;
 		arena = malloc(sizeof(t_arena));
 		if (!arena)
 			exit((perror("malloc"), free_all(sh), 1));
@@ -66,11 +47,16 @@ void	loop(t_sh *sh)
 		if (arena->data == NULL)
 			exit((perror("malloc"), free_all(sh), 1));
 		run_iteration(sh);
-		free(sh->line);
-		sh->line = NULL;
-		if (sh->tree && g_st == 0)
+		if (sh->line && !*sh->line)
+		{
+			free((free(sh->line), sh->line = NULL));
+			arena_free(sh->a);
+			continue ;
+		}
+		free((free(sh->line), sh->line = NULL));
+		default_signals();
+		if (sh->tree)
 			run_exec(sh, sh->tree);
-		set_last_cmd_st(sh);
 		arena_free(sh->a);
 	}
 }

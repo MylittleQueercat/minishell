@@ -39,7 +39,8 @@
 # define CMD_EXTERNAL 1
 # define CMD_PIPE 2
 
-#define LS_COLORS "LS_COLORS=di=34:ln=36:so=32:pi=33:ex=31:bd=34;46:cd=34;43:su=37;41:sg=30;43:tw=30;42:ow=34;42"
+# define LS_COLORS "LS_COLORS=di=34:ln=36:so=32:pi=33:ex=31:bd=34;46:cd=34; \
+					43:su=37;41:sg=30;43:tw=30;42:ow=34;42"
 
 extern int	g_st;
 
@@ -121,6 +122,7 @@ t_envl	*get_last_envl(t_envl *envl);
 void	add_colors(t_sh *sh);
 int		count_args(char **args);
 void	setup_redirections(t_cmd *cmd);
+void	increment_shlvl(t_sh *sh);
 
 void	loop(t_sh *sh);
 
@@ -140,7 +142,7 @@ void	ft_pwd();
 void	ft_cd(t_sh *sh, t_cmd *cmd, t_env *env);
 void	ft_export(t_sh *sh, t_cmd *cmd);
 void	ft_unset(t_sh *sh, t_cmd *cmd, t_env *env);
-void	ft_exit(t_sh *sh, t_cmd *cmd, char *m);
+void	ft_exit(t_sh *sh, t_cmd *cmd);
 // parsing
 //
 //
@@ -182,7 +184,7 @@ bool	check_star(char *mask, char *str);
 void	expand_heredoc(t_sh sh, char *str, int fd);
 
 // expand.c
-void	expander(t_sh *sh, t_node *node);
+void		expander(t_sh *sh, t_node *node);
 //int		expand_tree(t_sh *sh, t_node *node);
 
 /* clean */

@@ -12,8 +12,23 @@
 
 #include "minishell.h"
 
+void	close_fds(t_cmd *cmd)
+{
+	if (cmd->in_fd != -1)
+	{
+		close(cmd->in_fd);
+		cmd->in_fd = -1;
+	}
+	if (cmd->out_fd != -1)
+	{
+		close(cmd->out_fd);
+		cmd->out_fd = -1;
+	}
+}
+
 int	open_redirections(t_sh *sh, t_node *node, t_cmd *cmd)
 {
+	close_fds(cmd);
 	if (cmd->infile && cmd->type != IO_HEREDOC)
 	{
 		cmd->in_fd = open(cmd->infile, O_RDONLY);
@@ -50,7 +65,7 @@ int	parse_io(t_sh *sh, t_node *node, t_cmd *cmd)
 	{
 		io->exec_value = a_split(sh->a, io->raw_value, ' ');
 		if (!io->exec_value)
-			return (perror("malloc"), -1);
+			return (perror("malloc"), 1);
 		if (io->type == IO_IN)
 			cmd->infile = io->exec_value[0];
 		else if (io->type == IO_OUT)
@@ -61,8 +76,10 @@ int	parse_io(t_sh *sh, t_node *node, t_cmd *cmd)
 			cmd->outfile = io->exec_value[0];
 		cmd->type = io->type;
 		io = io->next;
+		if (open_redirections(sh, node, cmd) == 1)
+			return (1);
 	}
-	return (open_redirections(sh, node, cmd));
+	return (0);
 }
 
 int	init_cmd(t_sh *sh, t_node *node)

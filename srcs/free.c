@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-void	close_fds(t_sh *sh)
+void	close_stdio(t_sh *sh)
 {
 	if (sh->fd_stdin != -1)
 	{
@@ -32,7 +32,7 @@ void	free_all(t_sh *sh)
 {
 	if (!sh)
 		return ;
-	close_fds(sh);
+	close_stdio(sh);
 	if (sh->a)
 		arena_free(sh->a);
 	if (sh->sh_arena)

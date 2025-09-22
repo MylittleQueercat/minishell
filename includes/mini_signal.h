@@ -24,10 +24,12 @@ typedef struct s_sigint_state
 	bool		sigint_heredoc;
 }	t_sigint_state;
 
-extern t_sigint_state		g_sigstate;
+extern t_sigint_state	g_sigstate;
 
 void					sig_handler(int num);
 void					init_signals(t_sh *sh);
 void					sig_quit_handler(int num);
+void					wait_and_signal(int pid, int *status);
+void					default_signals(void);
 
 #endif

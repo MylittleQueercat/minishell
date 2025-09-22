@@ -19,23 +19,23 @@ int	update_pwd(t_sh *sh, t_env *env)
 
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
-		return (perror("getcwd"), 0);
+		return (perror("getcwd"), 1);
 	env->oldpwd = a_strdup(sh->sh_arena, get_env_value("PWD", env->envp));
 	if (!env->oldpwd)
-		return (printf("cd: allocation error\n"), 0);
+		return (printf("cd: allocation error\n"), 1);
 	tmp = a_strjoin(sh->a, "OLDPWD=", env->oldpwd);
 	if (!tmp)
-		return (printf("cd: allocation error\n"), 0);
+		return (printf("cd: allocation error\n"), 1);
 	change_env_var(sh, env, tmp);
 	env->pwd = a_strdup(sh->sh_arena, cwd);
 	if (!env->pwd)
-		return (printf("cd: allocation error\n"), 0);
+		return (printf("cd: allocation error\n"), 1);
 	free(cwd);
 	tmp = a_strjoin(sh->a, "PWD=", env->pwd);
 	if (!tmp)
-		return (printf("cd: allocation error\n"), 0);
+		return (printf("cd: allocation error\n"), 1);
 	change_env_var(sh, env, tmp);
-	return (1);
+	return (0);
 }
 
 void	cd_no_arg(t_sh *sh, t_env *env)
@@ -72,7 +72,7 @@ void	ft_cd(t_sh *sh, t_cmd *cmd, t_env *env)
 {
 	if (cmd->argc > 2)
 	{
-		printf("cd: too many arguments\n");
+		ft_putstr_fd("cd: too many arguments\n", 2);
 		g_st = 1;
 	}
 	else if (cmd->argc == 1 || ft_strncmp(cmd->args[1], "~", 2) == 0
