@@ -41,7 +41,6 @@ typedef struct s_io_node
 	char				*raw_value;
 	char				**exec_value;
 	int					quoted;
-	int					heredoc;
 	struct s_io_node	*before;
 	struct s_io_node	*next;
 }	t_io_node;

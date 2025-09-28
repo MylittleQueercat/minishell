@@ -16,7 +16,6 @@ void	heredoc_child(t_sh *sh, t_node *node, int fd)
 {
 	char	*line;
 
-	node->io_list->heredoc = 0;
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
 	while (1)
@@ -27,7 +26,7 @@ void	heredoc_child(t_sh *sh, t_node *node, int fd)
 			free(line);
 			break ;
 		}
-		if (node->io_list->heredoc == 0)
+		if (node->io_list->quoted == 0)
 			expand_heredoc(*sh, line, fd);
 		else
 		{
