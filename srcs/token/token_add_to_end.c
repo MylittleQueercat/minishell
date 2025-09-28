@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_add_to_end.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leticiabi <leticiabi@student.42.fr>        +#+  +:+       +#+        */
+/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 17:34:02 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/20 06:25:29 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/28 18:43:24 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,13 +46,16 @@ int	add_word_to_end(t_sh *sh, char **line, t_token **token_list)
 	char	*value;
 	t_token	*token;
 	size_t	i;
+	int		quoted;
 
 	curr_place = *line;
 	i = 0;
+	quoted = 0;
 	while (curr_place[i] && !is_sep(curr_place + i))
 	{
 		if (is_quote(curr_place[i]))
 		{
+			quoted = 1;
 			if (!skip_quote(*line, &i))
 				return (print_quote_err(sh, curr_place[i]), 0);
 		}
@@ -65,6 +68,7 @@ int	add_word_to_end(t_sh *sh, char **line, t_token **token_list)
 	token = create_new_token(sh, value, T_WORD);
 	if (!token)
 		return (0);
+	token->quoted = quoted;
 	*line += i;
 	return (token_list_add_back(token_list, token), 1);
 }

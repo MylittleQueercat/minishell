@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/13 18:39:54 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/20 08:11:20 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/28 18:32:58 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ t_io_node	*create_new_io_node(t_sh *sh, t_token_type type, char *raw_v)
 	new_node->raw_value = a_strdup(sh->a, raw_v);
 	if (!new_node->raw_value)
 		return (NULL);
+	new_node->quoted = 0;
 	return (new_node);
 }
 

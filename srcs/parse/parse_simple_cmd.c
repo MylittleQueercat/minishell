@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_simple_cmd.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/17 13:24:03 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/22 17:09:07 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/28 18:32:21 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ int	parse_to_list(t_sh *sh, t_token **it, t_io_node **io_list)
 		tmp_io_node = create_new_io_node(sh, io_type, (*it)->value);
 		if (!tmp_io_node)
 			return (set_parse_err(sh, E_MEMORY), 0);
+		tmp_io_node->quoted = (*it)->quoted;
 		add_io_node_to_end(io_list, tmp_io_node);
 		*it = (*it)->next;
 	}

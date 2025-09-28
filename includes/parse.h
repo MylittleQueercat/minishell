@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leticiabi <leticiabi@student.42.fr>        +#+  +:+       +#+        */
+/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 16:41:08 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/20 08:13:23 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/28 18:31:27 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ typedef struct s_io_node
 	t_io_type			type;
 	char				*raw_value;
 	char				**exec_value;
+	int					quoted;
 	int					heredoc;
 	struct s_io_node	*before;
 	struct s_io_node	*next;

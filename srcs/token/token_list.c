@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 17:59:28 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/20 08:05:42 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/28 18:42:15 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ t_token	*create_new_token(t_sh *sh, char *value, t_token_type type)
 		return (NULL);
 	new_token->value = value;
 	new_token->type = type;
+	new_token->quoted = 0;
 	return (new_token);
 }
 
