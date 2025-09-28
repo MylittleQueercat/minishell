@@ -17,8 +17,6 @@ void	heredoc_child(t_sh *sh, t_node *node, int fd)
 	char	*line;
 
 	node->io_list->heredoc = 0;
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_DFL);
 	while (1)
 	{
 		line = readline("> ");
@@ -44,7 +42,7 @@ void	heredoc_parent(t_sh *sh, t_node *node, int pid)
 {
 	int	status;
 
-	wait_and_signal(pid, &status);
+	waitpid(pid, &status, 0);
 	close(node->cmd->in_fd);
 	if ((status & 0x7f) == SIGINT)
 	{
