@@ -16,7 +16,7 @@ void	heredoc_child(t_sh *sh, t_node *node, int fd)
 {
 	char	*line;
 
-	node->io_list->heredoc = 0;//Need to be set in parser if delimiter is quoted
+	node->io_list->heredoc = 0;
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
 	while (1)
@@ -62,7 +62,7 @@ int	exec_heredoc(t_sh *sh, t_node *node)
 
 	node->cmd->in_fd = open(".heredoc_tmp", O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (node->cmd->in_fd < 0)
-			return (perror("heredoc"), 1);
+		return (perror("heredoc"), 1);
 	pid = fork();
 	if (pid < 0)
 		return (perror("fork"), 1);
@@ -76,5 +76,7 @@ int	exec_heredoc(t_sh *sh, t_node *node)
 	if (node->cmd->in_fd < 0)
 		return (perror("heredoc"), 1);
 	unlink(".heredoc_tmp");
+	if (!node->cmd->cmd)
+		return (1);
 	return (0);
 }

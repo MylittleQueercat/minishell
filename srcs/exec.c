@@ -120,7 +120,8 @@ void	run_exec(t_sh *sh, t_node *node)
 	expander(sh, node);
 	if (node->type == N_CMD)
 	{
-		if (!node->exec_args || !node->exec_args[0])
+		if ((!node->exec_args || !node->exec_args[0])
+			&& node->io_list->type != IO_HEREDOC)
 			return (g_st = 1,
 				printf("minishell: syntax error: empty command\n"), (void)0);
 		if (init_cmd(sh, node) == 1)
