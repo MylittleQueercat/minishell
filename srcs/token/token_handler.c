@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 16:36:07 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/28 20:58:13 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/29 14:41:27 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ int	check_incomplete_cmd(t_sh *sh, t_token *token_list)
 			sh->exit_s = 258;
 			return (0);
 		}
-		sh->line = ft_strjoin_with(sh, sh->line, "\n", 0);
+		sh->line = ft_strjoin_with(sh, sh->line, " ", 0);
 		sh->line = ft_strjoin_with(sh, sh->line, more, 0);
 		free(more);
 		new_list = token_handler(sh);
