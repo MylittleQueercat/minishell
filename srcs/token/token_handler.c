@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 16:36:07 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/29 15:45:35 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/29 16:04:16 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ int	handler_sep(t_sh *sh, char **line, t_token **token_list)
 		ft_putstr_fd("minishell: '&' not supported (no background jobs)\n", 2);
 		sh->exit_s = 2;
 		(*line)++;
-		return (0);
+		return (-1);
 	}
 	else
 		return (add_sep_to_end(sh, T_PIPE, line, token_list) && 1);
@@ -88,9 +88,11 @@ int	check_incomplete_cmd(t_sh *sh, t_token *token_list)
 	return (1);
 }
 
+/*
 t_token	*token_handler(t_sh *sh)
 {
 	int		invalid;
+	int		ret;
 	t_token	*token_list;
 	char	*p;
 
@@ -107,9 +109,56 @@ t_token	*token_handler(t_sh *sh)
 			|| !ft_strncmp(p, "|", 1) || !ft_strncmp(p, "<", 1)
 			|| !ft_strncmp(p, "(", 1) || !ft_strncmp(p, ")", 1)
 			|| !ft_strncmp(p, "&", 1))
-			invalid = (!handler_sep(sh, &p, &token_list) && 1);
+		{
+			ret = handler_sep(sh, &p, &token_list);
+			if (ret == -1)
+				return (NULL);
+			invalid = (!ret && 1);
+		}
 		else
 			invalid = (!add_word_to_end(sh, &p, &token_list) && 1);
+	}
+	if (!check_incomplete_cmd(sh, token_list))
+		return (NULL);
+	return (token_list);
+}
+	*/
+
+static int	process_token(t_sh *sh, char **p, t_token **token_list)
+{
+	int	ret;
+
+	if (ft_isspace(**p))
+	{
+		skip_space(p);
+		return (0);
+	}
+	if (!ft_strncmp(*p, "&&", 2) || !ft_strncmp(*p, ">", 1)
+		|| !ft_strncmp(*p, "|", 1) || !ft_strncmp(*p, "<", 1)
+		|| !ft_strncmp(*p, "(", 1) || !ft_strncmp(*p, ")", 1)
+		|| !ft_strncmp(*p, "&", 1))
+	{
+		ret = handler_sep(sh, p, token_list);
+		if (ret == -1)
+			return (-1);
+		return (!ret);
+	}
+	return (!add_word_to_end(sh, p, token_list));
+}
+
+t_token	*token_handler(t_sh *sh)
+{
+	int		state;
+	t_token	*token_list;
+	char	*p;
+
+	token_list = NULL;
+	p = sh->line;
+	while (*p)
+	{
+		state = process_token(sh, &p, &token_list);
+		if (state != 0)
+			return (NULL);
 	}
 	if (!check_incomplete_cmd(sh, token_list))
 		return (NULL);
