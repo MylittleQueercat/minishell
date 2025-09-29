@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 14:48:19 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/20 08:16:49 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/29 15:12:24 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,14 @@
 
 # define LS_COLORS "LS_COLORS=di=34:ln=36:so=32:pi=33:ex=31:bd=34;46:cd=34; \
 					43:su=37;41:sg=30;43:tw=30;42:ow=34;42"
+# define YELLOW      "\001\033[33m\002"
+# define GREEN       "\001\033[32m\002"
+# define CYAN        "\001\033[36m\002"
+# define BOLD        "\001\033[1m\002"
+# define RESET       "\001\033[0m\002"
+# define PURPLE      "\001\033[35m\002"
+# define ORANGE		"\001\033[38;5;208m\002"
+# define PINK		"\001\033[38;2;255;105;180m\002"
 
 extern int	g_st;
 
@@ -189,5 +197,8 @@ void		expander(t_sh *sh, t_node *node);
 
 /* clean */
 void	clean_message(t_sh *sh);
+
+/* prompt */
+char	*make_my_prompt(t_sh *sh, int continuation);
 
 #endif /* MINISHELL_H */

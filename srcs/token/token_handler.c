@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 16:36:07 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/29 14:41:27 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/29 15:14:02 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ int	check_incomplete_cmd(t_sh *sh, t_token *token_list)
 		last = last->next;
 	if (is_incomplete(last))
 	{
-		more = readline("> ");
+		more = readline(make_my_prompt(sh, 1));
 		if (!more)
 		{
 			ft_putstr_fd("minishell: syntax error: unexpected end of file\n", 2);

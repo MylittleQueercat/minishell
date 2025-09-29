@@ -20,7 +20,7 @@ ARENA_DIR = ./srcs/arena/
 
 SRCS = main.c exec.c path.c utils.c init_env.c loop.c free.c \
 		clean.c mini_signal.c init_minishell.c pipe.c ft_atoll.c utils2.c \
-		heredoc.c init_cmd.c
+		heredoc.c init_cmd.c mini_prompt.c
 
 PARSE_SRCS = parse.c parse_err.c parse_node.c parse_simple_cmd.c \
 			 parse_util.c
