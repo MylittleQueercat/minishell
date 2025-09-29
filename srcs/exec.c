@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 15:26:30 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/29 14:47:48 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/29 15:46:11 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,10 +144,6 @@ void	run_exec(t_sh *sh, t_node *node)
 	}
 	if (node->type == N_PIPE)
 		return (fork_node(sh, node), (void)0);
-	if (node->type == N_AMP)
-	{
-		// TO DO
-	}
 	printf("Unknown node type: %d\n", node->type);
 	g_st = 1;
 }

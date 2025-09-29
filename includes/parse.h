@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 16:41:08 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/29 14:49:15 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/29 15:45:55 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ typedef enum e_node_type
 	N_AND,
 	N_OR,
 	N_CMD,
-	N_AMP,
 }	t_node_type;
 // Everything that 'is not a pipe or a logical operator’ will be N_CMD.
 

@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 16:36:07 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/29 15:14:02 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/29 15:45:35 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,12 @@ int	handler_sep(t_sh *sh, char **line, t_token **token_list)
 	else if (!ft_strncmp(*line, "||", 2))
 		return (add_sep_to_end(sh, T_OR, line, token_list) && 1);
 	else if (!ft_strncmp(*line, "&", 1))
-		return (add_sep_to_end(sh, T_AMP, line, token_list) && 1);
+	{
+		ft_putstr_fd("minishell: '&' not supported (no background jobs)\n", 2);
+		sh->exit_s = 2;
+		(*line)++;
+		return (0);
+	}
 	else
 		return (add_sep_to_end(sh, T_PIPE, line, token_list) && 1);
 }
@@ -51,8 +56,7 @@ static int	is_incomplete(t_token *last)
 		return (0);
 	return (last->type == T_PIPE
 		|| last->type == T_AND
-		|| last->type == T_OR
-		|| last->type == T_AMP);
+		|| last->type == T_OR);
 }
 
 int	check_incomplete_cmd(t_sh *sh, t_token *token_list)
