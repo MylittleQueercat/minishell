@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 11:50:17 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/20 08:06:32 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/30 11:43:35 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	remove_env_var(t_env *env, char *var)
 	t_envl	*current;
 	t_envl	*prev;
 
-	current = env->envl
+	current = env->envl;
 	prev = NULL;
 	while (current)
 	{

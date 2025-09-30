@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 12:52:46 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/20 07:26:30 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/30 11:59:28 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	ft_pwd()
+void	ft_pwd(void)
 {
 	char	*cwd;
 

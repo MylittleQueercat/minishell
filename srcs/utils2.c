@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/11 18:46:06 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/20 08:06:00 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/30 11:50:32 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 int	is_builtin_output(const char *cmd)
 {
-	if (ft_strncmp(cmd, "echo", 4) == 0 || ft_strncmp(cmd, "env", 3) == 0 ||
-		ft_strncmp(cmd, "pwd", 3) == 0)
+	if (ft_strncmp(cmd, "echo", 4) == 0 || ft_strncmp(cmd, "env", 3) == 0
+		||ft_strncmp(cmd, "pwd", 3) == 0)
 		return (1);
 	return (0);
 }

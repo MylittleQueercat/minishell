@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 14:48:19 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/29 15:12:24 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/30 11:59:33 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,10 +90,10 @@ typedef struct s_sh
 
 typedef struct s_cmd
 {
-	char			*cmd;       // Command to execute
-	char			**args;      // Arguments for the command
+	char			*cmd;
+	char			**args;
 	int				argc;
-	char			*path;      // Path to the command
+	char			*path;
 	char			*infile;
 	char			*outfile;
 	int				in_fd;
@@ -146,7 +146,7 @@ char	*get_env_value(const char *name, char **envp);
 
 void	ft_env(t_cmd *cmd, t_env *env);
 void	ft_echo(t_cmd *cmd);
-void	ft_pwd();
+void	ft_pwd(void);
 void	ft_cd(t_sh *sh, t_cmd *cmd, t_env *env);
 void	ft_export(t_sh *sh, t_cmd *cmd);
 void	ft_unset(t_sh *sh, t_cmd *cmd, t_env *env);
@@ -192,7 +192,7 @@ bool	check_star(char *mask, char *str);
 void	expand_heredoc(t_sh sh, char *str, int fd);
 
 // expand.c
-void		expander(t_sh *sh, t_node *node);
+void	expander(t_sh *sh, t_node *node);
 //int		expand_tree(t_sh *sh, t_node *node);
 
 /* clean */

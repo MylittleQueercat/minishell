@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   setup_arena.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/20 05:47:25 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/20 05:48:15 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/30 11:49:13 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,4 +24,3 @@ t_arena	*setup_arena(void)
 		return (printf("Error malloc\n"), free(a), NULL);
 	return (a);
 }
-

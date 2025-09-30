@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 20:48:42 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/20 08:09:15 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/30 11:49:47 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ void	change_env_var(t_sh *sh, t_env *env, const char *var)
 	{
 		len = ft_strlen(curr->name);
 		if (ft_strncmp(curr->name, var, len) == 0
-				&& (var[len] == '=' || var[len] == '\0'))
+			&& (var[len] == '=' || var[len] == '\0'))
 		{
 			if (var[len] == '=')
 			{

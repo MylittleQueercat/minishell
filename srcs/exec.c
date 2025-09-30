@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 15:26:30 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/29 15:46:11 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/30 11:58:26 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	exec_builtin(t_sh *sh, t_cmd *cmd)
 	else if (ft_strcmp(cmd->cmd, "cd") == 0)
 		ft_cd(sh, cmd, sh->env);
 	else if (ft_strcmp(cmd->cmd, "pwd") == 0)
-		ft_pwd(cmd);
+		ft_pwd();
 	else if (ft_strcmp(cmd->cmd, "export") == 0)
 		ft_export(sh, cmd);
 	else if (ft_strcmp(cmd->cmd, "unset") == 0)
