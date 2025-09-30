@@ -43,7 +43,7 @@ void	run_iteration(t_sh *sh)
 		return (g_st = 1, (void)0);
 	sh->tree = parse(sh);
 	if (sh->parse_err.type)
-		return (g_st = 1, handle_parse_err(sh), (void)0);
+		return (g_st = 2, handle_parse_err(sh), (void)0);
 }
 
 void	loop(t_sh *sh)
