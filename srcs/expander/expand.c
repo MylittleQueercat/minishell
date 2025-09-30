@@ -79,10 +79,7 @@ void	expander(t_sh *sh, t_node *node)
 	}
 	node->exec_args = pre_glob(sh, node->raw_args);
 	if (!node->exec_args)
-	{
-		node->exec_args = NULL;
 		return ;
-	}
 	i = 0;
 	while (node->exec_args[i])
 	{

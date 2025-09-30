@@ -54,6 +54,8 @@ void	exec_cmd(t_sh *sh, t_cmd *cmd)
 		exit((free_all(sh), 126));
 	}
 	wait_and_signal(pid, &status);
+	if ((status & 0x7f) == SIGINT)
+		return ((ft_putstr_fd("\n", 1), g_st = 130, (void)0));
 	g_st = status >> 8;
 }
 
@@ -115,14 +117,20 @@ void	run_exec(t_sh *sh, t_node *node)
 	if (node->type == N_CMD)
 	{
 		if ((!node->exec_args || !node->exec_args[0])
-			&& !node->io_list->type)
+			&& node->io_list && !node->io_list->type)
 			return (g_st = 2,
 				printf("minishell: syntax error: empty command\n"), (void)0);
 		else if ((!node->exec_args || !node->exec_args[0])
+			&& !node->io_list)
+			return (g_st = 0, (void)0);
+		else if ((!node->exec_args || !node->exec_args[0])
+			&& node->io_list
 			&& node->io_list->type && node->io_list->type != IO_HEREDOC)
 			return (g_st = 0, init_cmd(sh, node), (void)0);
 		if (init_cmd(sh, node) == 1)
 			return (g_st = 1, (void)0);
+		else if (g_st == 130)
+			return ;
 		return (exec_cmd_or_builtin(sh, node), (void)0);
 	}
 	if (node_and_or_pipe(sh, node))

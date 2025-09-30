@@ -129,6 +129,7 @@ void	add_colors(t_sh *sh);
 int		count_args(char **args);
 void	setup_redirections(t_cmd *cmd);
 void	increment_shlvl(t_sh *sh);
+void	restore_prompt(void);
 
 void	loop(t_sh *sh);
 

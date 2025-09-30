@@ -31,7 +31,25 @@ void	run_iteration(t_sh *sh)
 	tmp = readline(sh->prompt);
 	sh->line = a_strdup(sh->a, tmp);
 	if (tmp)
-		free(tmp);
+		free(tmp);t_sigint_state	g_sigstate = {false, false};
+
+void	sig_handler(int num)
+{
+	(void)num;
+	if (g_sigstate.sigint_child)
+	{
+		ft_putstr_fd("\n", 1);
+		g_sigstate.sigint_child = false;
+		g_sigstate.sigint_heredoc = true;
+	}
+	else
+	{
+		ft_putstr_fd("\n", 1);
+		rl_replace_line("", 0);
+		rl_on_new_line();
+		rl_redisplay();
+	}
+}
 	if (!sh->line)
 		exit((ft_putstr_fd("exit\n", 2), free_all(sh), 0));
 	if (sh->line && !*sh->line)

@@ -44,16 +44,15 @@ void	heredoc_parent(t_sh *sh, t_node *node, int pid)
 {
 	int	status;
 
+	(void)sh;
 	wait_and_signal(pid, &status);
 	close(node->cmd->in_fd);
 	if ((status & 0x7f) == SIGINT)
 	{
 		unlink(".heredoc_tmp");
-		sh->exit_s = 130;
-		return ;
+		return (g_st = 130, ft_putstr_fd("\n", 1), (void)0);
 	}
-	sh->exit_s = (status >> 8) & 0xff;
-	g_sigstate.sigint_heredoc = false;
+	g_st = (status >> 8) & 0xff;
 }
 
 int	exec_heredoc(t_sh *sh, t_node *node)
@@ -70,7 +69,7 @@ int	exec_heredoc(t_sh *sh, t_node *node)
 		heredoc_child(sh, node, node->cmd->in_fd);
 	else
 		heredoc_parent(sh, node, pid);
-	if (sh->exit_s == 130)
+	if (g_st == 130)
 		return (1);
 	node->cmd->in_fd = open(".heredoc_tmp", O_RDONLY);
 	if (node->cmd->in_fd < 0)
