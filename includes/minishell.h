@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 14:48:19 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/30 11:59:33 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/30 12:49:11 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,6 @@
 # define CMD_EXTERNAL 1
 # define CMD_PIPE 2
 
-# define LS_COLORS "LS_COLORS=di=34:ln=36:so=32:pi=33:ex=31:bd=34;46:cd=34; \
-					43:su=37;41:sg=30;43:tw=30;42:ow=34;42"
 # define YELLOW      "\001\033[33m\002"
 # define GREEN       "\001\033[32m\002"
 # define CYAN        "\001\033[36m\002"

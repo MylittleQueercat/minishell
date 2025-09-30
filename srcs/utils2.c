@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/11 18:46:06 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/30 11:50:32 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/30 13:10:42 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,15 +22,9 @@ int	is_builtin_output(const char *cmd)
 
 void	add_colors(t_sh *sh)
 {
-	char	*colors[3];
-	t_cmd	cmd;
-
-	colors[0] = "export";
-	colors[1] = LS_COLORS;
-	colors[2] = NULL;
-	cmd.cmd = *colors;
-	cmd.args = colors;
-	ft_export(sh, &cmd);
+	if (get_env_val(sh, "LS_COLORS"))
+		return ;
+	return ;
 }
 
 void	setup_redirections(t_cmd *cmd)
