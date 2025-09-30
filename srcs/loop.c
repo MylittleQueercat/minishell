@@ -65,7 +65,6 @@ void	loop(t_sh *sh)
 			arena_free(sh->a);
 			continue ;
 		}
-		default_signals();
 		if (sh->tree)
 			run_exec(sh, sh->tree);
 		arena_free(sh->a);

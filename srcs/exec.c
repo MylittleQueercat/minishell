@@ -53,7 +53,7 @@ void	exec_cmd(t_sh *sh, t_cmd *cmd)
 		perror("execve");
 		exit((free_all(sh), 126));
 	}
-	waitpid(pid, &status, 0);
+	wait_and_signal(pid, &status);
 	g_st = status >> 8;
 }
 
@@ -62,6 +62,7 @@ void	exec_cmd_or_builtin(t_sh *sh, t_node *node)
 	int	vl;
 	int	pid;
 
+	default_signals();
 	setup_redirections(node->cmd);
 	if (is_builtin(node->cmd->cmd))
 	{
@@ -73,7 +74,7 @@ void	exec_cmd_or_builtin(t_sh *sh, t_node *node)
 				exec_builtin(sh, node->cmd);
 				exit((free_all(sh), g_st));
 			}
-			waitpid(pid, &vl, 0);
+			wait_and_signal(pid, &vl);
 			g_st = (vl >> 8);
 		}
 		else
