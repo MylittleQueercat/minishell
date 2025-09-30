@@ -36,6 +36,7 @@ void	heredoc_child(t_sh *sh, t_node *node, int fd)
 		free(line);
 	}
 	close(fd);
+	free_all(sh);
 	exit(0);
 }
 
