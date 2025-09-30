@@ -51,5 +51,5 @@ void	ft_unset(t_sh *sh, t_cmd *cmd, t_env *env)
 		remove_env_var(env, cmd->args[i]);
 		i++;
 	}
-	g_st = update_envp(sh, env);
+	g_st = update_envp(sh, env, 0, 0);
 }

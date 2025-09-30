@@ -21,7 +21,7 @@ void	exec_builtin(t_sh *sh, t_cmd *cmd)
 	else if (ft_strcmp(cmd->cmd, "pwd") == 0)
 		ft_pwd();
 	else if (ft_strcmp(cmd->cmd, "export") == 0)
-		ft_export(sh, cmd);
+		ft_export(sh, cmd, 1);
 	else if (ft_strcmp(cmd->cmd, "unset") == 0)
 		ft_unset(sh, cmd, sh->env);
 	else if (ft_strcmp(cmd->cmd, "env") == 0)

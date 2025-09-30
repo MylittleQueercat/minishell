@@ -72,11 +72,8 @@ void	set_envp(t_sh *sh, t_env *env, int i, int size)
 	t_envl	*curr;
 
 	curr = env->envl;
-	while (curr)
-	{
-		size++;
+	while (curr && ++size)
 		curr = curr->next;
-	}
 	env->envp = arena_alloc(sh->sh_arena, sizeof(char *) * (size + 1));
 	if (!env->envp)
 		return ;

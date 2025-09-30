@@ -138,7 +138,7 @@ int		is_builtin_output(const char *cmd);
 void	print_sorted_env(t_env *env, int flag);
 int		is_valid_identifier(const char *str);
 int		var_exists(t_env *env, const char *var);
-int		update_envp(t_sh *sh, t_env *env);
+int		update_envp(t_sh *sh, t_env *env, int size, int i);
 void	change_env_var(t_sh *sh, t_env *env, const char *var);
 char	*get_env_value(const char *name, char **envp);
 
@@ -146,7 +146,7 @@ void	ft_env(t_cmd *cmd, t_env *env);
 void	ft_echo(t_cmd *cmd);
 void	ft_pwd(void);
 void	ft_cd(t_sh *sh, t_cmd *cmd, t_env *env);
-void	ft_export(t_sh *sh, t_cmd *cmd);
+void	ft_export(t_sh *sh, t_cmd *cmd, int i);
 void	ft_unset(t_sh *sh, t_cmd *cmd, t_env *env);
 void	ft_exit(t_sh *sh, t_cmd *cmd);
 // parsing

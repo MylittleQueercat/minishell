@@ -30,14 +30,10 @@ char	*get_env_value(const char *name, char **envp)
 	return (NULL);
 }
 
-int	update_envp(t_sh *sh, t_env *env)
+int	update_envp(t_sh *sh, t_env *env, int size, int i)
 {
 	t_envl	*curr;
-	int		i;
-	size_t	size;
 
-	i = 0;
-	size = 0;
 	curr = env->envl;
 	while (curr && ++size)
 		curr = curr->next;
@@ -115,13 +111,10 @@ static int	add_env_var(t_sh *sh, t_env *env, const char *var)
 	return (1);
 }
 
-void	ft_export(t_sh *sh, t_cmd *cmd)
+void	ft_export(t_sh *sh, t_cmd *cmd, int i)
 {
-	int		i;
-
 	if (!cmd->args[1])
 		return (print_sorted_env(sh->env, -1), (g_st = 0), (void)0);
-	i = 1;
 	while (cmd->args[i])
 	{
 		if (is_valid_identifier(cmd->args[i]) == 0)
@@ -143,5 +136,5 @@ void	ft_export(t_sh *sh, t_cmd *cmd)
 		}
 		i++;
 	}
-	g_st = update_envp(sh, sh->env);
+	g_st = update_envp(sh, sh->env, 0, 0);
 }

@@ -26,18 +26,8 @@ void	close_fds(t_cmd *cmd)
 	}
 }
 
-int	open_redirections(t_sh *sh, t_node *node, t_cmd *cmd)
+int	open_outfile(t_cmd *cmd)
 {
-	close_fds(cmd);
-	if (cmd->infile && cmd->type != IO_HEREDOC)
-	{
-		cmd->in_fd = open(cmd->infile, O_RDONLY);
-		if (cmd->in_fd < 0)
-			return (perror(cmd->infile), 1);
-	}
-	else if (cmd->infile && cmd->type == IO_HEREDOC
-		&& exec_heredoc(sh, node) == 1)
-		return (1);
 	if (cmd->outfile)
 	{
 		if (cmd->type == IO_OUT)
@@ -53,6 +43,23 @@ int	open_redirections(t_sh *sh, t_node *node, t_cmd *cmd)
 			return (perror(cmd->outfile), 1);
 		}
 	}
+	return (0);
+}
+
+int	open_redirections(t_sh *sh, t_node *node, t_cmd *cmd)
+{
+	close_fds(cmd);
+	if (cmd->infile && cmd->type != IO_HEREDOC)
+	{
+		cmd->in_fd = open(cmd->infile, O_RDONLY);
+		if (cmd->in_fd < 0)
+			return (perror(cmd->infile), 1);
+	}
+	else if (cmd->infile && cmd->type == IO_HEREDOC
+		&& exec_heredoc(sh, node) == 1)
+		return (1);
+	if (open_outfile(cmd) == 1)
+		return (1);
 	return (0);
 }
 
