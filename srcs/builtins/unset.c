@@ -12,10 +12,30 @@
 
 #include "minishell.h"
 
-void	ft_unset(t_sh *sh, t_cmd *cmd, t_env *env)
+void	remove_env_var(t_env *env, char *var)
 {
 	t_envl	*current;
 	t_envl	*prev;
+
+	current = env->envl
+	prev = NULL;
+	while (current)
+	{
+		if (ft_strcmp(current->name, var) == 0)
+		{
+			if (prev)
+				prev->next = current->next;
+			else
+				env->envl = current->next;
+			return ;
+		}
+		prev = current;
+		current = current->next;
+	}
+}
+
+void	ft_unset(t_sh *sh, t_cmd *cmd, t_env *env)
+{
 	int		i;
 
 	if (!cmd->args[1])
@@ -28,21 +48,7 @@ void	ft_unset(t_sh *sh, t_cmd *cmd, t_env *env)
 			printf("unset: '%s': not a valid identifier\n", cmd->args[i]);
 			return (g_st = 1, (void)0);
 		}
-		current = env->envl;
-		prev = NULL;
-		while (current)
-		{
-			if (ft_strcmp(current->name, cmd->args[i]) == 0)
-			{
-				if (prev)
-					prev->next = current->next;
-				else
-					env->envl = current->next;
-				break ;
-			}
-			prev = current;
-			current = current->next;
-		}
+		remove_env_var(env, cmd->args[i]);
 		i++;
 	}
 	g_st = update_envp(sh, env);

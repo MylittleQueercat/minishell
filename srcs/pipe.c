@@ -26,3 +26,31 @@ void	child_process(t_sh *sh, t_node *node, int *fd, int n)
 	else if (n == 0)
 		exit((run_exec(sh, node->right), free_all(sh), g_st));
 }
+
+void	fork_node(t_sh *sh, t_node *node)
+{
+	int	pid[2];
+	int	fd[2];
+	int	status[2];
+
+	if (pipe(fd) == -1)
+		return (perror("pipe"), g_st = 1, (void)0);
+	pid[0] = fork();
+	if (pid[0] < 0)
+		return (perror("fork"), g_st = 1, (void)0);
+	if (pid[0] == 0)
+		child_process(sh, node, fd, 0);
+	pid[1] = fork();
+	if (pid[1] < 0)
+		return (perror("fork"), g_st = 1, (void)0);
+	if (pid[1] == 0)
+		child_process(sh, node, fd, 1);
+	close(fd[0]);
+	close(fd[1]);
+	waitpid(pid[1], &status[1], 0);
+	waitpid(pid[0], &status[0], 0);
+	if ((status[1] & 0x7F) == 0)
+		g_st = (status[1] >> 8) & 0xFF;
+	else
+		g_st = 128 + (status[1] & 0x7F);
+}
