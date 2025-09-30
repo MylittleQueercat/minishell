@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 14:48:19 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/20 08:16:49 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/30 12:49:11 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,14 @@
 # define CMD_EXTERNAL 1
 # define CMD_PIPE 2
 
-# define LS_COLORS "LS_COLORS=di=34:ln=36:so=32:pi=33:ex=31:bd=34;46:cd=34; \
-					43:su=37;41:sg=30;43:tw=30;42:ow=34;42"
+# define YELLOW      "\001\033[33m\002"
+# define GREEN       "\001\033[32m\002"
+# define CYAN        "\001\033[36m\002"
+# define BOLD        "\001\033[1m\002"
+# define RESET       "\001\033[0m\002"
+# define PURPLE      "\001\033[35m\002"
+# define ORANGE		"\001\033[38;5;208m\002"
+# define PINK		"\001\033[38;2;255;105;180m\002"
 
 extern int	g_st;
 
@@ -82,10 +88,10 @@ typedef struct s_sh
 
 typedef struct s_cmd
 {
-	char			*cmd;       // Command to execute
-	char			**args;      // Arguments for the command
+	char			*cmd;
+	char			**args;
 	int				argc;
-	char			*path;      // Path to the command
+	char			*path;
 	char			*infile;
 	char			*outfile;
 	int				in_fd;
@@ -138,7 +144,7 @@ char	*get_env_value(const char *name, char **envp);
 
 void	ft_env(t_cmd *cmd, t_env *env);
 void	ft_echo(t_cmd *cmd);
-void	ft_pwd();
+void	ft_pwd(void);
 void	ft_cd(t_sh *sh, t_cmd *cmd, t_env *env);
 void	ft_export(t_sh *sh, t_cmd *cmd);
 void	ft_unset(t_sh *sh, t_cmd *cmd, t_env *env);
@@ -184,10 +190,13 @@ bool	check_star(char *mask, char *str);
 void	expand_heredoc(t_sh sh, char *str, int fd);
 
 // expand.c
-void		expander(t_sh *sh, t_node *node);
+void	expander(t_sh *sh, t_node *node);
 //int		expand_tree(t_sh *sh, t_node *node);
 
 /* clean */
 void	clean_message(t_sh *sh);
+
+/* prompt */
+char	*make_my_prompt(t_sh *sh, int continuation);
 
 #endif /* MINISHELL_H */

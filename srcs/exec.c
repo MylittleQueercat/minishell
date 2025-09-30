@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 15:26:30 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/22 16:51:58 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/30 15:08:22 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	exec_builtin(t_sh *sh, t_cmd *cmd)
 	else if (ft_strcmp(cmd->cmd, "cd") == 0)
 		ft_cd(sh, cmd, sh->env);
 	else if (ft_strcmp(cmd->cmd, "pwd") == 0)
-		ft_pwd(cmd);
+		ft_pwd();
 	else if (ft_strcmp(cmd->cmd, "export") == 0)
 		ft_export(sh, cmd);
 	else if (ft_strcmp(cmd->cmd, "unset") == 0)
@@ -85,32 +85,25 @@ void	exec_cmd_or_builtin(t_sh *sh, t_node *node)
 	dup2(sh->fd_stdout, STDOUT_FILENO);
 }
 
-void	fork_node(t_sh *sh, t_node *node)
+int	node_and_or_pipe(t_sh *sh, t_node *node)
 {
-	int	pid[2];
-	int	fd[2];
-	int	status[2];
-
-	if (pipe(fd) == -1)
-		return (perror("pipe"), g_st = 1, (void)0);
-	pid[0] = fork();
-	if (pid[0] < 0)
-		return (perror("fork"), g_st = 1, (void)0);
-	if (pid[0] == 0)
-		child_process(sh, node, fd, 0);
-	pid[1] = fork();
-	if (pid[1] < 0)
-		return (perror("fork"), g_st = 1, (void)0);
-	if (pid[1] == 0)
-		child_process(sh, node, fd, 1);
-	close(fd[0]);
-	close(fd[1]);
-	waitpid(pid[1], &status[1], 0);
-	waitpid(pid[0], &status[0], 0);
-	if ((status[1] & 0x7F) == 0)
-		g_st = (status[1] >> 8) & 0xFF;
-	else
-		g_st = 128 + (status[1] & 0x7F);
+	if (node->type == N_AND)
+	{
+		run_exec(sh, node->left);
+		if (g_st == 0)
+			run_exec(sh, node->right);
+		return (1);
+	}
+	if (node->type == N_OR)
+	{
+		run_exec(sh, node->left);
+		if (g_st != 0)
+			run_exec(sh, node->right);
+		return (1);
+	}
+	if (node->type == N_PIPE)
+		return (fork_node(sh, node), 1);
+	return (0);
 }
 
 void	run_exec(t_sh *sh, t_node *node)
@@ -120,30 +113,22 @@ void	run_exec(t_sh *sh, t_node *node)
 	expander(sh, node);
 	if (node->type == N_CMD)
 	{
-		if ((!node->exec_args || !node->exec_args[0])
-			&& !node->io_list->type)
-			return (g_st = 1,
+		if (!node->exec_args || !node->exec_args[0])
+		{
+			if (!node->io_list || !node->io_list->type)
+			{
+				g_st = 0;
+				return ;
+			}
+			return (g_st = 2,
 				printf("minishell: syntax error: empty command\n"), (void)0);
+		}
 		if (init_cmd(sh, node) == 1)
 			return (g_st = 1, (void)0);
 		return (exec_cmd_or_builtin(sh, node), (void)0);
 	}
-	if (node->type == N_AND)
-	{
-		run_exec(sh, node->left);
-		if (g_st == 0)
-			run_exec(sh, node->right);
+	if (node_and_or_pipe(sh, node))
 		return ;
-	}
-	if (node->type == N_OR)
-	{
-		run_exec(sh, node->left);
-		if (g_st != 0)
-			run_exec(sh, node->right);
-		return ;
-	}
-	if (node->type == N_PIPE)
-		return (fork_node(sh, node), (void)0);
 	printf("Unknown node type: %d\n", node->type);
 	g_st = 1;
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_env.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 13:02:48 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/20 08:02:03 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/30 11:52:12 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,7 +130,7 @@ t_env	*init_env(t_sh *sh, char **envp)
 {
 	t_env	*env;
 
-	env = (t_env*)arena_alloc(sh->sh_arena, sizeof(t_env));
+	env = (t_env *)arena_alloc(sh->sh_arena, sizeof(t_env));
 	if (!env)
 		exit((perror("Allocation error for env struct"), free_all(sh), 1));
 	ft_bzero(env, sizeof(t_env));

@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 17:34:02 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/28 18:43:24 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/28 20:56:28 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,29 +40,37 @@ int	is_quote(char c)
 	return (0);
 }
 
+static size_t	scan_word(const char *line, int *quoted)
+{
+	size_t	i;
+
+	i = 0;
+	*quoted = 0;
+	while (line[i] && !is_sep((char *)(line + i)))
+	{
+		if (is_quote(line[i]))
+		{
+			*quoted = 1;
+			if (!skip_quote((char *)line, &i))
+				return (0);
+		}
+		else
+			i++;
+	}
+	return (i);
+}
+
 int	add_word_to_end(t_sh *sh, char **line, t_token **token_list)
 {
-	char	*curr_place;
 	char	*value;
 	t_token	*token;
 	size_t	i;
 	int		quoted;
 
-	curr_place = *line;
-	i = 0;
-	quoted = 0;
-	while (curr_place[i] && !is_sep(curr_place + i))
-	{
-		if (is_quote(curr_place[i]))
-		{
-			quoted = 1;
-			if (!skip_quote(*line, &i))
-				return (print_quote_err(sh, curr_place[i]), 0);
-		}
-		else
-			i++;
-	}
-	value = a_substr(sh->a, curr_place, 0, i);
+	i = scan_word(*line, &quoted);
+	if (i == 0)
+		return (0);
+	value = a_substr(sh->a, *line, 0, i);
 	if (!value)
 		return (0);
 	token = create_new_token(sh, value, T_WORD);

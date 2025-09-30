@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 16:01:16 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/28 18:25:08 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/28 21:01:18 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ typedef enum e_token_type
 	T_RD_HEREDOC,
 	T_RD_ADD_END,
 	T_PIPE,
+	T_AMP,
 	T_PAREN_OP,
 	T_PAREN_CL,
 	T_AND,
@@ -50,6 +51,7 @@ int		is_quote(char c);
 int		add_word_to_end(t_sh *sh, char **line, t_token **token_list);
 
 // token_handler.c
+int		check_incomplete_cmd(t_sh *sh, t_token *token_list);
 int		handler_sep(t_sh *sh, char **line, t_token **token_list);
 t_token	*token_handler(t_sh *sh);
 

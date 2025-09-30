@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_minishell.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/07 18:09:12 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/20 07:49:48 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/30 11:52:23 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 t_sh	*setup_minishell(char **envp)
 {
-	t_sh	*sh;
+	t_sh		*sh;
 	t_arena		*sh_arena;
 
 	sh_arena = malloc(sizeof(t_arena));

@@ -6,14 +6,14 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 16:41:08 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/28 18:31:27 by hguo             ###   ########.fr       */
+/*   Updated: 2025/09/30 11:47:11 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PARSE_H
 # define PARSE_H
 
-typedef struct s_sh	t_sh;
+typedef struct s_sh			t_sh;
 typedef struct s_token		t_token;
 typedef enum e_token_type	t_token_type;
 typedef struct s_cmd		t_cmd;
