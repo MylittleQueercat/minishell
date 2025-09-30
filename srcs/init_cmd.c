@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_cmd.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/17 16:35:18 by aprigent          #+#    #+#             */
-/*   Updated: 2025/09/20 07:54:44 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/30 14:34:35 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,18 +66,14 @@ int	parse_io(t_sh *sh, t_node *node, t_cmd *cmd)
 		io->exec_value = a_split(sh->a, io->raw_value, ' ');
 		if (!io->exec_value)
 			return (perror("malloc"), 1);
-		if (io->type == IO_IN)
-			cmd->infile = io->exec_value[0];
-		else if (io->type == IO_OUT)
-			cmd->outfile = io->exec_value[0];
-		else if (io->type == IO_HEREDOC)
-			cmd->infile = io->exec_value[0];
-		else if (io->type == IO_ADD_END)
-			cmd->outfile = io->exec_value[0];
+		if (io->type == IO_IN || io->type == IO_HEREDOC)
+			cmd->infile = throw_quotes(sh, io->exec_value[0]);
+		else if (io->type == IO_OUT || io->type == IO_ADD_END)
+			cmd->outfile = throw_quotes(sh, io->exec_value[0]);
 		cmd->type = io->type;
-		io = io->next;
 		if (open_redirections(sh, node, cmd) == 1)
 			return (1);
+		io = io->next;
 	}
 	return (0);
 }

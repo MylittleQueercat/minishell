@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 16:00:57 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/22 16:36:40 by aprigent         ###   ########.fr       */
+/*   Updated: 2025/09/30 15:08:36 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,15 +73,26 @@ void	expander(t_sh *sh, t_node *node)
 	size_t	i;
 
 	if (!node->raw_args)
-		return (node->exec_args = NULL, (void)0);
+	{
+		node->exec_args = NULL;
+		return ;
+	}
 	node->exec_args = pre_glob(sh, node->raw_args);
 	if (!node->exec_args)
-		exit((perror("malloc"), free_all(sh), 1));
-	i = -1;
-	while (node->exec_args[++i])
+	{
+		node->exec_args = NULL;
+		return ;
+	}
+	i = 0;
+	while (node->exec_args[i])
 	{
 		node->exec_args[i] = throw_quotes(sh, node->exec_args[i]);
 		if (!node->exec_args[i])
-			exit((perror("malloc"), free_all(sh), 1));
+		{
+			perror("malloc");
+			free_all(sh);
+			exit(1);
+		}
+		i++;
 	}
 }
