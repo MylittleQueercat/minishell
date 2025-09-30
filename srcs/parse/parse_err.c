@@ -61,6 +61,7 @@ void	handle_parse_err(t_sh *sh)
 		ft_putstr_fd("minishell: syntax error near unexpected token `", 2);
 		ft_putstr_fd((char *)token_type_str(tok), 2);
 		ft_putstr_fd("'\n", 2);
+		sh->tree = NULL;
 		sh->exit_s = 258;
 	}
 }
