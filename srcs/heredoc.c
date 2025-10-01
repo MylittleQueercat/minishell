@@ -25,7 +25,8 @@ void	heredoc_child(t_sh *sh, t_node *node, int fd)
 
 	signal(SIGINT, sigint_handler_heredoc);
 	signal(SIGQUIT, SIG_IGN);
-	setup_redirections(node->cmd);
+	dup2(sh->fd_stdout, STDOUT_FILENO);
+	dup2(sh->fd_stdin, STDIN_FILENO);
 	while (1)
 	{
 		line = readline("> ");
@@ -54,8 +55,6 @@ void	heredoc_parent(t_sh *sh, t_node *node, int pid)
 	(void)sh;
 	wait_and_signal(pid, &status);
 	close(node->cmd->in_fd);
-	dup2(sh->fd_stdout, STDOUT_FILENO);
-	dup2(sh->fd_stdin, STDIN_FILENO);
 	if ((status & 0x7f) == SIGINT)
 	{
 		unlink(".heredoc_tmp");
