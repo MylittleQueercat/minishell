@@ -16,16 +16,6 @@
 # include "minishell.h"
 # include <stdbool.h>
 
-typedef struct s_sh		t_sh;
-
-typedef struct s_sigint_state
-{
-	bool				sigint_child;
-	bool				sigint_heredoc;
-}	t_sigint_state;
-
-extern t_sigint_state	g_sigstate;
-
 void					sig_handler(int num);
 void					init_signals(t_sh *sh);
 void					sig_quit_handler(int num);

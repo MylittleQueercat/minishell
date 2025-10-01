@@ -12,25 +12,14 @@
 
 #include "minishell.h"
 
-t_sigint_state	g_sigstate = {false, false};
-
 void	sig_handler(int num)
 {
 	(void)num;
-	if (g_sigstate.sigint_child)
-	{
-		ft_putstr_fd("\n", 1);
-		g_sigstate.sigint_child = false;
-		g_sigstate.sigint_heredoc = true;
-	}
-	else
-	{
-		ft_putstr_fd("\n", 1);
-		rl_replace_line("", 0);
-		rl_on_new_line();
-		rl_redisplay();
-		g_st = 130;
-	}
+	ft_putstr_fd("\n", 1);
+	rl_replace_line("", 0);
+	rl_on_new_line();
+	rl_redisplay();
+	g_st = 130;
 }
 
 void	sig_quit_handler(int num)
@@ -47,8 +36,6 @@ void	init_signals(t_sh *sh)
 	term = sh->original_term;
 	term.c_lflag &= ~ECHOCTL;
 	tcsetattr(STDIN_FILENO, TCSANOW, &term);
-	g_sigstate.sigint_heredoc = false;
-	g_sigstate.sigint_child = false;
 	signal(SIGINT, sig_handler);
 	signal(SIGQUIT, SIG_IGN);
 }

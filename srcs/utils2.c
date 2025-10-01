@@ -69,3 +69,10 @@ void	increment_shlvl(t_sh *sh)
 		exit((perror("malloc"), free_all(sh), 1));
 	change_env_var(sh, sh->env, shlvl);
 }
+
+void	print_fd(char *msg, char *arg, int fd)
+{
+	ft_putstr_fd("minishell: ", fd);
+	ft_putstr_fd(arg, fd);
+	ft_putstr_fd(msg, fd);
+}

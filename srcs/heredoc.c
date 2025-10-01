@@ -12,12 +12,20 @@
 
 #include "minishell.h"
 
+void	sigint_handler_heredoc(int num)
+{
+	(void)num;
+	ft_putstr_fd("\n", 1);
+	exit(130);
+}
+
 void	heredoc_child(t_sh *sh, t_node *node, int fd)
 {
 	char	*line;
 
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_DFL);
+	signal(SIGINT, sigint_handler_heredoc);
+	signal(SIGQUIT, SIG_IGN);
+	setup_redirections(node->cmd);
 	while (1)
 	{
 		line = readline("> ");
@@ -36,8 +44,7 @@ void	heredoc_child(t_sh *sh, t_node *node, int fd)
 		free(line);
 	}
 	close(fd);
-	free_all(sh);
-	exit(0);
+	exit((free_all(sh), 0));
 }
 
 void	heredoc_parent(t_sh *sh, t_node *node, int pid)
@@ -47,10 +54,12 @@ void	heredoc_parent(t_sh *sh, t_node *node, int pid)
 	(void)sh;
 	wait_and_signal(pid, &status);
 	close(node->cmd->in_fd);
+	dup2(sh->fd_stdout, STDOUT_FILENO);
+	dup2(sh->fd_stdin, STDIN_FILENO);
 	if ((status & 0x7f) == SIGINT)
 	{
 		unlink(".heredoc_tmp");
-		return (g_st = 130, ft_putstr_fd("\n", 1), (void)0);
+		return (g_st = 130, ft_putstr_fd("\n", sh->fd_stdout), (void)0);
 	}
 	g_st = (status >> 8) & 0xff;
 }

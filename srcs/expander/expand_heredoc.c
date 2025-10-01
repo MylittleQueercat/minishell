@@ -21,7 +21,7 @@ static	int	expand_heredoc_printer(t_sh sh, char *str, size_t i, int fd)
 
 	start = ++i;
 	if (str[i] == '?')
-		return (ft_putnbr_fd(sh.exit_s, fd), 2);
+		return (ft_putnbr_fd(g_st, fd), 2);
 	while (str[i] && str[i] != '$' && str[i] != ' ')
 		i++;
 	if (i != start)
