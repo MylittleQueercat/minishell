@@ -42,7 +42,7 @@ int	handler_sep(t_sh *sh, char **line, t_token **token_list)
 	else if (!ft_strncmp(*line, "&", 1))
 	{
 		ft_putstr_fd("minishell: '&' not supported (no background jobs)\n", 2);
-		sh->exit_s = 2;
+		g_st = 2;
 		(*line)++;
 		return (-1);
 	}
@@ -74,8 +74,7 @@ int	check_incomplete_cmd(t_sh *sh, t_token *token_list)
 		if (!more)
 		{
 			ft_putstr_fd("minishell: syntax error: unexpected end of file\n", 2);
-			sh->exit_s = 258;
-			return (0);
+			return (g_st = 2, 0);
 		}
 		sh->line = ft_strjoin_with(sh, sh->line, " ", 0);
 		sh->line = ft_strjoin_with(sh, sh->line, more, 0);
