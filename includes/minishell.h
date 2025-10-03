@@ -144,7 +144,7 @@ void	add_env_var(t_sh *sh, t_env *env, const char *var);
 char	*get_env_value(const char *name, char **envp);
 
 void	ft_env(t_cmd *cmd, t_env *env);
-void	ft_echo(t_cmd *cmd);
+void	ft_echo(t_cmd *cmd, int i, int flag);
 void	ft_pwd(void);
 void	ft_cd(t_sh *sh, t_cmd *cmd, t_env *env);
 void	ft_export(t_sh *sh, t_cmd *cmd, int i);

@@ -12,12 +12,10 @@
 
 #include "minishell.h"
 
-static char	**get_delimiter(t_sh *sh, t_io_node *io, int i)
+static char	**get_delimiter(t_sh *sh, t_io_node *io, int i, char **del)
 {
 	char		**tmp;
-	char		**del;
 
-	del = NULL;
 	while (++i >= 0 && io)
 	{
 		if (io->type != IO_HEREDOC)
@@ -29,7 +27,7 @@ static char	**get_delimiter(t_sh *sh, t_io_node *io, int i)
 		if (!tmp)
 			return (NULL);
 		del = a_realloc(sh->a, del, sizeof(char *) * i,
-			sizeof(char *) * (i + 2));
+				sizeof(char *) * (i + 2));
 		if (!del)
 			return (NULL);
 		del[i] = throw_quotes(sh, tmp[0]);
@@ -71,12 +69,13 @@ void	heredoc_child(t_sh *sh, t_node *node, int fd, const char *delimiter)
 	exit((free_all(sh), 0));
 }
 
-void	heredoc_parent(t_sh *sh, int pid)
+void	heredoc_parent(t_sh *sh, int pid, int fd)
 {
 	int	status;
 
 	(void)sh;
 	wait_and_signal(pid, &status);
+	close(fd);
 	if ((status & 0x7f) == SIGINT)
 	{
 		unlink(".heredoc_tmp");
@@ -85,13 +84,11 @@ void	heredoc_parent(t_sh *sh, int pid)
 	g_st = (status >> 8) & 0xff;
 }
 
-int	fork_heredoc(t_sh *sh, t_node *node)
+int	fork_heredoc(t_sh *sh, t_node *node, int pid, int fd)
 {
-	int		pid;
-	int		fd;
 	char	**delimiter;
 
-	delimiter = get_delimiter(sh, node->io_list, -1);
+	delimiter = get_delimiter(sh, node->io_list, -1, NULL);
 	if (!delimiter)
 		exit((perror("malloc"), free_all(sh), 1));
 	while (delimiter && *delimiter)
@@ -105,17 +102,15 @@ int	fork_heredoc(t_sh *sh, t_node *node)
 		if (pid == 0)
 			heredoc_child(sh, node, fd, *delimiter);
 		else
-			heredoc_parent(sh, pid);
+			heredoc_parent(sh, pid, fd);
 		delimiter++;
-		close(fd);
 		if (g_st == 130)
 			break ;
 	}
 	node->heredoc_fd = open(node->heredoc, O_RDONLY);
 	if (node->heredoc_fd < 0)
 		return (perror("open"), unlink(node->heredoc), 1);
-	unlink(node->heredoc);
-	return (g_st);
+	return (unlink(node->heredoc), g_st);
 }
 
 int	exec_heredoc(t_sh *sh, t_node *node)
@@ -143,5 +138,5 @@ int	exec_heredoc(t_sh *sh, t_node *node)
 	node->heredoc = a_strjoin(sh->a, file, a_itoa(sh->a, sh->heredoc_count--));
 	if (!node->heredoc)
 		exit((perror("malloc"), free_all(sh), 1));
-	return (fork_heredoc(sh, node) != 0);
+	return (fork_heredoc(sh, node, -1, -1), 0);
 }

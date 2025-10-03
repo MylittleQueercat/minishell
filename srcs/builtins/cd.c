@@ -71,6 +71,29 @@ void	cd_root(t_sh *sh, t_env *env)
 		g_st = update_pwd(sh, env);
 }
 
+void	cd_oldpwd(t_sh *sh, t_env *env)
+{
+	char	*oldpwd;
+
+	oldpwd = get_env_value("OLDPWD", env->envp);
+	if (!oldpwd)
+	{
+		printf("cd: OLDPWD not set\n");
+		g_st = 1;
+	}
+	else if (chdir(oldpwd) != 0)
+	{
+		perror("cd");
+		g_st = 1;
+	}
+	else
+	{
+		g_st = update_pwd(sh, env);
+		if (g_st == 0)
+			printf("%s\n", env->pwd);
+	}
+}
+
 void	ft_cd(t_sh *sh, t_cmd *cmd, t_env *env)
 {
 	if (cmd->argc > 2)
@@ -86,13 +109,10 @@ void	ft_cd(t_sh *sh, t_cmd *cmd, t_env *env)
 	else if (ft_strncmp(cmd->args[1], "-", 2) == 0)
 	{
 		cmd->args[1] = NULL;
-		ft_pwd();
+		cd_oldpwd(sh, env);
 	}
 	else if (chdir(cmd->args[1]) != 0)
-	{
-		perror("cd");
-		g_st = 1;
-	}
+		return (perror("cd"), (void)(g_st = 1));
 	else
 		g_st = update_pwd(sh, env);
 }
