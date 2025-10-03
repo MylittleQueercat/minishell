@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/03 18:19:53 by hguo              #+#    #+#             */
-/*   Updated: 2025/10/03 19:09:01 by hguo             ###   ########.fr       */
+/*   Updated: 2025/10/03 19:28:35 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,25 @@ static int	print_sep_error(t_token *last)
 	return (0);
 }
 
+t_token	*token_handler_line(t_sh *sh, char *line)
+{
+	t_token	*list;
+	char	*old;
+
+	if (!line || !*line)
+		return (NULL);
+	old = sh->line;
+	sh->line = line;
+	list = token_handler(sh);
+	sh->line = old;
+	return (list);
+}
+
 static int	handle_incomplete(t_sh *sh, t_token **token_list)
 {
 	char	*more;
 	t_token	*new_list;
+	t_token	*last;
 
 	more = readline(make_my_prompt(sh, 1));
 	if (!more)
@@ -48,13 +63,14 @@ static int	handle_incomplete(t_sh *sh, t_token **token_list)
 		g_st = 2;
 		return (0);
 	}
-	sh->line = ft_strjoin_with(sh, sh->line, " ", 0);
-	sh->line = ft_strjoin_with(sh, sh->line, more, 0);
+	new_list = token_handler_line(sh, more);
 	free(more);
-	new_list = token_handler(sh);
 	if (!new_list)
 		return (0);
-	*token_list = new_list;
+	last = *token_list;
+	while (last->next)
+		last = last->next;
+	last->next = new_list;
 	return (1);
 }
 
