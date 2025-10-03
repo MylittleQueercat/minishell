@@ -30,7 +30,7 @@ EXPAND_SRCS = expand.c expand_asterisker.c expand_globber.c expand_heredoc.c \
 			  throw_quotes.c
 
 TOKEN_SRCS = token.c token_add_to_end.c token_handler.c token_list.c \
-			 token_util.c
+			 token_util.c check_incomplete_cmd.c
 
 BUILTIN_SRCS = echo.c env.c pwd.c cd.c export.c unset.c export_utils.c exit.c
 

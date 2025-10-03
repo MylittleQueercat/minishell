@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 16:01:16 by hguo              #+#    #+#             */
-/*   Updated: 2025/09/28 21:01:18 by hguo             ###   ########.fr       */
+/*   Updated: 2025/10/03 18:17:31 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ int		is_quote(char c);
 int		add_word_to_end(t_sh *sh, char **line, t_token **token_list);
 
 // token_handler.c
-int		check_incomplete_cmd(t_sh *sh, t_token *token_list);
 int		handler_sep(t_sh *sh, char **line, t_token **token_list);
 t_token	*token_handler(t_sh *sh);
 
@@ -59,6 +58,9 @@ t_token	*token_handler(t_sh *sh);
 t_token	*create_new_token(t_sh *sh, char *value, t_token_type type);
 void	token_list_add_back(t_token **list, t_token *new_token);
 void	clear_token_list(t_token **list);
+
+// check_incomplete_cmd.c
+int		check_incomplete_cmd(t_sh *sh, t_token *token_list);
 
 // token_util.c
 int		is_sep(char *str);
