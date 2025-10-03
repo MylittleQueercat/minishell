@@ -3,10 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   token_handler.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: aprigent <aprigent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 16:36:07 by hguo              #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2025/10/03 19:10:10 by hguo             ###   ########.fr       */
+=======
+/*   Updated: 2025/10/03 18:55:03 by aprigent         ###   ########.fr       */
+>>>>>>> 4712fac64a99fa87295ac02d3ad5ec6566656aea
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +46,7 @@ int	handler_sep(t_sh *sh, char **line, t_token **token_list)
 	else if (!ft_strncmp(*line, "&", 1))
 	{
 		ft_putstr_fd("minishell: '&' not supported (no background jobs)\n", 2);
-		sh->exit_s = 2;
+		g_st = 2;
 		(*line)++;
 		return (-1);
 	}

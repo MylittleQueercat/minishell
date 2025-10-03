@@ -21,7 +21,7 @@ static int	is_incomplete(t_token *last)
 		|| last->type == T_OR);
 }
 
-static int	print_sep_error(t_sh *sh, t_token *last)
+static int	print_sep_error(t_token *last)
 {
 	ft_putstr_fd("minishell: syntax error near unexpected token `", 2);
 	if (last->type == T_PIPE)
@@ -31,7 +31,7 @@ static int	print_sep_error(t_sh *sh, t_token *last)
 	else if (last->type == T_OR)
 		ft_putstr_fd("||", 2);
 	ft_putstr_fd("'\n", 2);
-	sh->exit_s = 2;
+	g_st = 2;
 	return (0);
 }
 
@@ -45,7 +45,7 @@ static int	handle_incomplete(t_sh *sh, t_token **token_list)
 	{
 		ft_putstr_fd(
 			"minishell: syntax error: unexpected end of file\n", 2);
-		sh->exit_s = 258;
+		g_st = 2;
 		return (0);
 	}
 	sh->line = ft_strjoin_with(sh, sh->line, " ", 0);
@@ -67,7 +67,7 @@ int	check_incomplete_cmd(t_sh *sh, t_token *token_list)
 		last = last->next;
 	if (last && token_list == last
 		&& (last->type == T_PIPE || last->type == T_AND || last->type == T_OR))
-		return (print_sep_error(sh, last));
+		return (print_sep_error(last));
 	if (is_incomplete(last))
 		return (handle_incomplete(sh, &token_list));
 	return (1);

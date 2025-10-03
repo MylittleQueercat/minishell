@@ -112,7 +112,7 @@ void	loop(t_sh *sh);
 
 void	run_exec(t_sh *sh, t_node *node);
 void	exec_cmd_or_builtin(t_sh *sh, t_node *node);
-void	exec_builtin(t_sh *sh, t_cmd *cmd);
+void	exec_builtin(t_sh *sh, t_node *node, t_cmd *cmd);
 void	exec_cmd(t_sh *sh, t_cmd *cmd);
 int		exec_heredoc(t_sh *sh, t_node *node);
 
@@ -149,7 +149,7 @@ void	ft_pwd(void);
 void	ft_cd(t_sh *sh, t_cmd *cmd, t_env *env);
 void	ft_export(t_sh *sh, t_cmd *cmd, int i);
 void	ft_unset(t_sh *sh, t_cmd *cmd, t_env *env);
-void	ft_exit(t_sh *sh, t_cmd *cmd);
+void	ft_exit(t_sh *sh, t_node *node, t_cmd *cmd);
 // parsing
 //
 //
