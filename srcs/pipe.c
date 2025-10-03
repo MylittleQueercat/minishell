@@ -15,6 +15,8 @@
 void	child_process(t_sh *sh, t_node *node, int *fd, int n)
 {
 	default_signals();
+	node->left->is_in_pipe = 1;
+	node->right->is_in_pipe = 1;
 	if (n == 1)
 		dup2(fd[1], STDOUT_FILENO);
 	else if (n == 0)

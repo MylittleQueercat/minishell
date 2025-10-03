@@ -36,6 +36,7 @@ static long long	ft_atoll(const char *str, int *f)
 	}
 	if (*f == 1 && result < 256)
 		return (2);
+	f = 0;
 	return (result * sign);
 }
 
@@ -67,19 +68,22 @@ static int	is_str_digit(char *str)
 	return (1);
 }
 
-void	non_numeric_exit(t_cmd *cmd)
+void	non_numeric_exit(t_node *node, t_cmd *cmd)
 {
 	ft_putstr_fd("minishell: exit: ", 2);
 	ft_putstr_fd(cmd->args[1], 2);
 	ft_putstr_fd(": numeric argument required\n", 2);
-	exit((free_all(NULL), 2));
+	if (node->is_in_pipe == 0)
+		exit((free_all(NULL), 2));
+	g_st = 2;
 }
 
-void	ft_exit(t_sh *sh, t_cmd *cmd)
+void	ft_exit(t_sh *sh, t_node *node, t_cmd *cmd)
 {
 	int	f;
 
-	ft_putstr_fd("exit\n", 2);
+	if (node->is_in_pipe == 0)
+		ft_putstr_fd("exit\n", 2);
 	cmd->argc = count_args(cmd->args);
 	if (cmd->argc > 2)
 	{
@@ -91,10 +95,10 @@ void	ft_exit(t_sh *sh, t_cmd *cmd)
 		f = 0;
 		g_st = ft_atoll(cmd->args[1], &f) % 256;
 		if (is_str_digit(cmd->args[1]) == 0 || f == 1)
-			non_numeric_exit(cmd);
-		else
+			return (non_numeric_exit(node, cmd), (void)0);
+		else if (node->is_in_pipe == 0)
 			exit((free_all(sh), g_st));
 	}
-	else
+	else if (node->is_in_pipe == 0)
 		exit((free_all(sh), g_st));
 }

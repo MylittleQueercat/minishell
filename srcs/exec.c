@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-void	exec_builtin(t_sh *sh, t_cmd *cmd)
+void	exec_builtin(t_sh *sh, t_node *node, t_cmd *cmd)
 {
 	if (ft_strcmp(cmd->cmd, "echo") == 0)
 		ft_echo(cmd, 0, 0);
@@ -27,7 +27,7 @@ void	exec_builtin(t_sh *sh, t_cmd *cmd)
 	else if (ft_strcmp(cmd->cmd, "env") == 0)
 		ft_env(cmd, sh->env);
 	else if (ft_strcmp(cmd->cmd, "exit") == 0)
-		ft_exit(sh, cmd);
+		ft_exit(sh, node, cmd);
 	else
 		printf("Command not found: %s\n", cmd->cmd);
 }
@@ -75,14 +75,14 @@ void	exec_cmd_or_builtin(t_sh *sh, t_node *node)
 			pid = fork();
 			if (pid == 0)
 			{
-				exec_builtin(sh, node->cmd);
+				exec_builtin(sh, node, node->cmd);
 				exit((free_all(sh), g_st));
 			}
 			wait_and_signal(pid, &vl);
 			g_st = (vl >> 8);
 		}
 		else
-			exec_builtin(sh, node->cmd);
+			exec_builtin(sh, node, node->cmd);
 	}
 	else
 		exec_cmd(sh, node->cmd);
