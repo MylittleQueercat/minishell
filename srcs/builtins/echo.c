@@ -12,15 +12,36 @@
 
 #include "minishell.h"
 
+static int	check_n(char *str, int *n_flag)
+{
+	int	i;
+
+	i = 0;
+	if (str[i] == '-')
+	{
+		i++;
+		while (str[i] == 'n')
+			i++;
+		if (str[i] == '\0')
+			return (*n_flag = 1, 1);
+	}
+	return (0);
+}
+
 void	ft_echo(t_cmd *cmd)
 {
 	int	i;
 	int	n_flag;
 
 	n_flag = 0;
-	if (cmd->args[1] && ft_strncmp(cmd->args[1], "-n", 2) == 0)
-		n_flag = 1;
-	i = 1 + n_flag;
+	cmd->argc = count_args(cmd->args);
+	i = 0;
+	if (cmd->argc > 1)
+	{
+		while (cmd->args[++i] && ft_strncmp(cmd->args[i], "-n", 2) == 0)
+			if (check_n(cmd->args[i], &n_flag) == 0)
+				break ;
+	}
 	while (cmd->args[i])
 	{
 		printf("%s", cmd->args[i]);

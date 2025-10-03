@@ -88,5 +88,5 @@ void	ft_exit(t_sh *sh, t_cmd *cmd)
 		}
 	}
 	else
-		exit((free_all(sh), 0));
+		exit((free_all(sh), g_st));
 }
