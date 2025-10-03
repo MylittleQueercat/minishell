@@ -46,6 +46,11 @@ void	exec_cmd(t_sh *sh, t_cmd *cmd)
 		cmd->path = get_cmd_path(sh, cmd, -1);
 		if (!cmd->path)
 			exit((free_all(sh), 127));
+		if (cmd->args && cmd->args[0] && !cmd->args[0][0])
+		{
+			ft_putstr_fd("minishell: : command not found\n", 2);
+			exit((free_all(sh), 127));
+		}
 		execve(cmd->path, cmd->args, sh->env->envp);
 		perror("execve");
 		exit((free_all(sh), 126));
