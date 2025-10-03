@@ -23,7 +23,7 @@ char	*make_my_prompt(t_sh *sh, int continuation)
 		return (a_strdup(sh->a, YELLOW BOLD "🟡 ↪ " RESET));
 	if (!getcwd(cwd, sizeof(cwd)))
 		ft_strlcpy(cwd, "?", sizeof(cwd));
-	home = getenv("HOME");
+	home = get_env_value("HOME", sh->env->envp);
 	if (home && ft_strncmp(cwd, home, ft_strlen(home)) == 0)
 		display_path = a_strjoin(sh->a, "~", cwd + ft_strlen(home));
 	else

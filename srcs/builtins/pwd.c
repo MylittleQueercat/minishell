@@ -14,16 +14,8 @@
 
 void	ft_pwd(void)
 {
-	char	*pwd;
 	char	*cwd;
 
-	pwd = getenv("PWD");
-	if (pwd && *pwd)
-	{
-		printf("%s\n", pwd);
-		g_st = 0;
-		return ;
-	}
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
 	{

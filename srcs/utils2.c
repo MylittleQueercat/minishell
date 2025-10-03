@@ -41,18 +41,16 @@ void	setup_redirections(t_cmd *cmd)
 	}
 }
 
-void	increment_shlvl(t_sh *sh)
+void	increment_shlvl(t_sh *sh, char *shlvl, int i)
 {
-	int		i;
-	char	*shlvl;
-
 	shlvl = get_env_value("SHLVL", sh->env->envp);
 	if (!shlvl)
 	{
 		shlvl = a_strdup(sh->sh_arena, "SHLVL=1");
 		if (!shlvl)
 			exit((perror("malloc"), free_all(sh), 1));
-		return (change_env_var(sh, sh->env, shlvl), (void)0);
+		change_var(sh, sh->env, shlvl);
+		return (update_envp(sh, sh->env, 0, 0), (void)0);
 	}
 	i = ft_atoi(shlvl);
 	if (i < 0)
@@ -67,7 +65,8 @@ void	increment_shlvl(t_sh *sh)
 	shlvl = a_strjoin(sh->sh_arena, "SHLVL=", shlvl);
 	if (!shlvl)
 		exit((perror("malloc"), free_all(sh), 1));
-	change_env_var(sh, sh->env, shlvl);
+	change_var(sh, sh->env, shlvl);
+	return (update_envp(sh, sh->env, 0, 0), (void)0);
 }
 
 void	print_fd(char *msg, char *arg, int fd)

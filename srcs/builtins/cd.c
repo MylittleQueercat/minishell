@@ -20,22 +20,25 @@ int	update_pwd(t_sh *sh, t_env *env)
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
 		return (perror("getcwd"), 1);
-	env->oldpwd = a_strdup(sh->sh_arena, get_env_value("PWD", env->envp));
+	tmp = get_env_value("PWD", env->envp);
+	if (!tmp)
+		tmp = a_strdup(sh->sh_arena, "");
+	env->oldpwd = a_strdup(sh->sh_arena, tmp);
 	if (!env->oldpwd)
-		return (printf("cd: allocation error\n"), 1);
+		exit((free(cwd), perror("malloc"), free_all(sh), 1));
 	tmp = a_strjoin(sh->a, "OLDPWD=", env->oldpwd);
 	if (!tmp)
-		return (printf("cd: allocation error\n"), 1);
-	change_env_var(sh, env, tmp);
+		exit((free(cwd), perror("malloc"), free_all(sh), 1));
+	change_var(sh, env, tmp);
 	env->pwd = a_strdup(sh->sh_arena, cwd);
 	if (!env->pwd)
-		return (printf("cd: allocation error\n"), 1);
+		exit((free(cwd), perror("malloc"), free_all(sh), 1));
 	free(cwd);
 	tmp = a_strjoin(sh->a, "PWD=", env->pwd);
 	if (!tmp)
-		return (printf("cd: allocation error\n"), 1);
-	change_env_var(sh, env, tmp);
-	return (0);
+		exit((perror("malloc"), free_all(sh), 1));
+	change_var(sh, env, tmp);
+	return (update_envp(sh, env, 0, 0), 0);
 }
 
 void	cd_no_arg(t_sh *sh, t_env *env)

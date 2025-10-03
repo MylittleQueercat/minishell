@@ -39,7 +39,7 @@ int	update_envp(t_sh *sh, t_env *env, int size, int i)
 		curr = curr->next;
 	env->envp = (char **)arena_alloc(sh->sh_arena, (size + 1) * sizeof(char *));
 	if (!env->envp)
-		return (perror("malloc"), 1);
+		exit((perror("malloc"), free_all(sh), 1));
 	curr = env->envl;
 	while (curr)
 	{
@@ -51,7 +51,7 @@ int	update_envp(t_sh *sh, t_env *env, int size, int i)
 		else
 			env->envp[i] = a_strdup(sh->sh_arena, curr->name);
 		if (!env->envp[i])
-			return (perror("malloc"), 1);
+			exit((perror("malloc"), free_all(sh), 1));
 		i++;
 		curr = curr->next;
 	}
@@ -59,7 +59,7 @@ int	update_envp(t_sh *sh, t_env *env, int size, int i)
 	return (0);
 }
 
-void	change_env_var(t_sh *sh, t_env *env, const char *var)
+void	change_var(t_sh *sh, t_env *env, const char *var)
 {
 	t_envl	*curr;
 	char	*new_value;
@@ -85,7 +85,7 @@ void	change_env_var(t_sh *sh, t_env *env, const char *var)
 	}
 }
 
-static int	add_env_var(t_sh *sh, t_env *env, const char *var)
+void	add_env_var(t_sh *sh, t_env *env, const char *var)
 {
 	t_envl	*new;
 	char	*equal_sign;
@@ -105,10 +105,9 @@ static int	add_env_var(t_sh *sh, t_env *env, const char *var)
 		new->value = NULL;
 	}
 	if (!new->name || (equal_sign && !new->value))
-		return (perror("malloc"), 0);
+		exit((perror("malloc"), free_all(sh), 1));
 	new->next = env->envl;
 	env->envl = new;
-	return (1);
 }
 
 void	ft_export(t_sh *sh, t_cmd *cmd, int i)
@@ -127,12 +126,9 @@ void	ft_export(t_sh *sh, t_cmd *cmd, int i)
 		else
 		{
 			if (var_exists(sh->env, cmd->args[i]) == 1)
-				change_env_var(sh, sh->env, cmd->args[i]);
+				change_var(sh, sh->env, cmd->args[i]);
 			else
-			{
-				if (add_env_var(sh, sh->env, cmd->args[i]) == 0)
-					return (g_st = 1, (void)0);
-			}
+				add_env_var(sh, sh->env, cmd->args[i]);
 		}
 		i++;
 	}

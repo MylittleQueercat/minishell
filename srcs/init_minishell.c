@@ -37,7 +37,7 @@ void	init_sh(t_sh *sh, char **env)
 	sh->env = init_env(sh, env);
 	if (!sh->env)
 		exit((perror("Error malloc for env"), free_all(sh), 1));
-	increment_shlvl(sh);
+	increment_shlvl(sh, NULL, 0);
 	sh->fd_stdin = dup(STDIN_FILENO);
 	sh->fd_stdout = dup (STDOUT_FILENO);
 	tcgetattr(STDIN_FILENO, &sh->original_term);

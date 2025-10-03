@@ -43,12 +43,9 @@ void	exec_cmd(t_sh *sh, t_cmd *cmd)
 	if (pid == 0)
 	{
 		setup_redirections(cmd);
-		cmd->path = get_cmd_path(sh, sh->env->path, cmd, -1);
+		cmd->path = get_cmd_path(sh, cmd, -1);
 		if (!cmd->path)
-		{
-			print_fd(": command not found\n", cmd->cmd, 2);
 			exit((free_all(sh), 127));
-		}
 		execve(cmd->path, cmd->args, sh->env->envp);
 		perror("execve");
 		exit((free_all(sh), 126));

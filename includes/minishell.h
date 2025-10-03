@@ -119,14 +119,14 @@ int		exec_heredoc(t_sh *sh, t_node *node);
 void	fork_node(t_sh *sh, t_node *node);
 void	child_process(t_sh *sh, t_node *node, int *fds, int n);
 
-char	*get_cmd_path(t_sh *sh, char *path, t_cmd *cmd, int i);
+char	*get_cmd_path(t_sh *sh, t_cmd *cmd, int i);
 
 void	build_prompt(t_sh *sh);
 t_envl	*get_last_envl(t_envl *envl);
 void	add_colors(t_sh *sh);
 int		count_args(char **args);
 void	setup_redirections(t_cmd *cmd);
-void	increment_shlvl(t_sh *sh);
+void	increment_shlvl(t_sh *sh, char *shlvl, int i);
 void	restore_prompt(void);
 void	print_fd(char *msg, char *arg, int fd);
 
@@ -139,7 +139,8 @@ void	print_sorted_env(t_env *env, int flag);
 int		is_valid_identifier(const char *str);
 int		var_exists(t_env *env, const char *var);
 int		update_envp(t_sh *sh, t_env *env, int size, int i);
-void	change_env_var(t_sh *sh, t_env *env, const char *var);
+void	change_var(t_sh *sh, t_env *env, const char *var);
+void	add_env_var(t_sh *sh, t_env *env, const char *var);
 char	*get_env_value(const char *name, char **envp);
 
 void	ft_env(t_cmd *cmd, t_env *env);
