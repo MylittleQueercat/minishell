@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_incomplete_cmd.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hguo <marvin@42.fr>                        +#+  +:+       +#+        */
+/*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/03 18:19:53 by hguo              #+#    #+#             */
-/*   Updated: 2025/10/03 18:19:55 by hguo             ###   ########.fr       */
+/*   Updated: 2025/10/03 19:09:01 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int	check_incomplete_cmd(t_sh *sh, t_token *token_list)
 	last = token_list;
 	while (last && last->next)
 		last = last->next;
-	if (last && !last->next
+	if (last && token_list == last
 		&& (last->type == T_PIPE || last->type == T_AND || last->type == T_OR))
 		return (print_sep_error(sh, last));
 	if (is_incomplete(last))

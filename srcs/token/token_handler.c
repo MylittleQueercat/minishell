@@ -6,7 +6,7 @@
 /*   By: hguo <hguo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 16:36:07 by hguo              #+#    #+#             */
-/*   Updated: 2025/10/03 18:19:10 by hguo             ###   ########.fr       */
+/*   Updated: 2025/10/03 19:10:10 by hguo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,52 +49,6 @@ int	handler_sep(t_sh *sh, char **line, t_token **token_list)
 	else
 		return (add_sep_to_end(sh, T_PIPE, line, token_list) && 1);
 }
-
-// static int	print_sep_error(t_sh *sh, t_token *last)
-// {
-// 	ft_putstr_fd("minishell: syntax error near unexpected token `", 2);
-// 	if (last->type == T_PIPE)
-// 		ft_putstr_fd("|", 2);
-// 	else if (last->type == T_AND)
-// 		ft_putstr_fd("&&", 2);
-// 	else if (last->type == T_OR)
-// 		ft_putstr_fd("||", 2);
-// 	ft_putstr_fd("'\n", 2);
-// 	sh->exit_s = 2;
-// 	return (0);
-// }
-
-// int	check_incomplete_cmd(t_sh *sh, t_token *token_list)
-// {
-// 	t_token	*last;
-// 	char	*more;
-// 	t_token	*new_list;
-
-// 	last = token_list;
-// 	while (last && last->next)
-// 		last = last->next;
-// 	if (last && !last->next &&
-// 		(last->type == T_PIPE || last->type == T_AND || last->type == T_OR))
-// 		return (print_sep_error(sh, last));
-// 	if (is_incomplete(last))
-// 	{
-// 		more = readline(make_my_prompt(sh, 1));
-// 		if (!more)
-// 		{
-// 			ft_putstr_fd("minishell: syntax error: unexpected end of file\n", 2);
-// 			sh->exit_s = 258;
-// 			return (0);
-// 		}
-// 		sh->line = ft_strjoin_with(sh, sh->line, " ", 0);
-// 		sh->line = ft_strjoin_with(sh, sh->line, more, 0);
-// 		free(more);
-// 		new_list = token_handler(sh);
-// 		if (!new_list)
-// 			return (0);
-// 		*token_list = *new_list;
-// 	}
-// 	return (1);
-// }
 
 static int	process_token(t_sh *sh, char **p, t_token **token_list)
 {
