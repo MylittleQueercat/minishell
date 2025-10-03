@@ -49,8 +49,8 @@ void	fork_node(t_sh *sh, t_node *node)
 	close(fd[1]);
 	waitpid(pid[1], &status[1], 0);
 	waitpid(pid[0], &status[0], 0);
-	if ((status[1] & 0x7F) == 0)
-		g_st = (status[1] >> 8) & 0xFF;
+	if ((status[0] & 0x7F) == 0)
+		g_st = (status[0] >> 8) & 0xFF;
 	else
-		g_st = 128 + (status[1] & 0x7F);
+		g_st = 128 + (status[0] & 0x7F);
 }

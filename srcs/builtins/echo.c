@@ -35,12 +35,15 @@ void	ft_echo(t_cmd *cmd)
 
 	n_flag = 0;
 	cmd->argc = count_args(cmd->args);
-	i = 0;
+	i = 1;
 	if (cmd->argc > 1)
 	{
-		while (cmd->args[++i] && ft_strncmp(cmd->args[i], "-n", 2) == 0)
-			if (check_n(cmd->args[i], &n_flag) == 0)
+		while (cmd->args[i] && ft_strncmp(cmd->args[i], "-n", 2) == 0)
+			if (check_n(cmd->args[i++], &n_flag) == 0)
+			{
+				i--;
 				break ;
+			}
 	}
 	while (cmd->args[i])
 	{

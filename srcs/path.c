@@ -14,9 +14,9 @@
 
 static char	*abs_path(t_sh *sh, char *cmd)
 {
-	if (!access(cmd, X_OK))
+	if (!access(cmd, R_OK))
 		return (a_strdup(sh->a, cmd));
-	return (NULL);
+	return (print_fd(": No such file or directory\n", cmd, 2), NULL);
 }
 
 char	*is_path(t_sh *sh)

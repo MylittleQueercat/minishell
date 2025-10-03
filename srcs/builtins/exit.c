@@ -65,7 +65,7 @@ static int	is_str_digit(char *str)
 
 void	ft_exit(t_sh *sh, t_cmd *cmd)
 {
-	printf("exit\n");
+	ft_putstr_fd("exit\n", 2);
 	cmd->argc = count_args(cmd->args);
 	if (cmd->argc > 2)
 	{
