@@ -54,7 +54,7 @@ void	exec_cmd(t_sh *sh, t_cmd *cmd)
 		exit((free_all(sh), 126));
 	}
 	wait_and_signal(pid, &status);
-	if (status & 0x00FF)
+	if ((status & 0x7f) == SIGINT)
 		return (ft_putstr_fd("\n", sh->fd_stdout), g_st = 130, (void)0);
 	else
 		g_st = status >> 8;

@@ -89,5 +89,7 @@ int	init_cmd(t_sh *sh, t_node *node)
 	cmd->out_fd = -1;
 	if (node->heredoc_fd != -1)
 		cmd->in_fd = node->heredoc_fd;
+	else
+		cmd->in_fd = -1;
 	return (parse_io(sh, node, cmd));
 }

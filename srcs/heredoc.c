@@ -133,8 +133,10 @@ int	exec_heredoc(t_sh *sh, t_node *node)
 		else
 			break ;
 	}
-	if (!node || !node->io_list || node->io_list->type != IO_HEREDOC)
+	if (!node)
 		return (0);
+	if (!node->io_list || node->io_list->type != IO_HEREDOC)
+		return (node->heredoc_fd = -1, 0);
 	file = a_strdup(sh->a, ".heredoc_tmp");
 	if (!file)
 		exit((perror("malloc"), free_all(sh), 1));
