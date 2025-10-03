@@ -12,14 +12,37 @@
 
 #include "minishell.h"
 
-void	sigint_handler_heredoc(int num)
+static char	**get_delimiter(t_sh *sh, t_io_node *io, int i)
 {
-	(void)num;
-	ft_putstr_fd("\n", 1);
-	exit(130);
+	char		**tmp;
+	char		**del;
+
+	del = NULL;
+	while (++i >= 0 && io)
+	{
+		if (io->type != IO_HEREDOC)
+		{
+			io = io->next;
+			continue ;
+		}
+		tmp = a_split(sh->a, io->raw_value, ' ');
+		if (!tmp)
+			return (NULL);
+		del = a_realloc(sh->a, del, sizeof(char *) * i,
+			sizeof(char *) * (i + 2));
+		if (!del)
+			return (NULL);
+		del[i] = throw_quotes(sh, tmp[0]);
+		if (!del[i])
+			return (NULL);
+		io = io->next;
+	}
+	if (del)
+		del[i] = NULL;
+	return (del);
 }
 
-void	heredoc_child(t_sh *sh, t_node *node, int fd)
+void	heredoc_child(t_sh *sh, t_node *node, int fd, const char *delimiter)
 {
 	char	*line;
 
@@ -30,7 +53,7 @@ void	heredoc_child(t_sh *sh, t_node *node, int fd)
 	while (1)
 	{
 		line = readline("> ");
-		if (!line || ft_strcmp(line, node->cmd->infile) == 0)
+		if (!line || ft_strcmp(line, delimiter) == 0)
 		{
 			free(line);
 			break ;
@@ -48,13 +71,12 @@ void	heredoc_child(t_sh *sh, t_node *node, int fd)
 	exit((free_all(sh), 0));
 }
 
-void	heredoc_parent(t_sh *sh, t_node *node, int pid)
+void	heredoc_parent(t_sh *sh, int pid)
 {
 	int	status;
 
 	(void)sh;
 	wait_and_signal(pid, &status);
-	close(node->cmd->in_fd);
 	if ((status & 0x7f) == SIGINT)
 	{
 		unlink(".heredoc_tmp");
@@ -63,27 +85,61 @@ void	heredoc_parent(t_sh *sh, t_node *node, int pid)
 	g_st = (status >> 8) & 0xff;
 }
 
+int	fork_heredoc(t_sh *sh, t_node *node)
+{
+	int		pid;
+	int		fd;
+	char	**delimiter;
+
+	delimiter = get_delimiter(sh, node->io_list, -1);
+	if (!delimiter)
+		exit((perror("malloc"), free_all(sh), 1));
+	while (delimiter && *delimiter)
+	{
+		fd = open(node->heredoc, O_CREAT | O_RDWR | O_TRUNC, 0644);
+		if (fd < 0)
+			return (perror("open"), 1);
+		pid = fork();
+		if (pid < 0)
+			return (perror("fork"), close(fd), unlink(node->heredoc), 1);
+		if (pid == 0)
+			heredoc_child(sh, node, fd, *delimiter);
+		else
+			heredoc_parent(sh, pid);
+		delimiter++;
+		close(fd);
+		if (g_st == 130)
+			break ;
+	}
+	node->heredoc_fd = open(node->heredoc, O_RDONLY);
+	if (node->heredoc_fd < 0)
+		return (perror("open"), unlink(node->heredoc), 1);
+	unlink(node->heredoc);
+	return (g_st);
+}
+
 int	exec_heredoc(t_sh *sh, t_node *node)
 {
-	int	pid;
+	char	*file;
 
-	node->cmd->in_fd = open(".heredoc_tmp", O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (node->cmd->in_fd < 0)
-		return (perror("heredoc"), 1);
-	pid = fork();
-	if (pid < 0)
-		return (perror("fork"), 1);
-	if (pid == 0)
-		heredoc_child(sh, node, node->cmd->in_fd);
-	else
-		heredoc_parent(sh, node, pid);
-	if (g_st == 130)
-		return (1);
-	node->cmd->in_fd = open(".heredoc_tmp", O_RDONLY);
-	if (node->cmd->in_fd < 0)
-		return (perror("heredoc"), 1);
-	unlink(".heredoc_tmp");
-	if (!node->cmd->cmd)
-		return (1);
-	return (0);
+	while (node)
+	{
+		if (node->type != N_CMD)
+		{
+			if (exec_heredoc(sh, node->left) == 1)
+				return (1);
+			node = node->right;
+		}
+		else
+			break ;
+	}
+	if (!node || !node->io_list || node->io_list->type != IO_HEREDOC)
+		return (0);
+	file = a_strdup(sh->a, ".heredoc_tmp");
+	if (!file)
+		exit((perror("malloc"), free_all(sh), 1));
+	node->heredoc = a_strjoin(sh->a, file, a_itoa(sh->a, sh->heredoc_count--));
+	if (!node->heredoc)
+		exit((perror("malloc"), free_all(sh), 1));
+	return (fork_heredoc(sh, node) != 0);
 }

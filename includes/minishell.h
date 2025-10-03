@@ -76,11 +76,9 @@ typedef struct s_sh
 	t_parse_err		parse_err;
 	t_env			*env;
 	int				exit_s;
-	int				exit_flag;
-	int				**pipes;
-	int				nb_pipes;
 	int				fd_stdin;
 	int				fd_stdout;
+	int				heredoc_count;
 	t_arena			*sh_arena;
 	t_arena			*a;
 	struct termios	original_term;

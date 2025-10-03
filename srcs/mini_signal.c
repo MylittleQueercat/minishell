@@ -22,10 +22,11 @@ void	sig_handler(int num)
 	g_st = 130;
 }
 
-void	sig_quit_handler(int num)
+void	sigint_handler_heredoc(int num)
 {
 	(void)num;
-	ft_putstr_fd("Quit: 3\n", 1);
+	ft_putstr_fd("\n", 1);
+	exit(130);
 }
 
 void	init_signals(t_sh *sh)

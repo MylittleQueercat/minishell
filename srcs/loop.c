@@ -18,6 +18,7 @@ void	reset_sh_struct(t_sh *sh)
 	sh->tree = NULL;
 	sh->parse_err.type = 0;
 	sh->prompt = NULL;
+	sh->heredoc_count = 0;
 }
 
 void	run_iteration(t_sh *sh)

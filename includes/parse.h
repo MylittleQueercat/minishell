@@ -51,6 +51,8 @@ typedef struct s_node
 	t_io_node		*io_list;
 	char			*raw_args;
 	char			**exec_args;
+	char			*heredoc;
+	int				heredoc_fd;
 	struct s_node	*left;
 	struct s_node	*right;
 	t_cmd			*cmd;

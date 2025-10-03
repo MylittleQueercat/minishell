@@ -58,7 +58,7 @@ char	*throw_quotes(t_sh *sh, char *str)
 	j = 0;
 	result = a_calloc(sh->a, strlen_no_quotes(str) + 1, sizeof(char));
 	if (!result)
-		return (NULL);
+		exit((perror("malloc"), free_all(sh), 1));
 	while (str[i])
 	{
 		if (str[i] == '"' || str[i] == '\'')

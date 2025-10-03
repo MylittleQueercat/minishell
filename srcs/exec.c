@@ -115,6 +115,8 @@ void	run_exec(t_sh *sh, t_node *node)
 	if (!node)
 		return ;
 	expander(sh, node);
+	if (node == sh->tree && exec_heredoc(sh, node) == 1)
+		return ;
 	if (node->type == N_CMD)
 	{
 		if ((!node->exec_args || !node->exec_args[0])
@@ -122,7 +124,8 @@ void	run_exec(t_sh *sh, t_node *node)
 			return (g_st = 2,
 				printf("minishell: syntax error: empty command\n"), (void)0);
 		else if ((!node->exec_args || !node->exec_args[0])
-			&& !node->io_list)
+			&& (!node->io_list || (node->io_list->type
+			&& node->io_list->type == IO_HEREDOC)))
 			return (g_st = 0, (void)0);
 		else if ((!node->exec_args || !node->exec_args[0])
 			&& node->io_list->type && node->io_list->type != IO_HEREDOC)
@@ -133,6 +136,4 @@ void	run_exec(t_sh *sh, t_node *node)
 	}
 	if (node_and_or_pipe(sh, node))
 		return ;
-	printf("Unknown node type: %d\n", node->type);
-	g_st = 1;
 }

@@ -18,7 +18,7 @@
 
 void					sig_handler(int num);
 void					init_signals(t_sh *sh);
-void					sig_quit_handler(int num);
+void					sigint_handler_heredoc(int num);
 void					wait_and_signal(int pid, int *status);
 void					default_signals(void);
 
