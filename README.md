@@ -1,4 +1,9 @@
-# 🐚 Minishell — 42 Project | 125/125
+# 🐚 Minishell
+
+![Score](https://img.shields.io/badge/Score-125%2F125-brightgreen)
+![Language](https://img.shields.io/badge/Language-C-blue)
+![42](https://img.shields.io/badge/42-Project-black)
+![Team](https://img.shields.io/badge/Team-2_people-orange)
 
 ## 📌 Project Goal
 
